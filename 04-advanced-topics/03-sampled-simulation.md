@@ -629,7 +629,7 @@ Actual Overall IPC: 1.247741
 Relative Error: 0.6869005667041583%
 ```
 
-As you can se, SMARTS also achieved a very small relative error between the predicted an actual IPC!
+As you can see, SMARTS also achieved a very small relative error between the predicted an actual IPC!
 
 ## Tradeoffs
 
