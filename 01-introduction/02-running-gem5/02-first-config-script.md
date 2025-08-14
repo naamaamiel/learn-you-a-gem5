@@ -107,7 +107,7 @@ sim.run(20_000_000_000)
 
 Having a board is great and all, but we need to tell gem5 how to start the simulation. For that, we use the `Simulator` object. Think of the `Simulator` as the simulation controller. It takes a board (along with other optional parameters, which we didn't bother with here), and we can tell it to instantiate all of the board's components and start a simulation with `run()`.
 
-The parameter we gave to the `run()` function is the number of *simulation ticks* we want the simulation to run for. You can configure the length of a tick, but by defualt, a tick is one picosecond (1 ps, equal to 10^(-12) seconds). Here, we tell the simulation to run for 20,000,000,000 in-simulation picoseconds, or 20 in-simulation milliseconds. After that simulated time has elapsed, the simulation will end.
+The parameter we gave to the `run()` function is the number of *simulation ticks* we want the simulation to run for. You can configure the length of a tick, but by defualt, a tick is one picosecond (1 ps, equal to $10^{-12}$ seconds). Here, we tell the simulation to run for 20,000,000,000 in-simulation picoseconds, or 20 in-simulation milliseconds. After that simulated time has elapsed, the simulation will end.
 
 ### Putting it all together
 

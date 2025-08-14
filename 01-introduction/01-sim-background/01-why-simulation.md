@@ -40,7 +40,46 @@ What all of the above research opportunities have in common is that the system b
 
 ## Solution: simulation
 
- Faced with this problem, you have two choices: build the hardware yourself or simulate it. Building custom hardware for research is *very* expensive. Simulation is not! In addition, simulation is parameterized. This means that you can explore your design space more thoroughly and perform [sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis) by adjusting simulation parameters, no soldering required. While it's not the same as actually observing real hardware, it's very often accurate enough.
+Faced with this problem, you have two choices: build the hardware yourself or simulate it. Building custom hardware for research is *very* expensive. Simulation is not! In addition, simulation is parameterized. This means that you can explore your design space more thoroughly and perform [sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis) by adjusting simulation parameters, no soldering required. While it's not the same as actually observing real hardware, it's very often accurate enough.
+
+## Simulation terminology
+
+We use specific terminology to talk about simulators. This terminology mirrors the language we use to talk about virtual machines.
+
+> If you're not familiar with virtual machines, that's okay! Virtual machines are pieces of software that **mimic a full computer system**. Being software, they need to run on an actual machine, but they might simulate an **entirely different operating system** than that machine's operating system.
+
+Without virtual machines, we can think of the way your computer runs code like a "layer cake" of sorts:
+
+![A layered diagram. Layers from bottom to top: hardware, operating system, apps](img/native-exec.png)
+
+We call this **native execution**: your native operating system runs on your machine's hardware directly and allows your favorite apps to run on top.
+
+In virtual machine land, we add another layer to this cake: the hypervisor, that sits on top of hardware. You end up with four layers:
+
+![A layered diagram. Layers from bottom to top: hardware, hypervisor/VMM, guest operating system, app.](img/vm-term.png)
+
+- The **hardware**, also referred to as the **host**, is your actual, physical machine.
+- The **hypervisor/VMM (Virtual Machine Monitor)** is a software layer running on the host that emulates hardware for any virtual machines running.
+- The **guest** is the code running not directly on your machine's hardware, but "on top" of the hypervisor, which emulates the hardware for it. In the context of virtual machines, this is the guest operating system.
+- The **apps** are whatever code the guest operating system has running on top of it. These might be pieces of software you couldn't run on your native OS.
+
+For simulators, this "layer cake" looks really similar, with a few names swapped around:
+
+![A layered diagram. Layers from bottom to top: hardware, gem5/Simulator, guest operating system, workload/benchmark.](img/gem5-term.png)
+
+- The **hardware/host** is still your machine's hardware.
+- The hypervisor is replaced by the **simulator**, which runs directly on the host. The simulator exposes simulated hardware to the guest.
+- The **guest** is the code that runs on this simulated hardware. The operating system running in-simulation is the guest operating system.
+- The **workload/benchmark** is the code that the guest operating system (running on simulated hardware) is running. We use this code to assess something about our simulated system.
+
+This means that the **simulator's code** executes *natively* (on the host's hardware), while the **guest's code** runs on the simulator. The simulator's code emulates the guest's code!
+
+As such, we have two different ways to discuss performance:
+
+- The **simulator's performance**, which refers to how quickly gem5 can simulate on the host machine.
+  - This the amount of time that the simulation takes as we perceive it (AKA the wallclock time).
+- The **simulated performance** is the time that the simulator predicts it takes for the *guest code* to run on the *simulated system*.
+  - This amount of time will be *less* than the wallclock time: simulators take a while to simulate, but that doesn't change the predicted performance of the simulated system!
 
 ## Types of simulation
 
