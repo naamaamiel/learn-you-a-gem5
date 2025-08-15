@@ -85,6 +85,11 @@ git clone https://github.com/gem5/gem5
 
 from the command line.
 
+> **Aside: Setting up bootcamp work**
+>
+> Throughout this bootcamp, we'll be providing resources (executables, Python and C++ files, etc.) for you to build on. They are available in the `workspace` directory. We highly recommend that you place the `workspace` directory and the `gem5` directory under the same parent; that is, run the above clone command from the parent directory of where you placed the `workspace` directory.
+>
+
 Congratulations! You now have... a bunch of source code. The next step is to *build* this source code into a binary that you can use to run simulations.
 
 ## Building gem5

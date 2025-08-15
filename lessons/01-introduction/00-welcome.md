@@ -28,22 +28,34 @@ We also assume knowledge in the following areas:
 
 ## Organization and tracks
 
-This bootcamp is divided into units, modules, and sections.
+This bootcamp is divided into units and sections.
 
 > <details open>
 >  <summary> <b>Bootcamp outline</b> </summary>
 >
 > ### Unit I: Introduction
 >
-> #### Module 1: Simulation Background
+> #### Section 0: Welcome!
 >
-> ##### Section 0: Welcome
+> #### Section 1: Why simulation?
 >
-> ##### Section 1: Why simulation?
+> #### Section 2: Enter gem5
 >
-> ##### Section 3: Enter gem5
+> #### Section 3: Your first configuration script
 >
-> #### Module 2: Running gem5
+> ### Unit IV: Advanced gem5 concepts
+>
+> #### Section 1: KVM fast-forwarding
+>
+> #### Section 2: Checkpointing
+>
+> #### Section 3: Sampled simulation
+>
+> #### Section 4: MultiSim
+>
+> #### Section 5: Creating disk images
+>
+> #### Section 6: Power modeling
 >
 > </details>
 
