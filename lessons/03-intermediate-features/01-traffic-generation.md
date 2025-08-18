@@ -474,4 +474,4 @@ As you can see, we have 6 memory requests happening on the same tick! `system.pr
 
 <!--TODO (Naama): Generate and discuss statistics differences between the linear and random cores-->
 
-<link href = "../style.css" rel="stylesheet"></link>
+<link href="../style.css" rel="stylesheet"></link>

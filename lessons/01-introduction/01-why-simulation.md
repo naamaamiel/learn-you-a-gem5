@@ -119,4 +119,4 @@ Being full-system is a separate property, different from being any of the other 
 
 > For example, QEMU, a functional simulator we mentioned above, is also full-system.
 
-<link href = "../style.css" rel="stylesheet"></link>
+<link href="../style.css" rel="stylesheet"></link>

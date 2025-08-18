@@ -172,4 +172,4 @@ As you (hopefully) saw from this brief example, setting up MultiSim is not too d
 
 Overall, it's recommended that you use MultiSim over scripts to run gem5 simulations in parallel. Hopefully this section convinced you of why!
 
-<link href = "../style.css" rel="stylesheet"></link>
+<link href="../style.css" rel="stylesheet"></link>
