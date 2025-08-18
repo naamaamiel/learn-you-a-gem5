@@ -85,3 +85,5 @@ All together, our "hello world" file takes a pre-built board, tells it to boot U
 In this case, we left the "params" box empty, meaning we just used the default values.
 
 At the core, every gem5 simulation boils down to this: a simulation that simulates a board. The complexity comes in when we start doing away with prebuilt components and reconfigure or even build our own components. You'll be doing that in no time!
+
+<link href = "../style.css" rel="stylesheet"></link>

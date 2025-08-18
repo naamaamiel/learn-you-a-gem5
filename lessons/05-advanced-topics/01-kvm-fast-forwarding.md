@@ -176,3 +176,5 @@ KVM fast-forwarding helps us spend less time on the regions of the simulation th
 Since KVM fast-forwarding still executes everything leading up to the ROI, any non-determinism (for example, thread interleaving) in the fast-forwarded region will affect how the ROI executes between fast-forwarded runs.
 
 We'll address these concerns in the next section about checkpointing.
+
+<link href = "../style.css" rel="stylesheet"></link>

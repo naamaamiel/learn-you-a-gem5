@@ -39,3 +39,5 @@ Programmers write Python *configuration scripts* that define the components of t
 ## Who is gem5 for?
 
 ***Anyone, including non-architects, can download and use gem5***. gem5 aims to meet the needs of academic research, industry research, and classroom use. The community would love to have you! Take a look at the [gem5 repository](https://github.com/gem5/gem5) for the code of conduct (we'll also visit the repository in the next section!).
+
+<link href = "../style.css" rel="stylesheet"></link>

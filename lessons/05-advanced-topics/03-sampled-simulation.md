@@ -639,3 +639,5 @@ Targeted and statistical analysis techniques are both useful tools for simulatin
 | :---- | :---- | :---- | :---- |
 | **Targeted sampling** | Storage | Impacted by the clustering algorithm used to determine representative regions; also impacted by the cluster signature. | Almost no cost to changing hardware configuration (can reuse checkpoints), but a large cost to change software (must redo analysis). |
 | **Statistical sampling** | KVM, parallel resources | Impacted by the input statistical parameters. | Equal cost to changing hardware and software configurations (rerun simulation). |
+
+<link href = "../style.css" rel="stylesheet"></link>

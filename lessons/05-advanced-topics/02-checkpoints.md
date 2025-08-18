@@ -210,3 +210,5 @@ Since checkpoints restore from a known state, the ROI will always execute from a
 > For example, you might want to use KVM fast-forwarding if you want to test out a different number of cores, a different workload, or a different memory size. We utilized KVM fast-forwarding to help our checkpointing process in this example!
 >
 > ***Remember: use the right tool for the job!***
+
+<link href = "../style.css" rel="stylesheet"></link>
