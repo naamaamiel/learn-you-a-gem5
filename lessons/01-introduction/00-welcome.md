@@ -22,7 +22,7 @@ We also assume knowledge in the following areas:
 
 - C++ and Python programming
 - Programming tools such as Makefiles, GDB, and the command line
-- Software such as Git/GitHub VSCode
+- Software such as Git/GitHub and VSCode
 
 > Please refer to the [knowledge checklist](supp-knowledge-checklist.md) for a detailed list of assumed knowledge and resources if you need to fill in the gaps.
 
@@ -35,15 +35,51 @@ This bootcamp is divided into units and sections.
 >
 > ### Unit I: Introduction
 >
-> #### Section 0: Welcome!
->
 > #### Section 1: Why simulation?
 >
 > #### Section 2: Enter gem5
 >
 > #### Section 3: Your first configuration script
 >
-> ### Unit IV: Advanced gem5 concepts
+> ### Unit II: Beginning gem5 simulation
+>
+> #### Section 1: Using the gem5 standard library
+>
+> #### Section 2: gem5 resources
+>
+> #### Section 3: Modeling processors in gem5
+> 
+> #### Section 4: Modeling classic caches in gem5
+>
+> #### Section 5: Modeling memory in gem5
+>
+> #### Section 6: **\[Project\]** Putting it all together
+>
+> ### Unit III: Intermediate gem5 features
+>
+> #### Section 1: Traffic generation
+>
+> #### Section 2: Simulation modes
+>
+> #### Section 3: Exit events
+>
+> #### Section 4: Communicating from guest to simulator
+>
+> ### Unit IV: Developing gem5 models
+>
+> #### **Track A: Processors**
+>
+> ##### Section 1: X
+>
+> #### **Track B: Caches**
+>
+> ##### Section 1: Y
+>
+> #### **Track C: Memory**
+>
+> ##### Section 1: Z
+>
+> ### Unit V: Advanced gem5 concepts
 >
 > #### Section 1: KVM fast-forwarding
 >
@@ -63,7 +99,7 @@ This bootcamp is divided into units and sections.
 \
 You are encouraged to complete the units in order, but you can always jump around or skip sections if you're familiar with their subject matter. Use the learning objectives to guide you!
 
-Unit <!-- TODO (Naama) fill in --> X is unique as it's split into 3 tracks: Processors, Caches, and Memory. **You may choose to complete any number of these tracks and still complete the bootcamp**. These tracks are independent and convey similar information about simulating in gem5, but their emphasis and encompassing project differ in focus. You can choose to complete all 3 tracks in a row, complete the entire bootcamp with one track then come back to the other tracks, or do one track and call it good. It depends on your goals and how you'll use gem5!
+Unit IV is unique as it's split into 3 tracks: Processors, Caches, and Memory. **You may choose to complete any number of these tracks and still complete the bootcamp**. These tracks are independent and convey similar information about simulating in gem5, but their emphasis and encompassing project differ in focus. You can choose to complete all 3 tracks in a row, complete the entire bootcamp with one track then come back to the other tracks, or do one track and call it good. It depends on your goals and how you'll use gem5!
 
 <!-- ## Knowledge checkpoints
 

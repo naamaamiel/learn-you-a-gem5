@@ -12,10 +12,11 @@ workspace
     │   └── 04-first-config-script
     │       └── ...
     ├── 02-beginning-simulation
-    ├── 03-a-processors
-    ├── 03-b-caches
-    ├── 03-c-memory
-    ├── 04-advanced-topics
+    ├── 03-intermediate-features
+    ├── 04-a-processors
+    ├── 04-b-caches
+    ├── 04-c-memory
+    ├── 05-advanced-topics
     │   ├── 01-kvm-fast-forwarding
     │   │   └── ...
     │   ├── 02-checkpointing
