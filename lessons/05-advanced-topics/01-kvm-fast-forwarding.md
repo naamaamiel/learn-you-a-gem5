@@ -177,4 +177,4 @@ Since KVM fast-forwarding still executes everything leading up to the ROI, any n
 
 We'll address these concerns in the next section about checkpointing.
 
-<link href = "../style.css" rel="stylesheet"></link>
+<link href="../style.css" rel="stylesheet"></link>

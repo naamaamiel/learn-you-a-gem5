@@ -211,4 +211,4 @@ Since checkpoints restore from a known state, the ROI will always execute from a
 >
 > ***Remember: use the right tool for the job!***
 
-<link href = "../style.css" rel="stylesheet"></link>
+<link href="../style.css" rel="stylesheet"></link>
