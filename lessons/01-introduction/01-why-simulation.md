@@ -113,7 +113,7 @@ Execution-driven simulation is the combination of functional simulation and timi
 
 ### Full-system simulation
 
-Full-system simulation simulates every component of a system in high enough fidelity such that mostly unmodified apps can run entirely in-simulation. This is often "bare metal" simulation, meaning that the simulator interacts directly with hardware instead of with the operating system. The operating system is run entirely in the simulator: it cannot be faked.
+Full-system simulation simulates every component of a system in high enough fidelity such that mostly unmodified apps can run entirely in-simulation. This is often "bare metal" simulation, meaning that it simulates booting the operating system on hardware. The operating system is run entirely in the simulator: it cannot be faked.
 
 Being full-system is a separate property, different from being any of the other simulation types discussed above. Any of the kinds of simulators discussed above can also be full-system simulators, but it's most common for functional simulators and execution-driven simulators to also be full-system.
 

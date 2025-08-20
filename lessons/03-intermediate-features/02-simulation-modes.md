@@ -10,9 +10,9 @@ You might have noticed us using "SE mode" functions like `set_se_binary_workload
 
 ## What's SE mode?
 
-**Syscall emulation (SE)** mode is a simulation mode in gem5 that *emulates* the operating system as opposed to *simulating* it. Only user-level code is simulated, and any system calls made within that code trap into the simulator. SE mode supports most common Linux system calls.
+**Syscall emulation (SE)** mode is a simulation mode in gem5 that *emulates* the operating system as opposed to *simulating* it. Only user-level code is simulated, and any system calls made within that code trap into the host. SE mode supports most common Linux system calls.
 
-![A diagram of SE mode. A large rectangle represents the host system, and a smaller rectangle within it represents the simulation. Within the simulation, the simulated hardware and the simulated application interact with one another. The simulated application also interacts with the emulated OS, which is outside the simulation in the host system.](img/se_mode.png)
+![A diagram of SE mode. A large rectangle represents the host system, and a smaller rectangle within it represents the simulation. Within the simulation, the simulated hardware and the simulated application interact with one another. The simulated application also interacts with the host OS, which is outside the simulation in the host system.](img/se_mode.png)
 
 ### The good news
 
@@ -31,6 +31,8 @@ Since SE does not simulate the OS, you shouldn't use it if you care about *any* 
 Let's take a look at how SE mode handles user-level code with system calls. Open `SE_hello_world.py` to get started! This file sets up a simple system with a `PrivateL1CacheHierarchy`, a `SingleChannelDDR4_2400`, and a `TIMING` `SimpleProcessor`. 
 
 We then use `set_se_binary_workload` (a function you've seen use use before!) to set a **binary workload** in **SE mode** for the board. This is how we tell the simulator to use SE mode.
+
+> The `Simulator` object in gem5 has an optional parameter called `full_system`, which can be used to specify the simulation mode. However, this is usually inferred from the board, as you can see here.
 
 That workload is a local binary resource, the source code of which is at `SE_hello_world.c`. This is a very simple workload:
 
