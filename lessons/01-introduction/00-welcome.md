@@ -61,9 +61,7 @@ This bootcamp is divided into units and sections.
 >
 > #### Section 2: Simulation modes
 >
-> #### Section 3: Exit events
->
-> #### Section 4: Communicating from guest to simulator
+> #### Section 3: Communicating from guest to simulator
 >
 > ### Unit IV: Developing gem5 models
 >

@@ -15,7 +15,7 @@ Like we mentioned in the [Enter gem5 section](../01-sim-background/02-enter-gem5
 
 ## `Hello, world!`
 
-Ok, enough waiting. Let's simulate! Visit the `workspace` directory and locate the file named `hello_world.py`. We'll be running this script then talking about it Navigate to the parent directory of the gem5 directory and run:
+Ok, enough waiting. Let's simulate! Visit the `workspace` directory and locate the file named `hello_world.py`. We'll be running this script then talking about it! Navigate to the parent directory of the gem5 directory and run:
 
 ```bash
 ./gem5/build/ALL/gem5.opt workspace/01-introduction/04-first-config-script/hello_world.py
