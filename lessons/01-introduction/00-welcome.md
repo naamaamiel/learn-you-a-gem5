@@ -43,17 +43,15 @@ This bootcamp is divided into units and sections.
 >
 > ### Unit II: Beginning gem5 simulation
 >
-> #### Section 1: Using the gem5 standard library
+> #### Section 1: Standard library and resources preview
 >
-> #### Section 2: gem5 resources
->
-> #### Section 3: Modeling processors in gem5
+> #### Section 2: Modeling processors in gem5
 > 
-> #### Section 4: Modeling classic caches in gem5
+> #### Section 3: Modeling classic caches in gem5
 >
-> #### Section 5: Modeling memory in gem5
+> #### Section 4: Modeling memory in gem5
 >
-> #### Section 6: **\[Project\]** Putting it all together
+> #### Section 5: **\[Project\]** Putting it all together
 >
 > ### Unit III: Intermediate gem5 features
 >

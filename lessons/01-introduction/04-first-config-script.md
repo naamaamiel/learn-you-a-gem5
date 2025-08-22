@@ -80,9 +80,9 @@ The parameter we gave to the `run()` function is the number of *simulation ticks
 
 All together, our "hello world" file takes a pre-built board, tells it to boot Ubuntu, then simulates that booting process happening on that board for 20 simulated milliseconds before exiting. It looks something like this:
 
-![A diagram of the gem5 hello world example. The simulator is a box with two slots: one for params and one for a board. The board is a separate box with four slots: one for a CPU, one for a cache hierarchy, one for memory, and one for a workload. The board box is connected to the board slot in the simulator box.](img/gem5-hello-world.png)
+![A diagram of the gem5 hello world example. The simulator is a box with two slots: one for params and one for a board. The board is a separate box with four slots: one for a CPU, one for a cache hierarchy, one for memory, and one for a workload. The board box is connected to the board slot in the simulator box.](img/hello_world.png)
 
-In this case, we left the "params" box empty, meaning we just used the default values.
+In this case, we left the "params" box in the simulator empty, meaning we just used the default values.
 
 At the core, every gem5 simulation boils down to this: a simulation that simulates a board. The complexity comes in when we start doing away with prebuilt components and reconfigure or even build our own components. You'll be doing that in no time!
 
