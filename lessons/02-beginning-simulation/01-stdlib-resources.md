@@ -12,7 +12,7 @@ gem5 provides a lot of pre-made components for you to use! We'll be using standa
 
 gem5 is a complicated simulator! When configuring a simulation, every component of the system must be specified in *great detail*: every object, every port, every part. As you might imagine, this leads to even the most simple simulations requiring hundreds of lines of code.
 
-*Wait*, you might ask yourself, *didn't we just run a configuration script that was about 10 lines?* **That's the magic of the standard library!** The standard library provides a large set of predefined components that do a majority of the work for you. You can then use these components to build your desired simulation! The standard library greatly reduces the amount of duplicated code, lowers the chance of errors in scripts, and increases portability between configurations.
+*Wait*, you might ask yourself, *didn't we just run a configuration script that was about 10 lines?* **That's the magic of the standard library!** The standard library provides a large set of predefined components that do the majority of the work for you. You can then use these components to build your desired simulation! The standard library greatly reduces the amount of duplicated code, lowers the chance of errors in scripts, and increases portability between configurations.
 
 The standard library aims to cover the **common needs** of gem5 users. Should you find that your needs are not completely met by existing components, APIs are provided that make it easy to extend the library for your own use. We'll talk about how to do that in future sections.
 
@@ -27,7 +27,7 @@ These components largely fall into one of four categories:
 - **Boards**, which serve as the backbone of the system. You plug other components into a board. The board also contains system-level things like devices, the workload (the code the simulation will run), and more. It's the board's job to negotiate the connections between the other components.
 - **Processors**, which connect to boards and contain one or more *cores*.
   - Many different core types are also provided in the standard library.
-- **Cache hierarchies**, which are sets of caches that can be connected to a processor and a memory system. A cache plugs into the board, and the board handles connecting it to the processor and memory system.
+- **Cache hierarchies**, which are sets of caches that can be connected to a processor and a memory system. A cache hierarchy plugs into the board, and the board handles connecting it to the processor and memory system.
 - **Memory systems**, which are sets of memory controllers and memory devices that can be connected to a cache hierarchy. A memory system plugs into the board, and the board handles connecting it to the cache hierarchy.
 
 For the most part, you can mix and match these components to create your desired system! Take a board; plug in a processor, a cache hierarchy, and a memory system; and simulate.
@@ -159,7 +159,7 @@ board.set_workload(
 )
 ```
 
-The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a public repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of resources and input parameters, also for running on simulated hardware).
+The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of resources and input parameters, also for running on simulated hardware).
 
 We use `obtain_resource()` to download a resource from gem5 resources by its name. Here is the [gem5 resources page for the resource we're currently using](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=4.0.0)! This resource, `x86-ubuntu-24.04-boot-no-systemd`, is a workload: it's a bundle of the kernel code, the disk image, and the parameters needed to boot Ubuntu.
 
@@ -185,9 +185,11 @@ gem5/src/python/gem5/prebuilt
 
 At the top level, they're separated into two categories:
 
+- **Components**: individual components to build systems, like `X86Board`, `SimpleProcessor`, `PrivateL1SharedL2CacheHierarchy`, and `SingleChannelDDR4_2400`.
 - **Prebuilt**: full systems with set parameters, like `X86DemoBoard`.
   - We won't be using prebuilt components much, but you might find them useful!
-- **Components**: individual components to build systems, like `X86Board`, `SimpleProcessor`, `PrivateL1SharedL2CacheHierarchy`, and `SingleChannelDDR4_2400`.
+
+Let's look into all of the component categories now.
 
 ### Boards
 
@@ -200,7 +202,7 @@ gem5/src/python/gem5/components
     ----/x86_board
 ```
 
-There are two main types of boards in the standard library: the simple board, which is ISA-configurable and can only run in SE (syscall emulation) mode (more on SE mode in the simulation modes section), and full boards, which can run in either simulation mode and are separated by ISA.
+There are two main types of boards in the standard library: the simple board, which is ISA-configurable and can only run in SE mode (one of the two simulations modes available in gem5; we'll discuss simulation modes in a future section), and full boards, which can run in either simulation mode and are separated by ISA.
 
 ### Processors
 
@@ -212,7 +214,7 @@ gem5/src/python/gem5/components
     ----/switchable
 ```
 
-There are two main processor types: simple processors, which have only default parameters and one ISA, and switchable processors, which allow for switching between processor types mid-simulation. There are also generators, which simulate synthetic traffic (as opposed to making memory accesses based on a workload).
+There are two main processor types: simple processors, which have only default parameters and one ISA, and switchable processors, which allow for switching between processor types mid-simulation. There are also generators, which generate synthetic memory traffic using predefined patterns (as opposed to normal processors, which make memory requests when the executing instructions require them).
 
 ### Cache hierarchies
 

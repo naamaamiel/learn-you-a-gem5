@@ -61,6 +61,8 @@ This bootcamp is divided into units and sections.
 >
 > #### Section 3: Communicating from guest to simulator
 >
+> #### Section 4: Revisiting gem5 resources
+>
 > ### Unit IV: Developing gem5 models
 >
 > #### **Track A: Processors**
