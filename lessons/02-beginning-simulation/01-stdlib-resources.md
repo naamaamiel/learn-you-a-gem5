@@ -16,6 +16,18 @@ gem5 is a complicated simulator! When configuring a simulation, every component 
 
 The standard library aims to cover the **common needs** of gem5 users. Should you find that your needs are not completely met by existing components, APIs are provided that make it easy to extend the library for your own use. We'll talk about how to do that in future sections.
 
+## Models vs. components
+
+You may remember that we said the following in our introduction to gem5:
+
+> *The backend of gem5, including all of its simulation models (hundreds of them), is written in C++, while Python provides the front-end interface.*
+
+The standard library is part of this front-end interface! Standard library **components** (written in Python) wrap around gem5 **models** (written in C++) to provide a standard, easy-to-use interface. The standard library components instantiate and configure the parameters of models under the hood.
+
+![An illustration of the relationship between components and models. A rectangle representing DRAM has internal parameters such as tRAS and tRCD. This rectangle is labeled "C++ model". A different rectangle representing a memory system has two DDR4s with filled-in internal parameters. This rectangle is labeled "Python stdlib component". Each of the DDR4s within the memory system is a DRAM C++ model.](img/models_vs_components.png)
+
+This section focuses on how we can use these standard library components; future sections will discuss how we can use gem5's models directly.
+
 ## Modularity
 
 You can think of the gem5 standard library as a **set of components that can be plugged together**.

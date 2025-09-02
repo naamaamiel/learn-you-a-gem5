@@ -14,7 +14,9 @@ This boots linux (just the kernel) and exits. However, we will only run it for
 20 ms to save time.
 """
 
-# A full-system x86 board
+# define the processor, cache, and memory here
+
+# A full-system x86 board (replace this with X86Board!)
 board = X86DemoBoard()
 
 # Set the workload to boot linux (Ubuntu 24.04)
