@@ -61,7 +61,7 @@ A `SwitchableProcessor` is a component that allows for a processor to switch bet
 
 ![A diagram of a SwitchableProcessor and a SimpleSwitchableProcessor. The SwitchableProcessor has a dictionary of SimpleCores labeled "A", "B", ... "Z". The SimpleCore labeled "B" is highlighted and labeled with a code segment that says "switch_to_processor("B")". The SimpleSwitchableProcessor has two CPUTypes.TYPEs labeled "starting_core_type" and "switch_core_type". The switch_core_type is highlighted and labeled with a code segment that says "switch()".](img/gem5-switchable-proc.png)
 
-For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core for fast-forwarding and a `TIMING` core for the ROI. Thankfully, there already exists a component that does this for us! The `SimpleSwitchableProcessor` class only takes two cores types: a starting and switch core type, then allows you to switch between them using the `switch()` function. 
+For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core for fast-forwarding and a `TIMING` core for the ROI. Thankfully, there already exists a component that does this for us! The `SimpleSwitchableProcessor` class only takes two cores types: a starting and switch core type, then allows you to switch between them using the `switch()` function.
 
 > **Your turn:** Fill in `TODO (2)` in `kvm_time.py` to initialize `processor` as a `SimpleSwitchableProcessor` with a starting core type of `CPUTypes.KVM`, a switch core type of `CPUTypes.TIMING`, the ISA that matches your host machine's ISA, and 2 cores.
 >
