@@ -2,7 +2,6 @@ from gem5.components.isas import ISA
 from gem5.components.boards.x86_board import X86Board
 from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import PrivateL1SharedL2CacheHierarchy
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
-from gem5.components.processors.cpu_types import CPUTypes
 
 from my_processors import BigProcessor, LittleProcessor
 
