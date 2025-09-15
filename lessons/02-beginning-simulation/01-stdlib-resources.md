@@ -2,8 +2,8 @@
 
 gem5 provides a lot of pre-made components for you to use! We'll be using standard library components and resources a lot in the coming sections, so this section is all about getting you acquainted. There is a lot we won't discuss in detail; don't worry! We'll come back to what we didn't cover as we dive deeper into gem5.
 
-> By the end of this section, you will be able to:  
->  
+> By the end of this section, you will be able to:
+>
 > - **Construct** a board for simulation by “plugging in” standard library components and setting a workload.
 > - **Set** parameters of standard library components to achieve desired behavior.
 > - **Use** the `obtain_resource` function to acquire pre-existing gem5 workloads.
@@ -48,7 +48,7 @@ For the most part, you can mix and match these components to create your desired
 
 Let's complicate our `hello_world.py` example a bit by doing away with the `X86DemoBoard`.
 
-> `X86DemoBoard` is is a *prebuilt component* from the standard library. It works the same way as all other standard library boards; it just comes with a processor, cache hierarchy, and memory system pre-plugged in. 
+> `X86DemoBoard` is is a *prebuilt component* from the standard library. It works the same way as all other standard library boards; it just comes with a processor, cache hierarchy, and memory system pre-plugged in.
 
 Open `stdlib_hello_world.py` (which is currently just a copy of `hello_world.py`) to get started.
 
@@ -64,8 +64,8 @@ Then, replace the `board` initialization with:
 board = X86Board(
   clk_freq="3GHz",
   processor =
-  cache_hierarchy = 
-  memory = 
+  cache_hierarchy =
+  memory =
 )
 ```
 
@@ -93,8 +93,8 @@ The parameters for `SimpleProcessor` define important qualities of the processor
 board = X86Board(
   clk_freq="3GHz",
   processor = processor,
-  cache_hierarchy = 
-  memory = 
+  cache_hierarchy =
+  memory =
 )
 ```
 
@@ -124,7 +124,7 @@ board = X86Board(
   clk_freq="3GHz",
   processor = processor,
   cache_hierarchy = cache,
-  memory = 
+  memory =
 )
 ```
 
@@ -171,7 +171,7 @@ board.set_workload(
 )
 ```
 
-The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of resources and input parameters, also for running on simulated hardware).
+The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of other resources or collections of workloads to be run together).
 
 We use `obtain_resource()` to download a resource from gem5 resources by its name. Here is the [gem5 resources page for the resource we're currently using](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=4.0.0)! This resource, `x86-ubuntu-24.04-boot-no-systemd`, is a workload: it's a bundle of the kernel code, the disk image, and the parameters needed to boot Ubuntu.
 
@@ -226,7 +226,7 @@ gem5/src/python/gem5/components
     ----/switchable
 ```
 
-There are two main processor types: simple processors, which have only default parameters and one ISA, and switchable processors, which allow for switching between processor types mid-simulation. There are also generators, which generate synthetic memory traffic using predefined patterns (as opposed to normal processors, which make memory requests when the executing instructions require them).
+There are two main processor types: simple processors, which can represent any single processor (most processors are simple processors in gem5); and switchable processors, which allow for switching between processor types mid-simulation. There are also generators, which generate synthetic memory traffic using predefined patterns (as opposed to normal processors, which make memory requests when the executing instructions require them).
 
 ### Cache hierarchies
 
@@ -238,7 +238,7 @@ gem5/src/python/gem5/components
     ----/ruby
 ```
 
-There are two cache systems in gem5: classic and Ruby. We'll explain more about the differences between cache types in the caches section. For now, know that Ruby is more flexible, but classic caches are simpler. CHI (pronounced "chai", [ARM description of CHI](https://developer.arm.com/documentation/102407/0102/Introduction-to-CHI)) caches are implemented in Ruby!
+There are two cache systems in gem5: classic and Ruby. We'll explain more about the differences between cache types in the caches section. For now, know that Ruby is more flexible, but classic caches are simpler. CHI (pronounced "chai", [ARM description of CHI](https://developer.arm.com/documentation/102407/0102/Introduction-to-CHI)) caches are an example of Ruby caches!
 
 ### Memory systems
 
@@ -252,6 +252,6 @@ gem5/src/python/gem5/components
     ----/hbm
 ```
 
-The standard library includes pre-configured single and multi-channel DDR3/4/5 DIMMs (dual in-line memory modules). It also has integration with DRAMSim and DramSys (both DRAM simulators); you don't have to use these integrations for accurancy, but they might be useful. There are also high-bandwidth memory (HBM) options.
+The standard library includes pre-configured single and multi-channel DDR3/4/5 DIMMs (dual in-line memory modules). It also has integration with DRAMSim and DramSys (both DRAM simulators); you don't have to use these integrations, but they might be useful and more accurate depending on your needs. There are also high-bandwidth memory (HBM) options.
 
 <link href="../style.css" rel="stylesheet"></link>
