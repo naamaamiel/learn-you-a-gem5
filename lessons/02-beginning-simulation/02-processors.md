@@ -2,8 +2,8 @@
 
 Let's start digging into the first of the three main categories of gem5 components: processors.
 
-> By the end of this section, you will be able to:  
->  
+> By the end of this section, you will be able to:
+>
 > - **Compare** the features and advantages of simple, KVM, O3, and minor CPUs.
 > - **Modify** a processor by changing the CPU type.
 > - **Change** a CPU’s parameters by extending an existing CPU model in Python.
@@ -14,10 +14,10 @@ Let's start digging into the first of the three main categories of gem5 componen
 
 ### Processors
 
-In the previous section on the standard library, we mentioned that three types of processors exist: `SimpleProcessor`, `SwitchableProcessor`, and traffic generators.
+In the previous section on the standard library, we mentioned that two types of processors exist: `SimpleProcessor`, `SwitchableProcessor`, as well as traffic generators, which pretend to be processors.
 
 - A `SimpleProcessor` is the general-purpose processor in the standard library, which lets you define its ISA, number of cores, and type (more on this in a minute!)
-- A `SwitchableProcessor` is similar to a `SimpleProcessor`, but it allows switching between multiple types of cores instead of using just a single type like `SimpleProcessor`.
+- A `SwitchableProcessor` is similar to a `SimpleProcessor`, but it allows switching between multiple types of processors during a simulation instead of using just one `SimpleProcessor`.
   - We'll use a switchable processor during our advanced section on KVM fast-forwarding!
 - Traffic generators are not really processors; they take the spot of a processor on a board, but they don't execute instructions. Instead, they use traffic patterns (linear, random, etc.) to synthetically generate memory accesses. They're ideal for testing cache hierarchies/memory systems.
   - We'll use traffic generators in our intermediate section on traffic generation!
@@ -36,7 +36,7 @@ Within every processor, there are one or more *cores*. The gem5 standard library
 >
 > <details>
 > <summary> <b>src/python/gem5/components/processors</b> </summary>
-> 
+>
 > ![A tree-like class diagram of cores and processors in the gem5 standard library. The subsystem class is at the very top. AbstractCore and AbstractGenerator inherit from SubSystem. AbstractGeneratorCore and BaseCPUCore inherit from AbstractCore. ComplexGeneratorCore, LinearGeneratorCore, GUPSGeneratorCore, RandomGeneratorCore, StridedGeneratorCore, and TrafficGeneratorCore inherit from AbstractGeneratorCore. SimpleCore inherits from BaseCPUCore. AbstractGenerator, BaseCPUProcessor, and SwitchableProcessor inherit from AbstractProcessor. ComplexGenerator, LinearGenerator, GUPSGenerator, GUPSGeneratorEP, GUPSGeneratorPAR, RandomGenerator, StridedGenerator, and TrafficGenerator inherit from AbstractGenerator. SimpleProcessor inherits from BaseCPUProcessor. SimpleSwitchableProcessor inherits from SwitchableProcessor.](img/stdlib_processors_cores.png)
 > </details>
 
@@ -81,7 +81,7 @@ gem5 has five major CPU models:
 
 Let's discuss these CPU types in more detail.
 
-### Simple CPUs
+### Atomic and Timing Simple CPUs
 
 A `SimpleCPU` (not to be confused with `SimpleProcessor`, the standard library component) is quite fast to simulate and has limited branch prediction capabilities.
 
@@ -105,7 +105,7 @@ A `SimpleCPU` is a good choice for when you aren't paying too much attention to 
 
 KVM stands for "**K**ernel-based **V**irtual **M**achine". This CPU model allows for *native execution* on x86 and ARM hosts; basically, using your machine's actual CPU to execute instructions instead of a simulated CPU model. As you might imagine, this is *really fast* compared to simulating a CPU. However, it means that the ISA of your host machine has to match the ISA of the simulation. Otherwise, your CPU would have no idea what to do!
 
-We use KVM for fast-forwarding and functional tests, and it's great for this purpose. You wouldn't want to use KVM if you're trying to collect any meaningful statistics about performance, though.
+We use KVM for fast-forwarding and functional tests, and it's great for this purpose. Though you wouldn't want to use KVM if you're trying to collect any meaningful statistics about performance.
 
 ### Minor CPU
 
@@ -211,13 +211,13 @@ gem5 --outdir=atomic-normal-cache atomic_vs_timing.py
 
 > The `--outdir` flag changes the name of the output directory from the default output directory name (`m5out`) to a name of your choosing.
 
-Now, let's shrink the cache and try again: 
+Now, let's shrink the cache and try again:
 
 > **Your turn:** Change the size of the i-cache and d-cache to 1 KiB and rerun the simulation. Save the results in a directory called `atomic-small-cache`.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
-> 
+>
 > ```python
 > cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="1KiB", l1i_size="1KiB")
 > ```
@@ -233,10 +233,10 @@ Now, let's shrink the cache and try again:
 Let's keep the cache how it is but change the CPU type from `ATOMIC` to `TIMING`.
 
 > **Your turn:** Change the CPU type to `TIMING` and rerun the simulation. Save the results in a directory named `timing-small-cache`.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
-> 
+>
 > ```python
 > cpu_type = CPUTypes.TIMING
 > ```
@@ -252,10 +252,10 @@ Let's keep the cache how it is but change the CPU type from `ATOMIC` to `TIMING`
 Lastly, let's put the cache back at 32 KiB.
 
 > **Your turn:** Change the size of the i-cache and d-cache back to 32 KiB and rerun the simulation. Save the results in a directory called `timing-normal-cache`.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
-> 
+>
 > ```python
 > cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
 > ```
@@ -342,10 +342,10 @@ We also want another core type with little parameters to compare `BigO3` to. We 
 - The number of physical int and float registers set to 40.
 
 > **Your turn:** Write the `LittleO3` class to set the parameters above to our desired values.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
-> 
+>
 > ```python
 > class LittleO3(X86O3CPU):
 >     def __init__(self):
@@ -381,7 +381,7 @@ In the same `my_processors.py` file, we can now add two new classes, `BigCore` a
 
 1) Extend `BaseCPUCore`,
 2) Create a core of our custom type,
-3) Call our parent's `__init__` with the core and the appropriate ISA. 
+3) Call our parent's `__init__` with the core and the appropriate ISA.
 
 ```python
 class BigCore(BaseCPUCore):
@@ -391,7 +391,7 @@ class BigCore(BaseCPUCore):
 ```
 
 > **Your turn:** Write the `LittleCore` class to wrap `LittleO3` in a standard library core.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
@@ -412,7 +412,7 @@ Sweet! Now we have some standard library cores. Next, a processor.
 
 ### Building the processor
 
-To use our shiny new standard library cores, we need to put them inside of a standard library processor (which can plug into a board!). 
+To use our shiny new standard library cores, we need to put them inside of a standard library processor (which can plug into a board!).
 
 The best class to inherit from to create our standard library processor is `BaseCPUProcessor`, which is the parallel to `BaseCPUCore` in processor land. This is the parent class to `SimpleProcessor`. Once again, it's very straightforward to extend `BaseCPUProcessor`.
 
@@ -432,7 +432,7 @@ class BigProcessor(BaseCPUProcessor):
 ```
 
 > **Your turn:** Write the `LittleProcessor` class to pass a single `LittleCore` into a standard library processor.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
@@ -486,7 +486,7 @@ That's it! We can now run this script:
 > ***UNDER CONSTRUCTION!*** <!--TODO (Naama): Output & verification-->
 
 > **Your turn:** Switch out `LittleProcessor` for `BigProcessor` and run the simulation again!
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
