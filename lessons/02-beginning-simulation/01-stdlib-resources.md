@@ -171,7 +171,7 @@ board.set_workload(
 )
 ```
 
-The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of other resources or collections of workloads to be run together).
+The `obtain_resource()` function interacts with [gem5 resources](https://resources.gem5.org/), a repository of prebuilt artifacts that are helpful for gem5 simulations. There are many different kinds of gem5 resources, but the most common resource type we'll use in the bootcamp are binaries (programs we can run on our simulated hardware) and workloads (bundles of a binary and input parameters that are run together).
 
 We use `obtain_resource()` to download a resource from gem5 resources by its name. Here is the [gem5 resources page for the resource we're currently using](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=4.0.0)! This resource, `x86-ubuntu-24.04-boot-no-systemd`, is a workload: it's a bundle of the kernel code, the disk image, and the parameters needed to boot Ubuntu.
 
