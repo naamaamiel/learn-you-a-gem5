@@ -2,7 +2,7 @@
 
 How can we let the simulator know that something interesting is going on in-simulation?
 
-> By the end of this section, you will be able to:  
+> By the end of this section, you will be able to:
 >
 > - **Explain** what an exit event is in gem5.
 > - **Change** exit event behavior by writing a custom event handler and adding it to a Simulation object.
@@ -243,6 +243,7 @@ We have three versions of m5ops:
 > We will be focusing on instruction- and address-mode m5ops in this section. If you need to set up semihosting m5ops, please refer to gem5 documentation.
 
 <!--TODO (Naama): are there actually no good sources for semihosting m5ops? Ask someone PLEASE.-->
+<!--FIXME (Ayrton): there are no good sources for semihosting m5ops... all that is left is the source code. We are trying to do some android stuff, but it doesn't look too promising for the moment. -->
 
 ## Building the m5ops library
 
@@ -256,6 +257,8 @@ Next, we need to use `scons` to build. Depending on your host ISA and the ISA yo
 
 > **Cross-compilation** is the process of compiling to an ISA that is different from your host machine.
 > ![A native compiler (ex: gcc) compiles a program on an x86 machine into an x86 executable. A cross-compiler (ex: arm-linux-gcc) compiles a program on an x86 machine into an ARM executable.](img/cross_compilation.png)
+
+<!--TODO (Ayrton): I wrote a really good piece on how to set up the cross compiler (specifically with clang). I should paste that here and maintain it. -->
 
 Let's build the m5ops library in both x86 and ARM to get a sense for what it's like to compile natively and cross-compile. Assuming we're on an x86 host, building the m5ops library for x86 looks like this:
 
@@ -274,6 +277,7 @@ No matter what, both processes only require one command!
 > Note that although we're using `scons` to build this, this is **NOT** the same build environment we use to build gem5! There are different targets and options available.
 >
 > Don't expect things to be identical! For example, we specify `arm64` to indicate building m5ops for ARM, but use `ARM` to specify building ARM for gem5.
+<!--TODO (Ayrton): We should fix this. It really should look the same with the same build conventions... I should open a PR -->
 
 After running these commands, you should be able to see **!!!TBD!!!**
 
@@ -433,7 +437,7 @@ Our final command looks like this:
 $(GXX) -o address_annotated_workload address_annotated_workload.cpp -no-pie \
   -I$(GEM5_PATH)/include \
   -L$(GEM5_PATH)/util/m5/build/$(ISA)/out \
-  -I$(GEM5_PATH)/util/m5/src 
+  -I$(GEM5_PATH)/util/m5/src
   -lm5
 ```
 
