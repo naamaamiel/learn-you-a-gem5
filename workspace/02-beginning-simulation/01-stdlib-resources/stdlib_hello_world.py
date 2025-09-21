@@ -1,5 +1,5 @@
 # get the prebuilt board 
-from gem5.components.boards.x86_board import X86DemoBoard
+from gem5.components.boards.x86_board import X86DemoiBoard
 
 # for downloading the workload
 from gem5.resources.resource import obtain_resource
@@ -16,8 +16,8 @@ This boots linux (just the kernel) and exits. However, we will only run it for
 
 # define the processor, cache, and memory here
 
-# A full-system x86 board (replace this with X86Board!)
-board = X86DemoBoard()
+# A full-system x86 board (replace this with X86iBoard!)
+board = X86DemoiBoard()
 
 # Set the workload to boot linux (Ubuntu 24.04)
 # We will do "no systemd" to save some time

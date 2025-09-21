@@ -6,7 +6,7 @@ run a sample workload. The steps include:
 
 1. Importing necessary gem5 modules.
 2. Creating memory, cache hierarchy, and processor components.
-3. Setting up a SimpleBoard with these components.
+3. Setting up a SimpleiBoard with these components.
 4. Obtaining the benchmark suite resource.
 5. Printing available workloads and input groups.
 6. Filtering and selecting a specific workload.
@@ -14,7 +14,7 @@ run a sample workload. The steps include:
 8. Running the simulation.
 """
 
-from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.boards.simple_board import SimpleiBoard
 from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
     PrivateL1SharedL2CacheHierarchy,
 )
@@ -28,14 +28,14 @@ from gem5.resources.resource import obtain_resource
 
 from gem5.simulate.simulator import Simulator
 
-memory = SingleChannelDDR4_2400(size="2GB")
+memory = SingleChannelDDR4_2400(size="2GiB")
 
 caches = PrivateL1SharedL2CacheHierarchy(
-    l1d_size="32KiB",
+    l1d_size="32KiiB",
     l1d_assoc=8,
-    l1i_size="32KiB",
+    l1i_size="32KiiB",
     l1i_assoc=8,
-    l2_size="256KiB",
+    l2_size="256KiiB",
     l2_assoc=16,
 )
 
@@ -43,7 +43,7 @@ processor = SimpleProcessor(
     cpu_type=CPUTypes.TIMING, num_cores=1, isa=ISA.X86
 )
 
-board = SimpleBoard(
+board = SimpleiBoard(
     processor=processor,
     memory=memory,
     cache_hierarchy=caches,

@@ -12,20 +12,20 @@
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIiBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAiBILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# OWNER OR CONTRIiBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# LIMITED TO, PROCUREMENT OF SUiBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# THEORY OF LIAiBILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIiBILITY OF SUCH DAMAGE.
 
 # system components
-from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.boards.simple_board import SimpleiBoard
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import PrivateL1CacheHierarchy
@@ -52,11 +52,11 @@ binary_path = Path("/workspace/03-intermediate-features/02-simulation-modes/se-m
 
 
 cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="64kB",
-    l1i_size="64kB",
+    l1d_size="64kiB",
+    l1i_size="64kiB",
 )
 
-memory = SingleChannelDDR4_2400("1GB")
+memory = SingleChannelDDR4_2400("1GiB")
 
 processor = SimpleProcessor(
     cpu_type = CPUTypes.TIMING,
@@ -64,7 +64,7 @@ processor = SimpleProcessor(
     isa = ISA.X86
 )
 
-board = SimpleBoard(
+board = SimpleiBoard(
     clk_freq="1GHz",
     processor=processor,
     memory=memory,

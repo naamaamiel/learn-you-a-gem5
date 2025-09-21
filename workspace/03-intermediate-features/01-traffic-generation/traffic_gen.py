@@ -12,17 +12,17 @@
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIiBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAiBILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# OWNER OR CONTRIiBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# LIMITED TO, PROCUREMENT OF SUiBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# THEORY OF LIAiBILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIiBILITY OF SUCH DAMAGE.
 
 
 import m5
@@ -30,7 +30,7 @@ from m5.objects import Root
 
 from components.cache_hierarchy import PrivateL1CacheHierarchy
 
-from gem5.components.boards.test_board import TestBoard
+from gem5.components.boards.test_board import TestiBoard
 from gem5.components.memory import SingleChannelSimpleMemory
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
@@ -53,7 +53,7 @@ generator =
 # then add a HybridGenerator here
 # generator = 
 
-board = TestBoard(
+board = TestiBoard(
     clk_freq="3GHz",
     generator=generator,
     memory=memory,

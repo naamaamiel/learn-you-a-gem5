@@ -1,7 +1,7 @@
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
     PrivateL1CacheHierarchy
 )
-from gem5.components.boards.x86_board import X86Board
+from gem5.components.boards.x86_board import X86iBoard
 from gem5.components.memory import DualChannelDDR4_2400
 from gem5.components.processors.cpu_types import CPUTypes
 from gem5.components.processors.simple_switchable_processor import (
@@ -23,11 +23,11 @@ requires(
 
 
 cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="32kB",
-    l1i_size="32kB"
+    l1d_size="32kiB",
+    l1i_size="32kiB"
 )
 
-memory = DualChannelDDR4_2400(size="3GB")
+memory = DualChannelDDR4_2400(size="3GiB")
 
 # Here we set up the processor. The SimpleSwitchableProcessor allows for
 # switching between different CPU types during simulation, such as KVM to Timing
@@ -39,7 +39,7 @@ processor = # TODO (2): Fill in a SimpleSwitchableProcessor here!
 for proc in processor.start:
     proc.core.usePerf = False
 
-board = X86Board(
+board = X86iBoard(
     clk_freq="3GHz",
     processor=processor,
     memory=memory,

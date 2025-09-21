@@ -1,4 +1,4 @@
-from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.boards.simple_board import SimpleiBoard
 from gem5.components.cachehierarchies.classic.no_cache import NoCache
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.cpu_types import CPUTypes
@@ -16,14 +16,14 @@ requires(isa_required=ISA.X86)
 cache_hierarchy = NoCache()
 
 # We use a single channel DDR3_1600 memory system
-memory = SingleChannelDDR3_1600(size="32MB")
+memory = SingleChannelDDR3_1600(size="32MiB")
 
 # We use a simple Timing processor with one core.
 processor = SimpleProcessor(cpu_type=CPUTypes.ATOMIC, isa=ISA.X86, num_cores=1)
 
 # The gem5 library simble board which can be used to run simple SE-mode
 # simulations.
-board = SimpleBoard(
+board = SimpleiBoard(
     clk_freq="3GHz",
     processor=processor,
     memory=memory,

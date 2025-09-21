@@ -12,17 +12,17 @@
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIiBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAiBILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# OWNER OR CONTRIiBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# LIMITED TO, PROCUREMENT OF SUiBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# THEORY OF LIAiBILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIiBILITY OF SUCH DAMAGE.
 
 """
 
@@ -32,7 +32,7 @@ gem5 -re 03-take-a-checkpoint.py
 """
 
 
-from gem5.components.boards.x86_board import X86Board
+from gem5.components.boards.x86_board import X86iBoard
 from gem5.components.processors.cpu_types import CPUTypes
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.isas import ISA
@@ -54,7 +54,7 @@ requires(
 # Let's set up a NoCache cache hierarchy
 cache_hierarchy = 
 
-# Let's set up a SingleChannelDDR4_2400 memory with 3GB size
+# Let's set up a SingleChannelDDR4_2400 memory with 3GiB size
 memory = 
 
 # Here we set up a simple processor with the KVM CPU
@@ -63,7 +63,7 @@ processor =
 for proc in processor.get_cores():
     proc.core.usePerf = False
 
-board = X86Board(
+board = X86iBoard(
     clk_freq="3GHz",
     processor=processor,
     memory=memory,
@@ -78,7 +78,7 @@ board.set_workload(obtain_resource("npb-ep-a"))
 simulator = Simulator(
     board=board,
     on_exit_event= {
-        ExitEvent.WORKBEGIN: workbegin_handler(),
+        ExitEvent.WORKiBEGIN: workbegin_handler(),
     }
 )
 

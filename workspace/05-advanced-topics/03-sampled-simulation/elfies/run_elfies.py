@@ -13,22 +13,22 @@
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIiBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAiBILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# OWNER OR CONTRIiBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# LIMITED TO, PROCUREMENT OF SUiBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# THEORY OF LIAiBILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIiBILITY OF SUCH DAMAGE.
 
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.components.memory.multi_channel import DualChannelDDR4_2400
 from gem5.components.processors.cpu_types import CPUTypes
-from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.boards.simple_board import SimpleiBoard
 from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy \
                                         import PrivateL1SharedL2CacheHierarchy
 from gem5.simulate.simulator import ExitEvent
@@ -48,22 +48,22 @@ Usage:
 '''
 
 cache_hierarchy = PrivateL1SharedL2CacheHierarchy(
-    l1i_size="32KiB",
+    l1i_size="32KiiB",
     l1i_assoc=8,
-    l1d_size="32KiB",
+    l1d_size="32KiiB",
     l1d_assoc=8,
-    l2_size="2MiB",
+    l2_size="2MiiB",
     l2_assoc=16
 )
 
-memory = DualChannelDDR4_2400("3GB")
+memory = DualChannelDDR4_2400("3GiB")
 
 processor = SimpleProcessor(
     # This processor uses a simple timing CPU with 8 cores
     cpu_type=CPUTypes.TIMING, isa=ISA.X86,num_cores=8
 )
 
-board = SimpleBoard(
+board = SimpleiBoard(
     processor = processor,
     cache_hierarchy = cache_hierarchy,
     memory = memory,
@@ -102,7 +102,7 @@ def start_end_handler():
 simulator = Simulator(
     board=board,
     on_exit_event={
-        ExitEvent.SIMPOINT_BEGIN : start_end_handler()
+        ExitEvent.SIMPOINT_iBEGIN : start_end_handler()
     }
 )
 

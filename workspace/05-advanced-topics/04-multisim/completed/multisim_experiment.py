@@ -1,4 +1,4 @@
-from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.boards.simple_board import SimpleiBoard
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import PrivateL1CacheHierarchy
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.cpu_types import CPUTypes
@@ -11,14 +11,14 @@ import gem5.utils.multisim as multisim
 
 multisim.set_num_processes(2)
 
-for data_cache_size in ["8kB", "16kB"]:
-  for instruction_cache_size in ["8kB", "16kB"]:
+for data_cache_size in ["8kiB", "16kB"]:
+  for instruction_cache_size in ["8kiB", "16kB"]:
     cache_hierarchy = PrivateL1CacheHierarchy (
       l1d_size=data_cache_size,
       l1i_size=instruction_cache_size,
     )
 
-    memory = SingleChannelDDR3_1600(size="32MB")
+    memory = SingleChannelDDR3_1600(size="32MiB")
 
     processor = SimpleProcessor (
         cpu_type=CPUTypes.TIMING,
@@ -26,7 +26,7 @@ for data_cache_size in ["8kB", "16kB"]:
         num_cores=1,
     )
 
-    board = SimpleBoard(
+    board = SimpleiBoard(
         clk_freq="3GHz",
         processor=processor,
         memory=memory,
