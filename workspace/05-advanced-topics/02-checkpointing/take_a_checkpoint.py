@@ -78,7 +78,7 @@ board.set_workload(obtain_resource("npb-ep-a"))
 simulator = Simulator(
     board=board,
     on_exit_event= {
-        ExitEvent.WORKiBEGIN: workbegin_handler(),
+        ExitEvent.WORKBEGIN: workbegin_handler(),
     }
 )
 

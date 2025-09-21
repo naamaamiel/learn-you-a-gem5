@@ -87,7 +87,7 @@ simulator = Simulator(
     on_exit_event={
         # using the SimPoints event generator in the standard library to take
         # checkpoints
-        ExitEvent.SIMPOINT_iBEGIN: simpoints_save_checkpoint_generator(dir, simpoint_info)
+        ExitEvent.SIMPOINT_BEGIN: simpoints_save_checkpoint_generator(dir, simpoint_info)
     },
 )
 

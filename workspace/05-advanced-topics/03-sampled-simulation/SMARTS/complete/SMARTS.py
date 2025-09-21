@@ -166,7 +166,7 @@ ideal_W = 2 * ideal_U
 simulator = Simulator(
     board=board,
     on_exit_event={
-        ExitEvent.SIMPOINT_iBEGIN: smarts_generator(
+        ExitEvent.SIMPOINT_BEGIN: smarts_generator(
             k=ideal_k,
             U=ideal_U,
             W=ideal_W,

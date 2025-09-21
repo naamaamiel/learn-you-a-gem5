@@ -102,7 +102,7 @@ def start_end_handler():
 simulator = Simulator(
     board=board,
     on_exit_event={
-        ExitEvent.SIMPOINT_iBEGIN : start_end_handler()
+        ExitEvent.SIMPOINT_BEGIN : start_end_handler()
     }
 )
 
