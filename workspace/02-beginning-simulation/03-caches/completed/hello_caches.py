@@ -1,5 +1,5 @@
 from gem5.components.isas import ISA
-from gem5.components.boards.x86_board import X86iBoard
+from gem5.components.boards.x86_board import X86Board
 from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import PrivateL1SharedL2CacheHierarchy
 from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 
@@ -35,7 +35,7 @@ cache = PrivateL1PrivateL2SharedL3CacheHierarchy(
 memory = SingleChannelDDR4_2400()
 
 # A full-system x86 board
-board = X86iBoard(
+board = X86Board(
     clk_freq="3GHz",
     processor = processor,
     cache_hierarchy = cache,

@@ -1,4 +1,4 @@
-from gem5.components.boards.simple_board import SimpleiBoard
+from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import PrivateL1CacheHierarchy
 from gem5.components.memory import SingleChannelDDR3_1600
 from gem5.components.processors.cpu_types import CPUTypes
@@ -26,7 +26,7 @@ for data_cache_size in ["8kiB", "16kB"]:
         num_cores=1,
     )
 
-    board = SimpleiBoard(
+    board = SimpleBoard(
         clk_freq="3GHz",
         processor=processor,
         memory=memory,

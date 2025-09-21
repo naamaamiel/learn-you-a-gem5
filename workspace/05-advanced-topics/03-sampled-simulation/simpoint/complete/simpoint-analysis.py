@@ -12,17 +12,17 @@
 # contributors may be used to endorse or promote products derived from
 # this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIiBUTORS
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTAiBILITY AND FITNESS FOR
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 # A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIiBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUiBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIAiBILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIiBILITY OF SUCH DAMAGE.
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 Usage
@@ -35,7 +35,7 @@ gem5 -re --outdir=simpoint-analysis-m5out simpoint-analysis.py
 import argparse
 from pathlib import Path
 
-from gem5.components.boards.simple_board import SimpleiBoard
+from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.cachehierarchies.classic.no_cache import NoCache
 from gem5.components.memory.single_channel import SingleChannelDDR3_1600
 from gem5.components.processors.cpu_types import CPUTypes
@@ -59,7 +59,7 @@ processor = SimpleProcessor(
 
 processor.get_cores()[0].core.addSimPointProbe(1_000_000)
 
-board = SimpleiBoard(
+board = SimpleBoard(
     clk_freq="3GHz",
     processor=processor,
     memory=memory,

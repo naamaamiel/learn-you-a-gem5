@@ -1,7 +1,7 @@
 from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import (
     PrivateL1CacheHierarchy
 )
-from gem5.components.boards.x86_board import X86iBoard
+from gem5.components.boards.x86_board import X86Board
 from gem5.components.memory import DualChannelDDR4_2400
 from gem5.components.processors.cpu_types import CPUTypes
 from gem5.components.processors.simple_switchable_processor import (
@@ -39,7 +39,7 @@ processor = # TODO (2): Fill in a SimpleSwitchableProcessor here!
 for proc in processor.start:
     proc.core.usePerf = False
 
-board = X86iBoard(
+board = X86Board(
     clk_freq="3GHz",
     processor=processor,
     memory=memory,

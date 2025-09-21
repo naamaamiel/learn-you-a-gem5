@@ -4,12 +4,12 @@ the prebuilt x86 demo board to run a static 'hello world' binary. The
 steps include:
 
 1. Importing necessary gem5 modules.
-2. Creating an instance of the SimpleiBoard.
+2. Creating an instance of the SimpleBoard.
 3. Setting a 'hello world' workload on the board.
 4. Running the simulation.
 """
 
-from gem5.components.boards.simple_board import SimpleiBoard
+from gem5.components.boards.simple_board import SimpleBoard
 from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import (
     PrivateL1SharedL2CacheHierarchy,
 )
@@ -26,11 +26,11 @@ from gem5.simulate.simulator import Simulator
 memory = SingleChannelDDR4_2400(size="2GiB")
 
 caches = PrivateL1SharedL2CacheHierarchy(
-    l1d_size="32KiiB",
+    l1d_size="32KiB",
     l1d_assoc=8,
-    l1i_size="32KiiB",
+    l1i_size="32KiB",
     l1i_assoc=8,
-    l2_size="256KiiB",
+    l2_size="256KiB",
     l2_assoc=16,
 )
 
@@ -38,7 +38,7 @@ processor = SimpleProcessor(
     cpu_type=CPUTypes.TIMING, num_cores=1, isa=ISA.RISCV
 )
 
-board = SimpleiBoard(
+board = SimpleBoard(
     processor=processor,
     memory=memory,
     cache_hierarchy=caches,
