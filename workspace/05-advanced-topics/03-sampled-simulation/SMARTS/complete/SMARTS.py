@@ -54,12 +54,12 @@ import m5
 requires(isa_required=ISA.X86)
 
 cache_hierarchy = PrivateL1PrivateL2WalkCacheHierarchy(
-    l1d_size="32kB",
-    l1i_size="32kB",
-    l2_size="256kB",
+    l1d_size="32kiB",
+    l1i_size="32kiB",
+    l2_size="256kiB",
 )
 
-memory = DualChannelDDR4_2400(size="3GB")
+memory = DualChannelDDR4_2400(size="3GiB")
 
 processor = SimpleSwitchableProcessor(
     starting_core_type=CPUTypes.ATOMIC,

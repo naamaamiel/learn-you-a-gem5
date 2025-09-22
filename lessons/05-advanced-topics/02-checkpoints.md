@@ -2,7 +2,7 @@
 
 So... KVM fast-forwarding isn't good enough for you. Good news! There is another option for accelerating simulation.
 
-> By the end of this section, you will be able to:  
+> By the end of this section, you will be able to:
 >
 > - **Produce** a simulation checkpoint.
 > - **Modify** a Simulation object to restore/resume from a checkpoint.
@@ -40,11 +40,11 @@ We don't need a highly performant or detailed system for checkpoint generation: 
 > **Your turn:** Fill in `TODO (1)` in `take_a_checkpoint.py` to set up a board with the following parameters:
 >
 > - a `NoCache` cache hierarchy,
-> - a `SingleChannelDDR4_2400` memory with a size of 3GB,
+> - a `SingleChannelDDR4_2400` memory with a size of 3GiB,
 > - a `SimpleProcessor` with a KVM CPU and the ISA that matches your host system.
 >
 > **NOTE:** You might need to add some new imports!
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
@@ -57,7 +57,7 @@ We don't need a highly performant or detailed system for checkpoint generation: 
 > ``` python
 > from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 > ...
-> memory = SingleChannelDDR4_2400(size="3GB")
+> memory = SingleChannelDDR4_2400(size="3GiB")
 > ```
 >
 > ```python
@@ -67,7 +67,7 @@ We don't need a highly performant or detailed system for checkpoint generation: 
 >     num_cores=2,
 > )
 > ```
-> 
+>
 > </details>
 
 <br>
@@ -97,10 +97,10 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 >
 > - Saves a checkpoint to a directory called `cpt`.
 > - Exits the simulation.
-> 
+>
 > <details>
 > <summary> <b>Checkpoint Saving Answer</b> </summary>
-> 
+>
 > You'll want to use
 > ```python
 > simulator.save_checkpoint("cpt")
@@ -114,10 +114,10 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 > ```python
 > def workbegin_handler():
 >     print("Done booting Linux")
-> 
+>
 >     print("Take a checkpoint")
 >     simulator.save_checkpoint("03-cpt")
-> 
+>
 >     yield True
 > ```
 >
@@ -145,12 +145,12 @@ Once the simulation is complete, you should be able to find the checkpoint files
 
 Let's take the checkpoint we just created and restore it using a more detailed system and a timing CPU.
 
-Time for a new file! Take a look at `restore_checkpoint.py`. This is a fairly simple configuration script that should look very similar to `take_a_checkpoint.py`. This time, however, we are using a `PrivateL1CacheHierarchy`, a `DualChannelDDR4_2400` (notice that it, like the checkpoint-generating system, is of size 3GB), and a timing CPU (note that this one also has 2 cores).
+Time for a new file! Take a look at `restore_checkpoint.py`. This is a fairly simple configuration script that should look very similar to `take_a_checkpoint.py`. This time, however, we are using a `PrivateL1CacheHierarchy`, a `DualChannelDDR4_2400` (notice that it, like the checkpoint-generating system, is of size 3GiB), and a timing CPU (note that this one also has 2 cores).
 
 We restore our checkpoint by passing in a `checkpoint_path` as a parameter to the `Simulator` instance. This should be the full absolute path to the checkpoint folder, in our case `cpt`.
 
 > **Your turn:** Fill in `TODO (3)` in `restore_checkpoint.py` to pass in the path to our generated checkpoint.
-> 
+>
 > <details>
 > <summary> <b>Answer</b> </summary>
 >

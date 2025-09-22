@@ -2,7 +2,7 @@
 
 Sometimes, you just don't need to model a processor.
 
-> By the end of this section, you will be able to:  
+> By the end of this section, you will be able to:
 >
 > - **Test** the performance of a memory system in-simulation using standard library traffic generators.
 > - **Create** a new traffic generator by extending the AbstractGenerator class.
@@ -22,7 +22,7 @@ The gem5 standard library includes a collection of components for synthetic traf
 
 ![A tree-like class diagram of cores and processors in the gem5 standard library. The subsystem class is at the very top. AbstractCore and AbstractGenerator inherit from SubSystem. AbstractGeneratorCore and BaseCPUCore inherit from AbstractCore. ComplexGeneratorCore, LinearGeneratorCore, GUPSGeneratorCore, RandomGeneratorCore, StridedGeneratorCore, and TrafficGeneratorCore inherit from AbstractGeneratorCore. SimpleCore inherits from BaseCPUCore. AbstractGenerator, BaseCPUProcessor, and SwitchableProcessor inherit from AbstractProcessor. ComplexGenerator, LinearGenerator, GUPSGenerator, GUPSGeneratorEP, GUPSGeneratorPAR, RandomGenerator, StridedGenerator, and TrafficGenerator inherit from AbstractGenerator. SimpleProcessor inherits from BaseCPUProcessor. SimpleSwitchableProcessor inherits from SwitchableProcessor. The branches of the tree diagram that include AbstractGeneratorCore and its children and AbstractGenerator and its children are highlighted with red boxes.](img/stdlib-gens.png)
 
-These components simulate memory accesses (both reads and writes!). 
+These components simulate memory accesses (both reads and writes!).
 
 > If you're curious, you can find the definitions for all of these standard library components in `src/python/gem5/components/processors`.
 
@@ -91,7 +91,7 @@ Now that we have our cache/memory system, we need to configure a linear generato
 
 - `num_cores`: 1
 - `duration`: 1 ms
-- `rate`: 100 GB/s
+- `rate`: 100 GiB/s
 - `block_size`: 64
 - `min_addr`: 0
 - `max_addr`: 32768 ($2^{15}$)
@@ -106,7 +106,7 @@ class LinearGenerator(AbstractGenerator):
         self,
         num_cores: int = 1,
         duration: str = "1ms",
-        rate: str = "100GB/s",
+        rate: str = "100GiB/s",
         block_size: int = 64,
         min_addr: int = 0,
         max_addr: int = 32768,
@@ -115,15 +115,15 @@ class LinearGenerator(AbstractGenerator):
     ) -> None:
 ```
 
-Let's make our `LinearGenerator` access data a bit slower than the default: how about 1 GB/s?
+Let's make our `LinearGenerator` access data a bit slower than the default: how about 1 GiB/s?
 
-> **Your turn:** Fill in `TODO (2)` in `traffic_gen.py` to add a `LinearGenerator` with all default parameters other than `rate`, which should be `"1GB/s"`.
+> **Your turn:** Fill in `TODO (2)` in `traffic_gen.py` to add a `LinearGenerator` with all default parameters other than `rate`, which should be `"1GiB/s"`.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> generator = LinearGenerator(rate="1GB/s")
+> generator = LinearGenerator(rate="1GiB/s")
 > ```
 >
 > </details>
@@ -154,9 +154,9 @@ Let's break these messages down. They all start with a number: this is the curre
 
 $$\frac{64 ~bytes}{59605 ~ps} * \frac{10^{12} ~ps}{s}\approx \frac{1.07 * 10^{9} ~bytes}{s}$$
 
-$$\frac{1.07 * 10^{9} ~bytes}{s} * \frac{1 ~GB}{10^9 ~bytes} \approx \frac{1.07 ~GB}{1 ~s}$$
+$$\frac{1.07 * 10^{9} ~bytes}{s} * \frac{1 ~GiB}{10^9 ~bytes} \approx \frac{1.07 ~GiB}{1 ~s}$$
 
-Hey, that's very close to the 1 GB/s rate we set!
+Hey, that's very close to the 1 GiB/s rate we set!
 
 The next part of the messages looks like `r to addr <X>, size 64`. This means that the generator is simulating a 64-byte read (`r`) to address `<X>`. You'll notice the addresses linearly increase:
 
@@ -176,7 +176,7 @@ class RandomGenerator(AbstractGenerator):
         self,
         num_cores: int = 1,
         duration: str = "1ms",
-        rate: str = "100GB/s",
+        rate: str = "100GiB/s",
         block_size: int = 64,
         min_addr: int = 0,
         max_addr: int = 32768,
@@ -186,13 +186,13 @@ class RandomGenerator(AbstractGenerator):
 ```
 Let's keep everything the same as our `LinearGenerator` to have a nice, clean comparison.
 
-> **Your turn:** Fill in `TODO (3)` in `traffic_gen.py` to replace the `LinearGenerator` with a `RandomGenerator` with all default parameters other than `rate`, which should be `"1GB/s"`.
+> **Your turn:** Fill in `TODO (3)` in `traffic_gen.py` to replace the `LinearGenerator` with a `RandomGenerator` with all default parameters other than `rate`, which should be `"1GiB/s"`.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> generator = RandomGenerator(rate="1GB/s")
+> generator = RandomGenerator(rate="1GiB/s")
 > ```
 >
 > </details>
@@ -222,7 +222,7 @@ You should see the following messages in your terminal:
 You'll notice that a few things are the same:
 
 - Accesses are still of size 64,
-- Accesses still occur on the same ticks (so at the same 1GB/s rate),
+- Accesses still occur on the same ticks (so at the same 1GiB/s rate),
 - Accesses are still all reads.
 
 One thing is different, though: the addresses are all over the place. A `RandomGenerator` will access aligned addresses (you'll notice 0x2000, 0x7900, and 0x33c0 are all multiples of 64), but the addresses will be chosen randomly.
@@ -269,7 +269,7 @@ def __init__(
         self,
         num_cores: int = 2,
         duration: str = "1ms",
-        rate: str = "1GB/s",
+        rate: str = "1GiB/s",
         block_size: int = 8,
         min_addr: int = 0,
         max_addr: int = 131072,
@@ -318,7 +318,7 @@ The function returns a list of tuples representing the start and end of each par
 
 ### Implementing `_create_cores`
 
-Let's add this functionality to `_create_cores`! The first thing we need to do here is decide how many linear and random cores we'll have based on `num_cores`. A natural choice for the number of linear cores is some power of 2; this way, we can easily divide memory (the size of which is a power of 2) into equally-sized spans for each core. We still want to leave some room for random cores, though, so let's pick a number that is always strictly smaller than `num_cores`. 
+Let's add this functionality to `_create_cores`! The first thing we need to do here is decide how many linear and random cores we'll have based on `num_cores`. A natural choice for the number of linear cores is some power of 2; this way, we can easily divide memory (the size of which is a power of 2) into equally-sized spans for each core. We still want to leave some room for random cores, though, so let's pick a number that is always strictly smaller than `num_cores`.
 
 We implement this using the `get_num_linear_cores` function, which is already written for you. This function returns the largest power of 2 that is smaller than `num_cores`:
 

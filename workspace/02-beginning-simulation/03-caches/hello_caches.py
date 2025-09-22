@@ -22,9 +22,9 @@ This boots linux (just the kernel) and exits. However, we will only run it for
 processor = BigProcessor()
 
 cache = PrivateL1SharedL2CacheHierarchy(
-    l1d_size = "16kB",
-    l1i_size = "16kB",
-    l2_size = "256kB",
+    l1d_size = "16kiB",
+    l1i_size = "16kiB",
+    l2_size = "256kiB",
     l1d_assoc = 8,
     l1i_assoc = 8,
     l2_assoc = 16

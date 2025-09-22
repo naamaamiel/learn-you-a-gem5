@@ -18,11 +18,11 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
 
 cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="8kB",
-    l1i_size="8kB",
+    l1d_size="8kiB",
+    l1i_size="8kiB",
 )
 
-memory = SingleChannelDDR3_1600(size="32MB")
+memory = SingleChannelDDR3_1600(size="32MiB")
 
 processor = SimpleProcessor(cpu_type=CPUTypes.TIMING, isa=ISA.X86, num_cores=1)
 

@@ -2,8 +2,8 @@
 
 Now that you've had the time to get familiar with gem5, let's talk in a bit more detail about gem5 resources and how you can use them.
 
-> By the end of this section, you will be able to:  
->  
+> By the end of this section, you will be able to:
+>
 > - **Use** a variety of existing gem5 resources, including binaries, workloads, and suites.
 > - **Create** a local gem5 resource and use it in a simulation.
 > - **Explain** what gem5 resources are available and what categories they fall into.
@@ -20,7 +20,7 @@ As a reminder, gem5 resources are prebuilt artifacts that can be used to run gem
   - An example of a kernel resource is [`x86-linux-kernel-5.15.180`](https://resources.gem5.org/resources/x86-linux-kernel-5.15.180?version=1.0.0), which is a Linux kernel.
 - **Disk image**: An exact copy of the data stored on disk. We use disk images as part of simulating a full operating system.
   - An example of a disk image resource is [`x86-ubuntu-24.04-gapbs-img`](https://resources.gem5.org/resources/x86-ubuntu-24.04-gapbs-img?version=1.0.0), which is a disk image containing the [GAPBS](http://gap.cs.berkeley.edu/benchmark.html) benchmarks for Ubuntu 24.04 for x86.
-- **Binary**: A program used to test the performance of a simulated system.
+- **Binary**: A compiled program that can run directly on a simulated system without arguments.
   - An example of a binary resource is [`x86-bubblesort`](https://resources.gem5.org/resources/x86-bubblesort?version=1.0.0), which is an implementation of BubbleSort compiled into x86.
 - **Bootloader**: A small program responsible for loading the operating system into memory when a computer starts up.
   - An example of a bootloader is [`arm64-bootloader`](https://resources.gem5.org/resources/arm64-bootloader?version=1.0.0), which can be used for any arm64 Linux kernel resources.
@@ -30,7 +30,7 @@ As a reminder, gem5 resources are prebuilt artifacts that can be used to run gem
   - An example of a SimPoint is [`x86-print-this-1500-simpoints`](https://resources.gem5.org/resources/x86-print-this-1500-simpoints?version=1.0.0), which contains the set of all SimPoints for another resource (a binary) named `x86-print-this`.
 - **File**: A single file.
   - An example of a file is [`llvm-minisat-cnf-input`](https://resources.gem5.org/resources/llvm-minisat-cnf-input/changelog?database=gem5-resources&version=1.0.0), which is used as input for another resource (a binary), named `x86-llvm-minisat`.
-- **Workload**: A bundle of resources and input parameters that can be run directly in gem5.
+- **Workload**: A bundle of resources and input parameters that can be run directly in a simulated system.
   - An example of a workload is [`86-ubuntu-24.04-boot-no-systemd`](https://resources.gem5.org/resources/x86-ubuntu-24.04-boot-no-systemd?version=4.0.0) (you may recognize it from `hello_world.py`), which is used to boot Ubuntu 24.04. It contains the kernel, the disk image, and the needed parameters.
 - **Suite**: A collection of workloads.
   - An example of a suite is [`gapbs-benchmark-suite`](https://resources.gem5.org/resources/gapbs-benchmark-suite?version=1.0.0), which contains a workload for each benchmark in the GAPBS suite.
@@ -47,7 +47,7 @@ By default, `obtain_resource` will acquire the most recent (and compatible!) ver
 
 ```python
 obtain_resource(
-  resource_id="x86-ubuntu-24.04-boot-no-systemd", 
+  resource_id="x86-ubuntu-24.04-boot-no-systemd",
   resource_version="2.0.0"
 )
 ```
@@ -88,7 +88,7 @@ Next, let's set the board's workload:
 
 ```python
 board.set_se_binary_workload(
-  binary=binary_resource, 
+  binary=binary_resource,
   arguments=["-g", 10, "-n", 10]
 )
 ```
@@ -205,6 +205,8 @@ Let's go through some important fields:
 - `additional_params` are optional non-resource parameters we want to use for the function call. As we saw, this workload includes a value for the optional `arguments` parameter to `set_se_binary_workload()`.
 - `architecture` specifies which ISA the workload is built for, in this case RISC-V.
 - We discussed `resource_version` and `gem5_versions` above, and here they are in JSON form!
+
+> A workload will _only_ work with a version of gem5 specified in the `gem5_versions` field, be conscious when updating!
 
 ## Using suites
 
@@ -363,6 +365,26 @@ GEM5_RESOURCE_JSON_APPEND=local_resources.json gem5 json_resource.py
 ```
 
 > If we are only using local resources, we can set the `GEM5_RESOURCE_JSON` environment variable instead, but this will prevent gem5 from finding resources anywhere else!
+>
+> If we do want gem5 to search both our local resources and the gem5-resources database, we need to create a json file that points to both our local resources (our json file) and the remote resources (the gem5-resources database) and set the `GEM5_CONFIG` environment variable to that file path.
+>
+> ```json
+> {
+>   "sources": {
+>     "my-workloads": {
+>       "url": "/path/to/my/json.json",
+>       "isMongo": false
+>     },
+>     "gem5_resources": {
+>       "url": "https://api.gem5.org/api/resources",
+>       "isMongo": true,
+>       "dataSource": "gem5-vision",
+>       "database": "gem5-vision",
+>       "collection": "resources"
+>     }
+>   }
+> }
+> ```
 
 <!--TODO (Naama): Output-->
 

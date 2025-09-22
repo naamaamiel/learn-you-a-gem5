@@ -51,11 +51,11 @@ memory = SingleChannelSimpleMemory (
 )
 
 # TODO (2): Add a LinearGenerator here
-generator = LinearGenerator(rate="1GB/s")
+generator = LinearGenerator(rate="1GiB/s")
 
 # TODO (3): Comment out the above line and uncomment this one
 # then add a RandomGenerator here
-# generator = RandomGenerator(rate="1GB/s")
+# generator = RandomGenerator(rate="1GiB/s")
 
 # TODO (4): Comment out the above lines and uncomment this one
 # then add a HybridGenerator here

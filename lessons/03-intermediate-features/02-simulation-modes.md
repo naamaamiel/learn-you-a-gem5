@@ -2,7 +2,7 @@
 
 You might have noticed us using "SE mode" functions like `set_se_binary_workload` in previous sections; what's that about?
 
-> By the end of this section, you will be able to:  
+> By the end of this section, you will be able to:
 >
 > - **Assess** whether SE or FS mode is more appropriate for a particular simulation goal.
 > - **Contrast** the benefits and drawbacks of Syscall Emulation (SE) and Full-System (FS) simulation modes.
@@ -28,7 +28,7 @@ Since SE does not simulate the OS, you shouldn't use it if you care about *any* 
 
 ### Example
 
-Let's take a look at how SE mode handles user-level code with system calls. Open `SE_hello_world.py` to get started! This file sets up a simple system with a `PrivateL1CacheHierarchy`, a `SingleChannelDDR4_2400`, and a `TIMING` `SimpleProcessor`. 
+Let's take a look at how SE mode handles user-level code with system calls. Open `SE_hello_world.py` to get started! This file sets up a simple system with a `PrivateL1CacheHierarchy`, a `SingleChannelDDR4_2400`, and a `TIMING` `SimpleProcessor`.
 
 We then use `set_se_binary_workload` (a function you've seen use use before!) to set a **binary workload** in **SE mode** for the board. This is how we tell the simulator to use SE mode.
 

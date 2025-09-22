@@ -54,7 +54,7 @@ requires(
 # Let's set up a NoCache cache hierarchy
 cache_hierarchy = 
 
-# Let's set up a SingleChannelDDR4_2400 memory with 3GB size
+# Let's set up a SingleChannelDDR4_2400 memory with 3GiB size
 memory = 
 
 # Here we set up a simple processor with the KVM CPU

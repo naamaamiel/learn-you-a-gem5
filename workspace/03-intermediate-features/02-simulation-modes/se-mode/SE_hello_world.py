@@ -52,11 +52,11 @@ binary_path = Path("/workspace/03-intermediate-features/02-simulation-modes/se-m
 
 
 cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="64kB",
-    l1i_size="64kB",
+    l1d_size="64kiB",
+    l1i_size="64kiB",
 )
 
-memory = SingleChannelDDR4_2400("1GB")
+memory = SingleChannelDDR4_2400("1GiB")
 
 processor = SimpleProcessor(
     cpu_type = CPUTypes.TIMING,
