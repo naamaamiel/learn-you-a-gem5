@@ -1,4 +1,4 @@
-# get the prebuilt board 
+# get the prebuilt board
 from gem5.prebuilt.demo.x86_demo_board import X86DemoBoard
 
 # for downloading the workload
