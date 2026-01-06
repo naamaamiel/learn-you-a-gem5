@@ -2,12 +2,12 @@
 
 Hope you had a good stretch break waiting for gem5 to build. Now that it's finally done, let's run a simulation!
 
-> By the end of this section, you will be able to:  
+> By the end of this section, you will be able to:
 >
 > - **Run** a pre-existing gem5 Python script.
 > - **Explain** how a Python configuration script is used in conjunction with the gem5 binary.
 > - **Locate** the output of gem5 simulator runs.
->  
+>
 
 ## What's a configuration script?
 
@@ -23,8 +23,36 @@ Ok, enough waiting. Let's simulate! Visit the `workspace` directory and locate t
 
 If all goes well, you'll see this output in your terminal:
 
-```bash
-TODO (Naama): Fill in terminal output. 
+```txt
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled Dec 28 2025 11:30:26
+gem5 started Dec 29 2025 12:48:41
+gem5 executing on ucomm-3130-w17, pid 2954460
+command line: ./gem5/build/ALL/gem5.opt workspace/01-introduction/04-first-config-script/hello_world.py
+
+warn: The X86DemoBoard is solely for demonstration purposes. This board is not known to be be representative of any real-world system. Use with caution.
+info: Using default config
+Resource 'x86-linux-kernel-6.8.0-52-generic' was not found locally. Downloading to '$HOME/.cache/gem5/x86-linux-kernel-6.8.0-52-generic'...
+Finished downloading resource 'x86-linux-kernel-6.8.0-52-generic'.
+Resource 'x86-ubuntu-24.04-img' was not found locally. Downloading to '$HOME/.cache/gem5/x86-ubuntu-24.04-img.gz'...
+Finished downloading resource 'x86-ubuntu-24.04-img'.
+Decompressing resource 'x86-ubuntu-24.04-img' ('$HOME/.cache/gem5/x86-ubuntu-24.04-img.gz')...
+Finished decompressing resource 'x86-ubuntu-24.04-img'.
+warn: Max ticks has already been set prior to setting it through the run call. In these cases the max ticks set through the `run` function is used
+Global frequency set at 1000000000000 ticks per second
+warn: board.workload.acpi_description_table_pointer.rsdt adopting orphan SimObject param 'entries'
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (2048 Mbytes)
+src/sim/kernel_workload.cc:46: info: kernel located at: $HOME/.cache/gem5/x86-linux-kernel-6.8.0-52-generic
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+board.pc.com_1.device: Listening for connections on port 3456
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/dev/intel_8254_timer.cc:128: warn: Reading current count from inactive timer.
+board.remote_gdb: Listening for connections on port 7000
 ```
 
 ## What did I just run?
