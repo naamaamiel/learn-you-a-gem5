@@ -116,4 +116,60 @@ In this case, we left the "params" box in the simulator empty, meaning we just u
 
 At the core, every gem5 simulation boils down to this: a simulation that simulates a board. The complexity comes in when we start doing away with prebuilt components and reconfigure or even build our own components. You'll be doing that in no time!
 
+## Simulation Output
+
+You may notice that a new directory named `m5out` has appeared under your current directory. `m5out` contains the output of the most recent gem5 simulation, including information about the current simulation configuration as well as all of the gathered simulation statistics.
+
+For now, we'll take a brief look at two files: `config.ini` and `stats.txt`. Don't worry if you can't parse through these files entirely by the end of this section; we'll be looking at these files again later on in the bootcamp.
+
+### `config.ini`
+
+This file details the architecture being simulated; it will list every model in the simulation along with its parameter values. We can use this file to double-check any system details.
+
+> For example, you can search the file (using  `ctrl + F` or equivalent) for `[board.processor.cores0.core.isa]`. When you do, you'll see the line `type=X86ISA` underneath, confirming that the CPU cores of our simulated processor are x86 cores.
+
+### `stats.txt`
+
+This file contains all gathered simulation statistics. At the top of the file, you will always find general statistics detailing how long the simulation took in terms of host (wallclock) time, simulated time, and number of instructions. For `hello_world.py`, we should see something like this:
+
+```txt
+---------- Begin Simulation Statistics ----------
+simSeconds                                   0.020000                       # Number of seconds simulated (Second)
+simTicks                                  20000000000                       # Number of ticks simulated (Tick)
+finalTick                                 20000000000                       # Number of ticks from beginning of simulation (restored from checkpoints and never reset) (Tick)
+simFreq                                  1000000000000                       # The number of ticks per simulated second ((Tick/Second))
+hostSeconds                                     31.50                       # Real time elapsed on the host (Second)
+hostTickRate                                634990766                       # The number of ticks simulated per host second (ticks/s) ((Tick/Second))
+hostMemory                                    3738248                       # Number of bytes of host memory used (Byte)
+simInsts                                     28915834                       # Number of instructions simulated (Count)
+simOps                                       48714354                       # Number of ops (including micro ops) simulated (Count)
+hostInstRate                                   918061                       # Simulator instruction rate (inst/s) ((Count/Second))
+hostOpRate                                    1546651                       # Simulator op (including micro ops) rate (op/s) ((Count/Second))
+```
+You'll notice that the number of simulated ticks (`simTicks`) is a clean 20000000000. As you might remember, this is because we told the simulator to exit after 20000000000 ticks with the line:
+
+```python
+sim.run(20_000_000_000)
+```
+
+> By checking the `simInsts` statistic, we can find out that during these 20000000000 ticks, our processor executed a total of 28915834 instructions. 
+
+There are *a lot* of other statistics in `stats.txt`: most gem5 components are configured to collect several statistics about their operation.
+
+> For example, you can search the file for `board.cache_hierarchy.l1dcaches0.overallMissRate::total`, which tracks the overall miss rate of the L1 data cache. 
+> ```txt
+> board.cache_hierarchy.l1dcaches0.overallMissRate::total     0.002487
+> ```
+>
+> This tells us that the miss rate of this workload on this simulated architecture is 0.002487, or around 0.25%.
+
+### Other files in `m5out`
+
+`m5out` contains a few other helpful files:
+
+- `config.json` contains the same simulation details as `config.ini` in a JSON format.
+- `board.pc.com_1.device` contains the console output from the simulation.
+- `citations.bib` contains the citations for all models and resources used in case you need to cite the simulation in your research.
+
+
 <link href = "../style.css" rel="stylesheet"></link>
