@@ -106,4 +106,146 @@ This command builds gem5 with all ISAs (`ALL`) with the `.opt` debug option (a b
 
 ## Navigating the `gem5` directory
 
-<!-- TODO (Naama): Once installed gem5, fill this in with nav information -->
+While you wait for everything to build, gem5 contains a *lot* of source code. Here are a few basic directories you should have in mind:
+
+- `build`: this directory will only be visible after you've successfully built gem5. This directory stores build files, including the gem5 executable you will be running.
+
+> If you used the command above, the gem5 executable you created can be found at `gem5/build/ALL/gem5.opt`. We'll be running this executable throughout the bootcamp.
+
+- `src`: contains all source files for gem5. These files are separated into groups based on their purpose.
+  - `src/python/gem5`: contains all pre-made Python components from the gem5 standard library. You may remember from the [Enter gem5 section](lessons/01-introduction/03-installing-gem5.md) that Python files specify parameter values for C++ backend models. We'll talk more about the standard library in the next section.
+  - `src/mem`: contains all C++ models relating to memory, like caches, DRAM, crossbars, and memory probes.
+  - `src/arch`: contains all ISA-specific C++ models, including the ISAs themselves.
+  - `src/sim`: contains files relating to simulation, including the C++ parent class for all models, `SimObject`.
+
+> It might be a bit overwhelming to dig through the entire `src` directory at the moment, and that's okay! We'll start exploring these files are we progress through the bootcamp, and you certainly aren't expected to explain what all these files do quite yet.
+
+## Let's go!
+
+Once that long build process is done, you should have access to a gem5 executable. For us, that's
+
+```bash
+./gem5/build/ALL/gem5.opt
+```
+
+If you enter the above in your terminal, you should get the following usage message:
+
+```txt
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
+command line: ./gem5/build/ALL/gem5.opt
+
+Usage
+=====
+  gem5.opt [gem5 options] script.py [script options]
+
+gem5 is copyrighted software; use the --copyright option for details.
+
+Options
+=======
+--help, -h              show this help message and exit
+--build-info, -B        Show build information
+--copyright, -C         Show full copyright information
+--readme, -R            Show the readme
+--outdir=DIR, -d DIR    Set the output directory to DIR [Default: m5out]
+--redirect-stdout, -r   Redirect stdout (& stderr, without -e) to file
+--redirect-stderr, -e   Redirect stderr to file
+--silent-redirect       Suppress printing a message when redirecting stdout or
+                        stderr
+--stdout-file=FILE      Filename for -r redirection [Default: simout.txt]
+--stderr-file=FILE      Filename for -e redirection [Default: simerr.txt]
+--listener-mode={on,off,auto}
+                        Port (e.g., gdb) listener mode (auto: Enable if
+                        running interactively) [Default: auto]
+--allow-remote-connections
+                        Port listeners will accept connections from anywhere
+                        (0.0.0.0). Default is only localhost.
+--interactive, -i       Invoke the interactive interpreter after running the
+                        script
+--pdb                   Invoke the python debugger before running the script
+--path=PATH[:PATH], -p PATH[:PATH]
+                        Prepend PATH to the system path when invoking the
+                        script
+--quiet, -q             Reduce verbosity
+--verbose, -v           Increase verbosity
+-m mod                  run library module as a script (terminates option
+                        list)
+-c cmd                  program passed in as string (terminates option list)
+-P                      Don't prepend the script directory to the system path.
+                        Mimics Python 3's `-P` option.
+-s                      IGNORED, only for compatibility with python. don'tadd
+                        user site directory to sys.path; also PYTHONNOUSERSITE
+
+Statistics Options
+------------------
+--stats-file=FILE       Sets the output file for statistics [Default:
+                        stats.txt]
+--stats-help            Display documentation for available stat visitors
+
+Configuration Options
+---------------------
+--dump-config=FILE      Dump configuration output file [Default: config.ini]
+--json-config=FILE      Create JSON output of the configuration [Default:
+                        config.json]
+--dot-config=FILE       Create DOT & pdf outputs of the configuration
+                        [Default: config.dot]
+--dot-dvfs-config=FILE  Create DOT & pdf outputs of the DVFS configuration
+                        [Default: none]
+
+Debugging Options
+-----------------
+--debug-break=TICK[,TICK]
+                        Create breakpoint(s) at TICK(s) (kills process if no
+                        debugger attached)
+--debug-help            Print help on debug flags
+--debug-flags=FLAG[,FLAG]
+                        Sets the flags for debug output (-FLAG disables a
+                        flag)
+--debug-start=TICK      Start debug output at TICK
+--debug-end=TICK        End debug output at TICK
+--debug-file=FILE       Sets the output file for debug. Append '.gz' to the
+                        name for it to be compressed automatically [Default:
+                        cout]
+--debug-activate=EXPR[,EXPR]
+                        Activate EXPR sim objects
+--debug-ignore=EXPR     Ignore EXPR sim objects
+--remote-gdb-port=REMOTE_GDB_PORT
+                        Remote gdb base port (set to 0 to disable listening)
+--show-exit-event-messages
+                        Print information about exit events and when they
+                        occur
+
+Help Options
+------------
+--list-sim-objects      List all built-in SimObjects, their params and default
+                        values
+```
+
+If you successfully see this message, this means gem5 was built! If you run into any issues building, please refer to the building gem5 page linked at the beginning of this section or visit the [gem5 common errors document](https://www.gem5.org/documentation/general_docs/common-errors/).
+
+### Quick quality-of-life change: alias
+
+You may notice that if you try to run this executable from the `gem5` directory's parent directory (which should also be the parent directory of your `workspace` directory), the path to the executable is quite long. For convenience, you can create an **alias** for this executable so that you can more easily run files from your workspace. Add the following line to your `bashrc` file (found at `~/.bashrc`):
+
+```bash
+alias gem5_opt=<absolute_path_to_parent_directory>/gem5/build/ALL/gem5.opt
+```
+
+where `<absolute_path_to_parent_directory>` is replaced with the absolute path to the directory containing the `gem5` directory. You can get to this absolute path by navigating to the gem5 directory then using the `pwd` ("print working directory") command.
+
+After creating this alias, you should be able to type
+
+```bash
+gem5
+```
+
+in your terminal to get the same usage message from before. 
+
+> Note that we chose to alias the executable as `gem5`, but you can choose whatever name you want!
+
+We'll be referencing `gem5/build/ALL/gem5.opt` as `gem5` for the rest of the bootcamp.

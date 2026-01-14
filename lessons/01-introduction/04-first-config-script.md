@@ -21,6 +21,8 @@ Ok, enough waiting. Let's simulate! Visit the `workspace` directory and locate t
 ./gem5/build/ALL/gem5.opt workspace/01-introduction/04-first-config-script/hello_world.py
 ```
 
+> If you set an alias for the `gem5.opt` executable in the [installing gem5 section](lessons/01-introduction/03-installing-gem5.md), you can use that alias (i.e., `gem5`) instead of `./gem5/build/ALL/gem5.opt`.
+
 If all goes well, you'll see this output in your terminal:
 
 ```txt
@@ -28,9 +30,9 @@ gem5 Simulator System.  https://www.gem5.org
 gem5 is copyrighted software; use the --copyright option for details.
 
 gem5 version 25.0.0.1
-gem5 compiled Dec 28 2025 11:30:26
-gem5 started Dec 29 2025 12:48:41
-gem5 executing on ucomm-3130-w17, pid 2954460
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
 command line: ./gem5/build/ALL/gem5.opt workspace/01-introduction/04-first-config-script/hello_world.py
 
 warn: The X86DemoBoard is solely for demonstration purposes. This board is not known to be be representative of any real-world system. Use with caution.
