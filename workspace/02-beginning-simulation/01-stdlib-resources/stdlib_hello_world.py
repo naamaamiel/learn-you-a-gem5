@@ -1,5 +1,5 @@
-# get the prebuilt board 
-from gem5.components.boards.x86_board import X86DemoBoard
+# get the prebuilt board
+from gem5.prebuilt.demo.x86_demo_board import X86DemoBoard
 
 # for downloading the workload
 from gem5.resources.resource import obtain_resource
@@ -8,15 +8,13 @@ from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
 
 """
-One of the most basic gem5 scripts you can write.
+One of the most basic gem5 scripts you can write without using a demo board.
 
 This boots linux (just the kernel) and exits. However, we will only run it for
 20 ms to save time.
 """
 
-# define the processor, cache, and memory here
-
-# A full-system x86 board (replace this with X86Board!)
+# A full-system x86 board
 board = X86DemoBoard()
 
 # Set the workload to boot linux (Ubuntu 24.04)

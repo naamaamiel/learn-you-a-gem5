@@ -14,7 +14,7 @@ Let's start digging into the first of the three main categories of gem5 componen
 
 ### Processors
 
-In the previous section on the standard library, we mentioned that two types of processors exist: `SimpleProcessor`, `SwitchableProcessor`, as well as traffic generators, which pretend to be processors.
+In the previous section on the standard library, we mentioned that two types of processors exist: `SimpleProcessor` and `SwitchableProcessor`. Traffic generators, which pretend to be processors, can be used in their place.
 
 - A `SimpleProcessor` is the general-purpose processor in the standard library, which lets you define its ISA, number of cores, and type (more on this in a minute!)
 - A `SwitchableProcessor` is similar to a `SimpleProcessor`, but it allows switching between multiple types of processors during a simulation instead of using just one `SimpleProcessor`.
@@ -83,7 +83,7 @@ Let's discuss these CPU types in more detail.
 
 ### Atomic and Timing Simple CPUs
 
-A `SimpleCPU` (not to be confused with `SimpleProcessor`, the standard library component) is quite fast to simulate and has limited branch prediction capabilities.
+A `SimpleCPU` (not to be confused with `SimpleProcessor`, the standard library *processor* component) is quite fast to simulate and has limited branch prediction capabilities.
 
 > As a reminder, branch prediction is a CPU's ability to execute instructions after a branch (AKA jump) instruction by guessing whether the branch will be taken or not.
 
@@ -105,7 +105,7 @@ A `SimpleCPU` is a good choice for when you aren't paying too much attention to 
 
 KVM stands for "**K**ernel-based **V**irtual **M**achine". This CPU model allows for *native execution* on x86 and ARM hosts; basically, using your machine's actual CPU to execute instructions instead of a simulated CPU model. As you might imagine, this is *really fast* compared to simulating a CPU. However, it means that the ISA of your host machine has to match the ISA of the simulation. Otherwise, your CPU would have no idea what to do!
 
-We use KVM for fast-forwarding and functional tests, and it's great for this purpose. Though you wouldn't want to use KVM if you're trying to collect any meaningful statistics about performance.
+We use KVM for fast-forwarding and functional tests, and it's great for this purpose. That being said, you wouldn't want to use KVM if you're trying to collect any meaningful statistics about performance.
 
 ### Minor CPU
 
@@ -136,7 +136,7 @@ gem5 is an "*execute-in-execute*" simulator, meaning that instructions executed 
 >
 > *This means that being execute-in-execute uniquely allows us to simulate out-of-order interactions!*
 
-Much like the minor CPU, the O3 CPU makes timing memory accesses, interacts with the cache hierarchy, and has detailed branch prediction capabilities. It, too, is slower to simulate. The O3 CPU model is the closest thing to a real CPU provided by gem5 (it's loosely based on Alpha 21264!).
+Much like the minor CPU, the O3 CPU makes timing memory accesses, interacts with the cache hierarchy, and has detailed branch prediction capabilities. It, too, is slower to simulate. The O3 CPU model is the closest thing to a real CPU provided by gem5 (it's loosely based on the [Alpha 21264](https://acg.cis.upenn.edu/milom/cis501-Fall09/papers/Alpha21264.pdf)!).
 
 ## Using gem5's CPU models
 
@@ -144,7 +144,7 @@ To recap, these are the CPU models that exist in gem5:
 
 - `BaseAtomicSimpleCPU`: A simple CPU model with some branch prediction that makes atomic memory accesses (does not take memory latency into account).
 - `BaseTimingSimpleCPU`: A simple CPU model with some branch prediction that makes timing memory accesses (takes memory latency into account).
-- `BaseKvmCPU`: A KVM (Kernel Virtual Machine) CPU that uses the host's actual CPU to execute instructions, resulting in *really fast* execution.
+- `BaseKvmCPU`: A KVM (Kernel Virtual Machine) CPU that uses the host's actual CPU to execute instructions, resulting in *really fast* execution but unhelpful performance data.
 - `MinorCPU`: An in-order four-stage pipelined CPU with branch prediction capabilities. Slower to simulate.
 - `O3CPU`: An out-of-order five-stage pipelined CPU with branch prediction capabilities. Slower to simulate.
 
@@ -172,7 +172,10 @@ Currently, this file contains the following:
 - A cache hierarchy consisting of a 32-KiB L1 i-cache and d-cache for each core (`PrivateL1CacheHierarchy`):
 
 ```python
-cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+cache_hierarchy = PrivateL1CacheHierarchy(
+  l1d_size="32KiB", 
+  l1i_size="32KiB"
+)
 ```
 
 - A 1-GiB single-channel DDR3-1600 memory system (`SingleChannelDDR3_1600`):
@@ -186,7 +189,11 @@ memory = SingleChannelDDR3_1600("1GiB")
 ```python
 cpu_type = CPUTypes.ATOMIC
 
-processor = SimpleProcessor(cpu_type=cpu_type, isa=ISA.RISCV, num_cores=8)
+processor = SimpleProcessor(
+  cpu_type=cpu_type,
+  isa=ISA.RISCV,
+  num_cores=1
+)
 ```
 
 - A `SimpleBoard` running a RISC-V matrix multiplication workload:
@@ -219,7 +226,10 @@ Now, let's shrink the cache and try again:
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="1KiB", l1i_size="1KiB")
+> cache_hierarchy = PrivateL1CacheHierarchy(
+>   l1d_size="1KiB",
+>   l1i_size="1KiB"
+>  )
 > ```
 >
 > ```bash
@@ -257,7 +267,10 @@ Lastly, let's put the cache back at 32 KiB.
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
+> cache_hierarchy = PrivateL1CacheHierarchy(
+>  l1d_size="32KiB",
+>  l1i_size="32KiB"
+> )
 > ```
 >
 > ```bash
@@ -268,17 +281,90 @@ Lastly, let's put the cache back at 32 KiB.
 
 <br>
 
-Now, let's compare the results!
+Now, let's compare the results! We'll find everything we need in `stats.txt` within the output directories. First, let's prove that all four of these simulations simulated the same number of ops. We can do this by checking the `simOps` statistic at the top of `stats.txt`, either by searching the file by hand or by using the `grep` command in the terminal:
 
-> ***UNDER CONSTRUCTION*** <!--TODO (Naama): Output-->
+```bash
+grep -r 'simOps' <path-to-output-directories>
+```
 
-You'll notice that for the atomic CPU, the number of cycles for the simulation didn't change when we switched our cache models! This is because atomic memory accesses don't take memory latency into account, so the fact that our cache was smaller (and thus that we accessed memory more often) made no difference. The difference is clear for the timing CPU, however!
+> If you have not seen it before, `grep` is a command-line utility that searches for text within files. It's useful for navigating large directories, including the gem5 directory! The `-r` flag (for "recursive") specifies that `grep` should look inside directories, which allows it to find the `stat.txt` files inside each of output directories we created. We tell it to look for the text string `simOps`, which conveniently only shows up as the statistic we're looking for.
 
-> If you'd like, you can change the CPU type again to `O3` and take a look at the results.
+Here are the results:
+
+`atomic-normal-cache`:
+
+```txt
+simOps                                       33954687
+```
+
+`atomic-small-cache`:
+
+```txt
+simOps                                       33954687
+```
+
+`timing-normal-cache`:
+
+```txt
+simOps                                       33954687
+```
+
+`timing-small-cache`:
+
+```txt
+simOps                                       33954687
+```
+
+Running the same workload on the same configuration yields the same number of ops, which makes sense; we kept the workload, which determines the instructions being executed, exactly the same, and the cores only changed their memory access mode. Note that the number of ops may not be the exact same as the number of instructions, since gem5 breaks down some instructions into micro-ops.
+
+Now for our experiment: how many CPU cycles were required to multiply these matrices? We can find this out using the `numCycles` statistic, which is collected for each core and tracks the total number of CPU cycles simulated.
+
+> **Your turn:** Write a `grep` command to search for the `numCycles` statistic in the output directories for our cache simulations.
+>
+> <details>
+> <summary> <b>Answer</b> </summary>
+>
+> ```bash
+> grep -r 'numCycles' <path-to-output-directories>
+> ```
+>
+> </details>
+
+<br>
+
+`atomic-normal-cache`:
+
+```txt
+board.processor.cores.core.numCycles        38157732 
+```
+
+`atomic-small-cache`:
+
+```txt
+board.processor.cores.core.numCycles        38157732 
+```
+
+`timing-normal-cache`:
+
+```txt
+board.processor.cores.core.numCycles        62830921 
+```
+
+`timing-small-cache`:
+
+```txt
+board.processor.cores.core.numCycles        112602851
+```
+
+You may notice that the timing CPU executed for more simulated cycles than the atomic CPU on the same cache size. This is because any memory accesses we make take longer on a timing CPU compared to an atomic CPU. More interestingly, you'll notice that for the atomic CPU, the number of CPU cycles didn't change when we switched our cache models! Since atomic memory accesses don't take memory latency into account, the fact that our cache was smaller (and thus that we accessed memory more often) made no difference. The difference is clear for the timing CPU, however, where the smaller cache significantly increased the number of simulated cycles.
+
+> If you'd like, you can change the CPU type again to `O3` and take a look at the results!
+
+Keep these results in mind when selecting which CPU type is approriate for your gem5 simulations. Some kind of timing CPU is the right choice if memory access latency matters to your work.
 
 ## Creating custom processor components
 
-We can do better than just *using* CPU models in standard library components. We can *create* our own standard library components!
+We can do better than just *using* CPU models in standard library components. We can *create* our own components!
 
 ### Changing model parameters with extension
 
@@ -301,12 +387,12 @@ In this snippet, we can see the following:
 - The rename-to-fetch delay with a value of 1 cycle,
 - The issue/execute/writeback-to-fetch delay with a value of 1 cycle,
 - The commit-to-fetch delay with a value of 1 cycle,
-- The fetch width with a value of 8 bytes,
+- The fetch width with a value of 8 instructions,
 - The fetch buffer size with a value of 64 bytes.
 
 The way we change these parameters' values in our code is not by changing this file, or even by directly creating an instance of this component in our code. ***We customize parameter values of gem5 components by extending their classes in Python.***
 
-Let's see this in action by starting to create our very own processor. Open `my_processors.py` to get started. Currently this file is... mostly empty! We'll be defining our O3 CPUs with custom parameters here.
+Let's see this in action by starting to create our very own processor. For this example, we'll be extending one of gem5's out-of-order CPU models, `X86O3CPU`. Open `my_processors.py` to get started. Currently, this file is mostly empty! We'll be defining our O3 CPUs with custom parameters here.
 
 First, let's create `BigO3`, an O3 CPU with... big parameters! We'll specifically be doing the following:
 
@@ -319,7 +405,7 @@ First, let's create `BigO3`, an O3 CPU with... big parameters! We'll specificall
 Let's create the `BigO3` class and set all of these parameters:
 
 ```python
-class BigO3(X86O3CPU):
+class BigO3(RiscvO3CPU):
     def __init__(self):
         super().__init__()
         self.fetchWidth = 8
@@ -339,7 +425,7 @@ We also want another core type with little parameters to compare `BigO3` to. We 
 
 - Fetch, decode, rename, dispatch, issue, writeback, and commit widths set to 2 bytes,
 - Number of ROB (re-order buffer) entries set to 30,
-- The number of physical int and float registers set to 40.
+- The number of physical int and float registers set to 80.
 
 > **Your turn:** Write the `LittleO3` class to set the parameters above to our desired values.
 >
@@ -359,8 +445,8 @@ We also want another core type with little parameters to compare `BigO3` to. We 
 >         self.commitWidth = 2
 >
 >         self.numROBEntries = 30
->         self.numPhysIntRegs = 40
->         self.numPhysFloatRegs = 40
+>         self.numPhysIntRegs = 80
+>         self.numPhysFloatRegs = 80
 > ```
 >
 > </details>
@@ -457,7 +543,7 @@ And that, finally, is it!
 
 Let's recap everything we just did:
 
-1) **From basic CPU model to specialized CPU models:** We extended the `X86O3CPU` class to change its parameter values, creating `BigO3` and `LittleO3`.
+1) **From base CPU model to specialized CPU models:** We extended the `X86O3CPU` class to change its parameter values, creating `BigO3` and `LittleO3`.
 2) **From CPU models to cores:** We wrapped the `BigO3` and `LittleO3` **models** with matching standard library **components**, `BigCore` and `LittleCore`, which extend `BaseCPUCore`.
 3) **From cores to processors:** We passed our newly-created standard library **cores** into newly-created standard library **processors**, `BigProcessor` and `LittleProcessor`, which extend `BaseCPUProcessor`.
 
@@ -467,7 +553,9 @@ What we're left with are two new **standard library processors** containing core
 
 We can now take `BigProcessor` and `LittleProcessor` and plug them into a standard library board just like we did with `SimpleProcessor` in our previous example. In fact, let's put them in our hello world example! A copy of `stdlib_hello_world.py` (with the modifications made in the last section) named `hello_processors.py` is provided for convenience.
 
-First, we need to import our new components. Replace the import statement for `SimpleProcessor` with the following:
+> The `workspace` directory is organized such that the configuration script is able to find our new components in its search path. If this is not the case in your future work, note that the Python search path must be expanded to include the location of the file(s) definining new components, which can be done with `import sys` and `sys.path.append(<path>)`.
+
+Remove the `ISA` and `CPUTypes` imports and replace the import statement for `SimpleProcessor` with the following:
 
 ```python
 from my_processors import BigProcessor, LittleProcessor
@@ -479,13 +567,27 @@ Next, we can swap out the processor for our new processors! Let's use `LittlePro
 processor = LittleProcessor()
 ```
 
-<!--TODO (Naama): Maybe switch the workload too? Need to run to see if there's a visible performance change.-->
+Let's compare these CPUs on a more interesting workload than the first 20 milliseconds of booting Ubuntu. Swap out `"x86-ubuntu-24.04-boot-no-systemd"` in the call to `obtain_resource` with `x86-matrix-multiply-run`:
 
-That's it! We can now run this script:
+```python
+board.set_workload(
+    obtain_resource("x86-matrix-multiply-run")
+)
+```
 
-> ***UNDER CONSTRUCTION!*** <!--TODO (Naama): Output & verification-->
+Additionally, remove the 20 millisecond restriction on simulation time by removing the parameter to `sim.run(20_000_000_000)`:
 
-> **Your turn:** Switch out `LittleProcessor` for `BigProcessor` and run the simulation again!
+```python
+sim.run()
+```
+
+That's it! We can now run this script. Let's redicrect its output to a directory named `little-o3` so we can compare our results later:
+
+```bash
+gem5 --outdir=little-o3 hello_processors.py 
+```
+
+> **Your turn:** Switch out `LittleProcessor` for `BigProcessor` and run the simulation again, redirecting the output to a directory named `big-o3`.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
@@ -494,12 +596,51 @@ That's it! We can now run this script:
 > processor = BigProcessor()
 > ```
 >
+> ```bash
+> gem5 --outdir=big-o3 hello_processors.py 
+> ```
+>
 > </details>
 
 <br>
 
-You should see some changes in the simulation statistics:
+You should see some changes in the simulation statistics. Let's look at how long the simulation took, as well as how many CPU cycles were simulated.
 
-> ***UNDER CONSTRUCTION!*** <!--TODO (Naama): Output & verification-->
+> **Your turn:** Search for the `simSeconds` and `numCycles` statistics in the `little-o3` and `big-o3` output directories.
+>
+> <details>
+> <summary> <b>Answer</b> </summary>
+>
+> ```bash
+> grep -r 'simSeconds' <path-to-output-directories>
+> ```
+>
+> ```bash
+> grep -r 'numCycles' <path-to-output-directories>
+> ```
+>
+> </details>
+
+<br>
+
+You should see the following:
+
+`little-o3`:
+
+```txt
+simSeconds                                   0.010227 
+board.processor.cores.core.numCycles         30713015  
+```
+
+`big-o3`:
+
+```txt
+simSeconds                                   0.009471 
+board.processor.cores.core.numCycles         28440669
+```
+
+As we might expect, `BigProcessor` is able to execute the workload in fewer simulated cycles and thus in fewer simulation seconds.
 
 There are a lot more things to explore when it comes to processors in gem5! If you're looking to learn about more advanced features in the context of processors, take the processor track in Unit IV!
+
+<link href="../style.css" rel="stylesheet"></link>

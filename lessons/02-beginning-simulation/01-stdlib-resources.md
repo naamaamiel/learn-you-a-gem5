@@ -76,7 +76,7 @@ Now we need to pick a processor to use. The standard library has quite a few opt
 ```python
 from gem5.components.processors.simple_processor import SimpleProcessor
 from gem5.components.processors.cpu_types import CPUTypes
-from gem5.components.isas import ISA
+from gem5.isas import ISA
 ```
 
 ```python
@@ -106,11 +106,11 @@ from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarc
 
 ```python
 cache = PrivateL1SharedL2CacheHierarchy(
-  l1d_size = "16kB",
-  l1i_size = "16kB",
-  l2_size = "256kB",
+  l1d_size = "16KiB",
+  l1i_size = "16KiB",
+  l2_size = "256KiB",
   l1d_assoc = 8,
-  l1i_assoc = 8,
+  li_assoc = 8,
   l2_assoc = 16
 )
 ```
@@ -135,10 +135,12 @@ from gem5.components.memory.single_channel import SingleChannelDDR4_2400
 ```
 
 ```python
-memory = SingleChannelDDR4_2400()
+memory = SingleChannelDDR4_2400(
+    size = "3GiB"
+)
 ```
 
-This component has an optional parameter, `size`, which specifies the size of the memory system. Here, we just choose to use the default value of `size`. Let's plug it in!
+This component has an optional parameter, `size`, which specifies the size of the memory system. Here, we choose 3 GiB to align with the requirements of the board we're using. Let's plug it in!
 
 ```python
 board = X86Board(
@@ -149,13 +151,47 @@ board = X86Board(
 )
 ```
 
-We've now successfully replaced `X86DemoBoard` with our own custom board. We can run this script using:
+We've now successfully replaced `X86DemoBoard` with our own custom board. You can run this script using:
 
-> ***UNDER CONSTRUCTION***
+```bash
+gem5 stdlib_hello_world.py
+```
 
-<!--TODO (Naama): Add output verification -->
+When you do, you should get output that resembles that of the original `hello_world.py` script:
 
-Due to this modular setup, we can choose to replace any of the components on this board to try out different configurations (for example, what if we used a dual-channel memory system instead?).
+```txt
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
+command line: ./gem5/build/ALL/gem5.opt workspace/workspace/02-beginning-simulation/01-stdlib-resources/stdlib_hello_world.py
+
+info: Using default config
+warn: Max ticks has already been set prior to setting it through the run call. In these cases the max ticks set through the `run` function is used
+Global frequency set at 1000000000000 ticks per second
+warn: board.workload.acpi_description_table_pointer.rsdt adopting orphan SimObject param 'entries'
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (4096 Mbytes)
+src/sim/kernel_workload.cc:46: info: kernel located at: /homes/iws/namiel/.cache/gem5/x86-linux-kernel-6.8.0-52-generic
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+board.pc.com_1.device: Listening for connections on port 3456
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/dev/intel_8254_timer.cc:128: warn: Reading current count from inactive timer.
+board.remote_gdb: Listening for connections on port 7000
+```
+
+> You'll notice that the simulation no longer warns us about using a demo-only board.
+
+Checking the `m5out` directory just like before, we can look at some simulation information. For example, this system uses an L2 cache; we can find its overall miss rate in `stats.txt`:
+
+```txt
+board.cache_hierarchy.l2cache.overallMissRate::total     0.675398
+```
+
+Due to the modular setup of the gem5 standard library, we can choose to replace any of the components on this board to try out different configurations (for example, what if we used a dual-channel memory system instead?).
 
 Here is our updated `hello_world.py` showing our custom board:
 
