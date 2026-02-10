@@ -1,0 +1,44 @@
+[    0.000000] Linux version 6.8.0-52-generic (buildd@lcy02-amd64-046) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #53-Ubuntu SMP PREEMPT_DYNAMIC Sat Jan 11 00:06:25 UTC 2025 (Ubuntu 6.8.0-52.53-generic 6.8.12)
+[    0.000000] Command line: earlyprintk=ttyS0 console=ttyS0 lpj=7999923 root=/dev/sda2 no_systemd=true
+[    0.000000] KERNEL supported cpus:
+[    0.000000]   Intel GenuineIntel
+[    0.000000]   AMD AuthenticAMD
+[    0.000000]   Hygon HygonGenuine
+[    0.000000]   Centaur CentaurHauls
+[    0.000000]   zhaoxin   Shanghai  
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable
+[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x00000000000fffff] reserved
+[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000bfffffff] usable
+[    0.000000] BIOS-e820: [mem 0x00000000ffff0000-0x00000000ffffffff] reserved
+[    0.000000] printk: legacy bootconsole [earlyser0] enabled
+[    0.000000] NX (Execute Disable) protection: active
+[    0.000000] APIC: Static calls initialized
+[    0.000000] SMBIOS 2.5 present.
+[    0.000000] DMI:  , BIOS  06/08/2008
+[    0.000000] tsc: Fast TSC calibration using PIT
+[    0.000000] tsc: Detected 3003.031 MHz processor
+[    0.000017] last_pfn = 0xc0000 max_arch_pfn = 0x400000000
+[    0.000052] MTRR map: 1 entries (1 fixed + 0 variable; max 17), built from 8 variable MTRRs
+[    0.000100] x86/PAT: Configuration [0-7]: WB  WC  UC- UC  WB  WP  UC- WT  
+[    0.000156] found SMP MP-table at [mem 0x000f0050-0x000f005f]
+[    0.000353] ACPI: Early table checksum verification disabled
+[    0.000419] ACPI: RSDP 0x00000000000F01B0 000024 (v02 gem5  )
+[    0.000456] ACPI: XSDT 0x00000000000F03A8 00002C (v01 gem5            00000000      00000000)
+[    0.000511] ACPI: APIC 0x00000000000F02D2 0000D6 (v04 madt            00000000      00000000)
+[    0.000563] ACPI: Reserving APIC table memory at [mem 0xf02d2-0xf03a7]
+[    0.000727] No NUMA configuration found
+[    0.000750] Faking a node at [mem 0x0000000000000000-0x00000000bfffffff]
+[    0.000799] NODE_DATA(0) allocated [mem 0xbffd4000-0xbfffefff]
+[    0.001110] Zone ranges:
+[    0.001127]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+[    0.001164]   DMA32    [mem 0x0000000001000000-0x00000000bfffffff]
+[    0.001200]   Normal   empty
+[    0.001218]   Device   empty
+[    0.001236] Movable zone start for each node
+[    0.001263] Early memory node ranges
+[    0.001284]   node   0: [mem 0x0000000000001000-0x000000000009efff]
+[    0.001321]   node   0: [mem 0x0000000000100000-0x00000000bfffffff]
+[    0.001358] Initmem setup node 0 [mem 0x0000000000001000-0x00000000bfffffff]
+[    0.001405] On node 0, zone DMA: 1 pages in unavailable ranges
+[    0.001477] On node 0, zone DMA: 97 pages in unavailable ranges

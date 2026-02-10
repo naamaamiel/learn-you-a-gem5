@@ -1,4 +1,4 @@
-# Copyright (c) 2021 The Regents of the University of California
+# Copyright (c) 2024 The Regents of the University of California
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -24,53 +24,55 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# system components
+from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.processors.simple_processor import SimpleProcessor
+from gem5.components.memory.single_channel import SingleChannelDDR4_2400
+from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import PrivateL1CacheHierarchy
 
-import m5
-from m5.objects import Root
-
-from components.cache_hierarchy import PrivateL1CacheHierarchy
-
-from gem5.components.boards.test_board import TestBoard
-from gem5.components.memory import SingleChannelSimpleMemory
-from gem5.components.processors.linear_generator import LinearGenerator
-from gem5.components.processors.random_generator import RandomGenerator
+# simulation components
+from gem5.components.processors.cpu_types import CPUTypes
+from gem5.resources.resource import obtain_resource
 from gem5.simulate.simulator import Simulator
+from gem5.isas import ISA
 
-# TODO (1): Add a PrivateL1CacheHierarchy 
-# and a SingleChannelSimpleMemory here
-cache_hierarchy = PrivateL1CacheHierarchy (
-  l1i_size = "16KiB",
-  l1d_size = "16KiB"
+'''
+
+Usage:
+
+gem5 --outdir=SE_mode -re --debug-flags=SyscallAll SE_hello_world.py
+
+'''
+
+cache_hierarchy = PrivateL1CacheHierarchy(
+    l1d_size="64KiB",
+    l1i_size="64KiB",
 )
 
-memory = SingleChannelSimpleMemory (
-  latency = "20ns",
-  bandwidth = "32GiB/s",
-  latency_var = "0s",
-  size = "1GiB"
+memory = SingleChannelDDR4_2400("1GiB")
+
+processor = SimpleProcessor(
+    cpu_type = CPUTypes.TIMING,
+    num_cores = 1,
+    isa = ISA.ARM
 )
 
-# TODO (2): Add a LinearGenerator here
-generator = LinearGenerator(rate="1GiB/s")
-
-# TODO (3): Comment out the above line and uncomment this one
-# then add a RandomGenerator here
-# generator = RandomGenerator(rate="1GiB/s")
-
-# TODO (4): Comment out the above lines and uncomment this one
-# then add a HybridGenerator here
-# generator = HybridGenerator(num_cores=6)
-
-board = TestBoard(
-    clk_freq="3GHz",
-    generator=generator,
+board = SimpleBoard(
+    clk_freq="1GHz",
+    processor=processor,
     memory=memory,
     cache_hierarchy=cache_hierarchy,
 )
 
-simulator = Simulator (
-  board = board
+board.set_se_binary_workload(
+    binary = obtain_resource("arm-hello64-static")
 )
 
-simulator.run(1_000_000_000)
+simulator = Simulator(
+    board=board
+)
+
+simulator.run()
+
+print("Simulation Done")
 

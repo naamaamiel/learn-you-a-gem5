@@ -1,0 +1,44 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
+command line: learn-you-a-gem5/gem5/build/ALL/gem5.opt -re --outdir=random_traffic --debug-flags=TrafficGen --debug-end=1000000 workspace/03-intermediate-features/01-traffic-generation/traffic_gen.py
+
+Global frequency set at 1000000000000 ticks per second
+      0: board.processor.cores.generator: Casting to C++ base class.
+      0: board.processor.cores.generator: Next event scheduled at 59605
+  59605: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0xf00, size 64
+  59605: board.processor.cores.generator: Next event scheduled at 119210
+ 119210: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x1380, size 64
+ 119210: board.processor.cores.generator: Next event scheduled at 178815
+ 178815: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x72c0, size 64
+ 178815: board.processor.cores.generator: Next event scheduled at 238420
+ 238420: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x6380, size 64
+ 238420: board.processor.cores.generator: Next event scheduled at 298025
+ 298025: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0xa00, size 64
+ 298025: board.processor.cores.generator: Next event scheduled at 357630
+ 357630: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x2600, size 64
+ 357630: board.processor.cores.generator: Next event scheduled at 417235
+ 417235: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x4ec0, size 64
+ 417235: board.processor.cores.generator: Next event scheduled at 476840
+ 476840: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x3080, size 64
+ 476840: board.processor.cores.generator: Next event scheduled at 536445
+ 536445: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x13c0, size 64
+ 536445: board.processor.cores.generator: Next event scheduled at 596050
+ 596050: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x4140, size 64
+ 596050: board.processor.cores.generator: Next event scheduled at 655655
+ 655655: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x7500, size 64
+ 655655: board.processor.cores.generator: Next event scheduled at 715260
+ 715260: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x1980, size 64
+ 715260: board.processor.cores.generator: Next event scheduled at 774865
+ 774865: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x240, size 64
+ 774865: board.processor.cores.generator: Next event scheduled at 834470
+ 834470: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x2800, size 64
+ 834470: board.processor.cores.generator: Next event scheduled at 894075
+ 894075: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x6a40, size 64
+ 894075: board.processor.cores.generator: Next event scheduled at 953680
+ 953680: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x3d00, size 64
+ 953680: board.processor.cores.generator: Next event scheduled at 1013285

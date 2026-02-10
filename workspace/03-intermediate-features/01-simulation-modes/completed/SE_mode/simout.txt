@@ -1,0 +1,38 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
+command line: gem5.opt --outdir=SE_mode -re --debug-flags=SyscallAll workspace/03-intermediate-features/01-simulation-modes/completed/SE_hello_world.py
+
+info: Using default config
+Global frequency set at 1000000000000 ticks per second
+      0: board.processor.cores.core: Constructing CPU with id 0, socket id 0
+3385000: board.processor.cores.core: T0 : syscall Calling brk(0)...
+3385000: board.processor.cores.core: T0 : syscall Returned 4792320.
+3507000: board.processor.cores.core: T0 : syscall Calling brk(4796256)...
+3507000: board.processor.cores.core: T0 : syscall brk: break point changed to: 0X492F60
+3507000: board.processor.cores.core: T0 : syscall Returned 4796256.
+5054000: board.processor.cores.core: T0 : syscall Calling uname(0x7ffffefb58)...
+5054000: board.processor.cores.core: T0 : syscall Returned 0.
+6030000: board.processor.cores.core: T0 : syscall Calling readlinkat(-100, 4657016, 549755743296, 4096)...
+6030000: board.processor.cores.core: T0 : syscall Returned 48.
+10875000: board.processor.cores.core: T0 : syscall Calling brk(4931424)...
+10875000: board.processor.cores.core: T0 : syscall brk: break point changed to: 0X4B3F60
+10875000: board.processor.cores.core: T0 : syscall Returned 4931424.
+11286000: board.processor.cores.core: T0 : syscall Calling brk(4931584)...
+11286000: board.processor.cores.core: T0 : syscall brk: break point changed to: 0X4B4000
+11286000: board.processor.cores.core: T0 : syscall Returned 4931584.
+23799000: board.processor.cores.core: T0 : syscall Calling fstat64(1, 0x7ffffefb60)...
+23799000: board.processor.cores.core: T0 : syscall Returned 0.
+24162000: board.processor.cores.core: T0 : syscall Calling ioctl(1, 21505, 549755747000)...
+24162000: board.processor.cores.core: T0 : syscall ioctl(1, 0x5401, ...)
+24162000: board.processor.cores.core: T0 : syscall Returned -25.
+28305000: board.processor.cores.core: T0 : syscall Calling write(1, 4798048, 13)...
+Hello world!
+28305000: board.processor.cores.core: T0 : syscall Returned 13.
+30008000: board.processor.cores.core: T0 : syscall Calling exit_group(0)...
+30008000: board.processor.cores.core: T0 : syscall Returned 0.
+Simulation Done

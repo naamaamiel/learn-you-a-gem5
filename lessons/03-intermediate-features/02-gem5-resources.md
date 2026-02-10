@@ -20,7 +20,7 @@ As a reminder, gem5 resources are prebuilt artifacts that can be used to run gem
   - An example of a kernel resource is [`x86-linux-kernel-5.15.180`](https://resources.gem5.org/resources/x86-linux-kernel-5.15.180?version=1.0.0), which is a Linux kernel.
 - **Disk image**: An exact copy of the data stored on disk. We use disk images as part of simulating a full operating system.
   - An example of a disk image resource is [`x86-ubuntu-24.04-gapbs-img`](https://resources.gem5.org/resources/x86-ubuntu-24.04-gapbs-img?version=1.0.0), which is a disk image containing the [GAPBS](http://gap.cs.berkeley.edu/benchmark.html) benchmarks for Ubuntu 24.04 for x86.
-- **Binary**: A compiled program that can run directly on a simulated system without arguments.
+- **Binary**: A compiled program that can run directly on a simulated system.
   - An example of a binary resource is [`x86-bubblesort`](https://resources.gem5.org/resources/x86-bubblesort?version=1.0.0), which is an implementation of BubbleSort compiled into x86.
 - **Bootloader**: A small program responsible for loading the operating system into memory when a computer starts up.
   - An example of a bootloader is [`arm64-bootloader`](https://resources.gem5.org/resources/arm64-bootloader?version=1.0.0), which can be used for any arm64 Linux kernel resources.
@@ -37,11 +37,9 @@ As a reminder, gem5 resources are prebuilt artifacts that can be used to run gem
 
 ## Resource versioning
 
-As you've likely noticed, all gem5 resources have an `id` (this is the same as what we've referred to as the resource's name, for example, `x86-ubuntu-24.04-boot-no-systemd`). They also have a `resource_version`, which starts at `1.0.0`. Every time the resource is updated, the `resource_version` is updated, but the `id` stays the same.
+As you've likely noticed, all gem5 resources have an `id` (this is the same as what we've referred to as the resource's name, for example, `x86-ubuntu-24.04-boot-no-systemd`). They also have a `resource_version`, which starts at `1.0.0`. Every time the resource is updated, the `resource_version` is updated, but the `id` stays the same. A resource also maintains a `gem5_versions` field, which dictates which releases of gem5 the resource is compatible with. The compatible gem5 versions might change with new resource versions!
 
 ![A screenshot of the "versions" tab of the gem5 resources page for the "x86-ubuntu-24.04-boot-no-systemd" resource. The tab consists of a table with four columns: "Version", "Size", "gem5 Versions", "Links". Version 1.0.0 is of size 0.0 B, is compatible with gem5 versions 23.1, 24.0, and 24.1, and has no links. Version 2.0.0 is of size 0.0 B, is compatible with gem5 versions 23.1, 24.0, and 24.1, and has no links. Version 3.0.0 is of size 0.0 B, is compatible with gem5 versions 23.1, 24.0, and 24.1, and has no links. Version 4.0.0 is of size 0.0 B, is compatible with gem5 versions 25.0, and has no links.](img/resource_versions.png)
-
-A resource also maintains a `gem5_versions` field, which dictates which releases of gem5 the resource is compatible with. The compatible gem5 versions might change with new resource versions!
 
 By default, `obtain_resource` will acquire the most recent (and compatible!) version of the resource with the provided `resource_id`. If you want a different version, you can pass it into the `resource_version` parameter like this:
 

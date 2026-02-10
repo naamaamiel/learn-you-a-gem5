@@ -31,13 +31,13 @@ Thus, the problem we're trying to solve is: **how do we make sure that writes to
 
 ### Achieving cache coherence
 
-One way to solve this problem is to use **snooping**, where caches broadcast their reads and writes across their shared bus for the other caches to "snoop" on. If a cache spots a an operation done on another cache, it updates itself to ensure coherency.
+One way to solve this problem is to use **snooping**, where caches broadcast their reads and writes across their shared bus for the other caches to "snoop" on. If a cache spots a an operation done on another cache, it updates itself to ensure coherence.
 
 In the simplest version of this protocol, when a cache spots a write to memory location, it just marks its cached data for that memory location as invalid.
 
 ![Three cores: core A, core B, and core C, each have their own cache. All three caches are connected to a shared membus. All three caches store the data at address 0xCAFE as 0x0C. Core A makes a write request to write 0x42 at address 0xCAFE, and its cache updates to reflect this write. Caches B and C snoop on the membus, so they invalidate their copy of the data at 0xCAFE. When cache C receives a read request for 0xCAFE, it loads the updated data in and returns 0x42.](img/cache_coherence_snooping.png)
 
-This means that data in the cache can either be **valid** or **invalid**. A cache line is valid if the cache contains a clean, up-to-date copy of the data and invalid otherwise. This basic protocol, called the VI protocol (for **V**alid and **I**nvalid) allows us to achieve coherency for **write-through** caches (since we don't have any way to mark data as modified/dirty in our caches under this protocol).
+This means that data in the cache can either be **valid** or **invalid**. A cache line is valid if the cache contains a clean, up-to-date copy of the data and invalid otherwise. This basic protocol, called the VI protocol (for **V**alid and **I**nvalid) allows us to achieve coherence for **write-through** caches (since we don't have any way to mark data as modified/dirty in our caches under this protocol).
 
 However, we can go beyond this simplest version of coherence! Many other, more complex, protocols exist that store more bookkeeping information about cache lines and allow for more sophisticated behavior. We won't go into detail here, but here are some letters you should keep in mind:
 
@@ -83,13 +83,13 @@ The standard library provides the following full hierarchies:
 - `PrivateL1PrivateL2WalkCacheHierarchy`: Same as `PrivateL1PrivateL2CacheHierarchy`, but also has a walk cache for the page table walker.
 - `PrivateL1SharedL2CacheHierarchy`: Each core has its own L1 i-cache and d-cache, and they all share one L2 cache.
 
-> Again, all of these hierarchies use a MOESI snooping protocol for cache coherency.
+> Again, all of these hierarchies use a MOESI snooping protocol for cache coherence.
 
 The standard library also provides pre-configured gem5 models for an L1 i-cache and d-cache, an L2 cache, and a walk cache, appropriately named `L1ICache`, `L1DCache`, `L2Cache`, and `MMUCache`. The above hierarchies use these components!
 
 ![An illustration of standard library classic cache components. On one side are the caches: L1DCache, L1ICache, L2Cache, and MMUCache. These caches come together to form a private L1 shared L2 cache hierarchy.](img/stdlib_classic_caches.png)
 
-To use a standard library classic cache hierarchy in your simulations, just plug them into your board and run gem5 as usual! For example, in the standard library section, we used a `PrivateL1SharedL2CacheHierarchy` like this:
+To use a standard library classic cache hierarchy in your simulations, just plug it into your board and run gem5 as usual! For example, in `stdlib_hello_world.py` in the standard library section, we used a `PrivateL1SharedL2CacheHierarchy` like this:
 
 ```python
 # instantiate and set parameters
@@ -248,7 +248,7 @@ self.membus.badaddr_responder = BadAddr()
 self.membus.default = self.membus.badaddr_responder.pio
 ```
 
-> These lines are used for **full-system mode**, which we'll discuss later. For now, they're magic ✨
+> These lines are used for **full-system mode**, which we'll discuss later. For now, they're magic!
 
 Ok, now we're really done with the constructor!
 
@@ -278,11 +278,13 @@ def get_cpu_side_port(self):
 
 ### Incorporating caches
 
-Now that we've initialized our membus, the next thing we need to do is implement `incorporate_cache`. The board calls this function when the processor and memory are ready to be connected.
+Now that we've initialized our membus, the next thing we need to do is implement `incorporate_cache`:
 
 ```python
-incorporate_cache(self, board):
+def incorporate_cache(self, board):
 ```
+
+The board calls this function when the processor and memory are ready to be connected.
 
 We need to connect the board's system port to the membus so that the board can perform **functional** memory accesses:
 
@@ -378,7 +380,14 @@ This means we've now built this:
 
 Next, we need to create our L2 cache (`L2Cache`) and L2 crossbar (`L2XBar`).
 
-> **Your turn:** In the same way we created the L3 cache and L3 crossbar, create the L2 cache and L2 crossbar as members of the cluster. Connect the L2 cache and L2 crossbar to each other, and the L2 crossbar to the L1I and L1D caches. Lastly, connect the L2 cache to the L3 crossbar passed in as the `l3_bus` parameter. Remember to use the correct side ports!
+> **Your turn:** In the same way we created the L3 cache and L3 crossbar, create the L2 cache and L2 crossbar as members of the cluster:
+>
+> - Instantiate the `l2_cache` and `l2_bus` variables,
+> - Connect the L2 cache and L2 crossbar to each other, 
+> - Connect the L2 crossbar to the L1I and L1D caches, 
+> - Connect the L2 cache to the L3 crossbar passed in as the `l3_bus` parameter. 
+> 
+> Remember to use the correct side ports!
 >
 > 
 > <details>
@@ -386,11 +395,16 @@ Next, we need to create our L2 cache (`L2Cache`) and L2 crossbar (`L2XBar`).
 >
 > ```python
 > # create the cache and crossbar
-> cluster.l2cache = L2Cache(size=self._l2_size, assoc=self._l2_assoc)
+> cluster.l2cache = L2Cache (
+>     size=self._l2_size, 
+>     assoc=self._l2_assoc
+> )
 > cluster.l2_bus = L2XBar()
+>
 > # connect the L1I and L1D caches to the L2 crossbar
 > cluster.l1dcache.mem_side = cluster.l2_bus.cpu_side_ports
 > cluster.l1icache.mem_side = cluster.l2_bus.cpu_side_ports
+>
 > # connect the L2 cache to the L2 and L3 crossbars 
 > cluster.l2cache.cpu_side = cluster.l2_bus.mem_side_ports
 > cluster.l2cache.mem_side = l3_bus.cpu_side_ports
@@ -419,7 +433,7 @@ self.clusters = [
 
 > We use some list comprehension to make the code more compact.
 
-...and that's it! Aside from some more full-system code you can ignore for now, we've created a full cache hierarchy.
+...and that's it! Aside from some more I/O code you can ignore for now, we've created a full cache hierarchy.
 
 ![The same representation of the PrivateL1PrivateL2SharedL3CacheHierarchy. Now there are two core clusters connected to the L3 crossbar.](img/cache_example_step3.png)
 
@@ -435,7 +449,7 @@ Let's recap everything we just did:
 
 What we're left with is a new **standard library classic cache hierarchy** that we can use in our simulations.
 
-As is tradition, let's plug this shiny new cache hierarchy into our `hello_world` example! A copy of the file (with the modifications we made in the processors section), named `hello_caches.py`, is provided for convenience.
+As is tradition, let's plug this shiny new cache hierarchy into our `hello_world` example! A copy of the file (with the modifications we made in the processors section along with the python file defining our custom processors), named `hello_caches.py`, is provided for convenience.
 
 First, we need to import our new components. Replace the import statement for `PrivateL1SharedL2CacheHierarchy` with the following:
 
@@ -447,23 +461,23 @@ Next, let's swap the existing cache hierarchy for our own, keeping the parameter
 
 ```python
 cache = PrivateL1PrivateL2SharedL3CacheHierarchy(
-    l1d_size = "16kB",
-    l1i_size = "16kB",
-    l2_size = "256kB",
+    l1d_size = "16KiB",
+    l1i_size = "16KiB",
+    l2_size = "256KiB",
     l1d_assoc = 8,
     l1i_assoc = 8,
     l2_assoc = 16,
 )
 ```
 
-However, you'll notice we're missing parameters for our L3 cache! Let's make it 8 MB in size and 16-way set associative:
+However, you'll notice we're missing parameters for our L3 cache! Let's make it 8 MiB in size and 16-way set associative:
 
 ```python
 cache = PrivateL1PrivateL2SharedL3CacheHierarchy(
-    l1d_size = "16kB",
-    l1i_size = "16kB",
-    l2_size = "256kB",
-    l3_size = "8MB",
+    l1d_size = "16KiB",
+    l1i_size = "16KiB",
+    l2_size = "256KiB",
+    l3_size = "8MiB",
     l1d_assoc = 8,
     l1i_assoc = 8,
     l2_assoc = 16,
@@ -473,9 +487,58 @@ cache = PrivateL1PrivateL2SharedL3CacheHierarchy(
 
 > Keeping the same parameter naming conventions as the standard library caches has certainly paid off!
 
-...and there we go! We can now run the script and see our cache in action.
+...and there we go! We can now run the script and see our cache in action:
 
-> ***UNDER CONSTRUCTION!*** <!--TODO (Naama): Output & verification-->
+```bash
+gem5 --outdir=hello_caches hello_caches.py
+```
+
+We can now take a look at statistics from all 3 level of cache. Let's take a look at overall miss rates in `stats.txt`:
+
+```bash
+grep 'overallMissRate::total' hello_caches/stats.txt
+```
+
+You should see the following:
+
+```txt
+board.cache_hierarchy.clusters.l1dcache.overallMissRate::total     0.005160
+board.cache_hierarchy.clusters.l1icache.overallMissRate::total     0.000284
+board.cache_hierarchy.clusters.l2cache.overallMissRate::total      0.016785
+board.cache_hierarchy.l3_cache.overallMissRate::total              1
+```
+
+Looks like the L3 cache was not helpful for this workload. Let's go back to our original workload: booting Ubuntu for 20 in-simulation milliseconds.
+
+```python
+board.set_workload(
+    obtain_resource("x86-ubuntu-24.04-boot-no-systemd")
+)
+```
+```python
+sim.run(20_000_000_000)
+```
+
+```bash
+gem5 --outdir=hello_caches_ubuntu hello_caches.py
+```
+
+```bash
+grep 'overallMissRate::total' hello_caches_ubuntu/stats.txt
+```
+
+This time, you should get:
+
+```txt
+board.cache_hierarchy.clusters.l1dcache.overallMissRate::total     0.040113
+board.cache_hierarchy.clusters.l1icache.overallMissRate::total     0.001155
+board.cache_hierarchy.clusters.l2cache.overallMissRate::total     0.852924
+board.cache_hierarchy.l3_cache.overallMissRate::total     0.986653
+```
+
+This time, the L3 cache helped some, but still missed 98% of the time.
+
+> You'll also notice this simulation took a lot longer than previous iterations. The more advanced features we include, the more needs to be simulated per tick!
 
 Caches can get a lot more complex than this, but this section covers the basics of classic caches and how to use them. If you want to model cache coherence and network topology with Ruby, take the caches track un Unit IV!
 

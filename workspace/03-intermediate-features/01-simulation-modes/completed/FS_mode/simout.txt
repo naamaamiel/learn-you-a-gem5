@@ -1,0 +1,12 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.0.0.1
+gem5 compiled <COMPILATION TIME>
+gem5 started <START TIME>
+gem5 executing on <ENVIRONMENT>, pid <PROCESS ID>
+command line: gem5.opt --outdir=FS_mode -re workspace/03-intermediate-features/01-simulation-modes/FS_hello_world.py
+
+info: Using default config
+Global frequency set at 1000000000000 ticks per second
+Simulation Done

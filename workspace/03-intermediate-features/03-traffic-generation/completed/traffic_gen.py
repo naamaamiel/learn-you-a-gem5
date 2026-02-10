@@ -28,30 +28,40 @@
 import m5
 from m5.objects import Root
 
-from components.cache_hierarchy import PrivateL1CacheHierarchy
+from gem5.components.cachehierarchies.classic.private_l1_cache_hierarchy import PrivateL1CacheHierarchy
 
 from gem5.components.boards.test_board import TestBoard
-from gem5.components.memory import SingleChannelSimpleMemory
+from gem5.components.memory.simple import SingleChannelSimpleMemory
 from gem5.components.processors.linear_generator import LinearGenerator
 from gem5.components.processors.random_generator import RandomGenerator
 from gem5.simulate.simulator import Simulator
 
+from hybrid_generator import HybridGenerator
+
 # TODO (1): Add a PrivateL1CacheHierarchy 
 # and a SingleChannelSimpleMemory here
-cache_hierarchy =
+cache_hierarchy = PrivateL1CacheHierarchy (
+  l1i_size = "16KiB",
+  l1d_size = "16KiB"
+)
 
-memory =
+memory = SingleChannelSimpleMemory (
+  latency = "20ns",
+  bandwidth = "32GiB/s",
+  latency_var = "0s",
+  size = "1GiB"
+)
 
 # TODO (2): Add a LinearGenerator here
-generator = 
+generator = LinearGenerator(rate="1GiB/s")
 
 # TODO (3): Comment out the above line and uncomment this one
 # then add a RandomGenerator here
-# generator = 
+# generator = RandomGenerator(rate="1GiB/s")
 
 # TODO (4): Comment out the above lines and uncomment this one
 # then add a HybridGenerator here
-# generator = 
+# generator = HybridGenerator(num_cores=6)
 
 board = TestBoard(
     clk_freq="3GHz",

@@ -57,6 +57,8 @@ Let's explore the performance of gem5's memory models using different traffic ge
 
 Open `traffic_gen.py` to get started. Our first step is to pick a system to evaluate.
 
+> You'll notice that `traffic_gen.py` makes no reference to setting a workload: the usual calls to `obtain_resource` and `board.set_workload` are missing! This is because our generators will replace the processor on the board, and generators cannot execute instructions.
+
 > **Your turn:** Fill in `TODO (1)` in `traffic_gen.py` to fill in the details of our system:
 >
 > 1) A `SingleChannelSimpleMemory` with a latency of 20 ns, a bandwidth of 32 GiB/second, latency variance of 0 s, and a size of 1 GiB,
@@ -133,21 +135,22 @@ Let's make our `LinearGenerator` access data a bit slower than the default: how 
 Let's run this thing! Run the following the command line:
 
 ```bash
-gem5 --debug-flags=TrafficGen --debug-end=1000000 \
-traffic_gen.py
+gem5 -re --outdir=linear_traffic --debug-flags=TrafficGen --debug-end=1000000 traffic_gen.py
 ```
 
-> You might notice the new options we're using, `--debug-flags` and `--debug-end`. We'll talk more about these options later in the bootcamp, but right now, all you need to know is that they add some debug prints for traffic generators.
+> You might recognize the `-re` (output redirection to files) and `--debug-flags` (enabling some debug prints) from the simulation modes section. We'll talk more about `--debug-flags` and `--debug-end` later in the bootcamp.
 
-You should see output messages like this:
+When you check `simout.txt` in the `linear_traffic` output directory, you should see output messages like this:
 
-```bash
- 59605: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
- 59605: system.processor.cores.generator: Next event scheduled at 119210
-119210: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 40, size 64
-119210: system.processor.cores.generator: Next event scheduled at 178815
-178815: system.processor.cores.generator: LinearGen::getNextPacket: r to addr 80, size 64
-178815: system.processor.cores.generator: Next event scheduled at 238420
+```txt
+[...]
+59605: board.processor.cores.generator: LinearGen::getNextPacket: r to addr 0, size 64
+59605: board.processor.cores.generator: Next event scheduled at 119210
+119210: board.processor.cores.generator: LinearGen::getNextPacket: r to addr 0x40, size 64
+119210: board.processor.cores.generator: Next event scheduled at 178815
+178815: board.processor.cores.generator: LinearGen::getNextPacket: r to addr 0x80, size 64
+178815: board.processor.cores.generator: Next event scheduled at 238420
+[...]
 ```
 
 Let's break these messages down. They all start with a number: this is the current tick. These memory accesses happen at intervals of 59605 ticks, which, remembering that 1 tick corresponds to 1 picosecond ($10^{-12}$ seconds) by default, this means that we're making accesses every 59605 picoseconds. This makes sense! Remember that the default block size for `LinearGenerator` is 64 bytes, meaning that each of these messages signifies a 64-byte access:
@@ -160,11 +163,9 @@ Hey, that's very close to the 1 GiB/s rate we set!
 
 The next part of the messages looks like `r to addr <X>, size 64`. This means that the generator is simulating a 64-byte read (`r`) to address `<X>`. You'll notice the addresses linearly increase:
 
-$$0 \rightarrow 40 \rightarrow 80$$
+$$0x0 \rightarrow 0x40 \rightarrow 0x80$$
 
 These addresses are printed in *hex*, meaning that the generator is accessing addresses 0x0000, 0x0040, and 0x0080. These addresses are 0x40 = 64 bytes apart! A linear generator will access contiguous and increasing addresses in this format.
-
-<!--TODO (Naama): Experiment with simulation stats and add something about it here-->
 
 ### Random generator
 
@@ -202,21 +203,20 @@ Let's keep everything the same as our `LinearGenerator` to have a nice, clean co
 Let's rerun the script with our new generator!
 
 ```bash
-gem5 --debug-flags=TrafficGen --debug-end=1000000 \
-traffic_gen.py
+gem5 -re --outdir=random_traffic --debug-flags=TrafficGen --debug-end=1000000 traffic_gen.py
 ```
 
-> This is the same command as before, just duplicated here for your convenience.
+You should see the following messages in `simout.txt` in the `random_traffic` output directory:
 
-You should see the following messages in your terminal:
-
-```bash
- 59605: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 2000, size 64
- 59605: system.processor.cores.generator: Next event scheduled at 119210
-119210: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 7900, size 64
-119210: system.processor.cores.generator: Next event scheduled at 178815
-178815: system.processor.cores.generator: RandomGen::getNextPacket: r to addr 33c0, size 64
-178815: system.processor.cores.generator: Next event scheduled at 238420
+```txt
+[...]
+59605: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0xf00, size 64
+59605: board.processor.cores.generator: Next event scheduled at 119210
+119210: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x1380, size 64
+119210: board.processor.cores.generator: Next event scheduled at 178815
+178815: board.processor.cores.generator: RandomGen::getNextPacket: r to addr 0x72c0, size 64
+178815: board.processor.cores.generator: Next event scheduled at 238420
+[...]
 ```
 
 You'll notice that a few things are the same:
@@ -225,7 +225,7 @@ You'll notice that a few things are the same:
 - Accesses still occur on the same ticks (so at the same 1GiB/s rate),
 - Accesses are still all reads.
 
-One thing is different, though: the addresses are all over the place. A `RandomGenerator` will access aligned addresses (you'll notice 0x2000, 0x7900, and 0x33c0 are all multiples of 64), but the addresses will be chosen randomly.
+One thing is different, though: the addresses are all over the place. A `RandomGenerator` will access aligned addresses (you'll notice 0xf00, 0x1380, and 0x7260 are all multiples of 64), but the addresses will be chosen randomly.
 
 > If you're curious about how addresses are actually generated for `LinearGenerator` and `RandomGenerator`, take a look at `src/cpu/testers/traffic_gen`. Heads up: these are C++ files!
 
@@ -292,7 +292,7 @@ def __init__(
         )
 ```
 
-The default parameters we chose to use should look familiar: they're mostly the same as the ones from `LinearGenerator` and `RandomGenerator`. The only difference is `num_cores`, which we set to 2 instead of 1. It really isn't much of a hybrid generator if it only has 1 core!
+The default parameters we chose to use should look familiar: they're mostly the same as the ones from `LinearGenerator` and `RandomGenerator`. Some differences are the block size, which we reduced to 8, and `num_cores`, which we set to 2 instead of 1. It really isn't much of a hybrid generator if it only has 1 core!
 
 The `AbstractGenerator`'s `__init__` function requires a list of cores to instantiate, so we need to create that list. We do this with a helper function called `_create_cores`, which you'll also see declared in other children of `AbstractGenerator` (including `LinearGenerator` and `RandomGenerator`): this is a convention in gem5. We'll fill in the implementation of this function soon; for now, we can treat it as a black box that takes all of our parameters and returns a list of cores.
 
@@ -334,7 +334,7 @@ This way, we have a nice power of 2 for our linear cores and at least 1 random c
 
 Let's initialize some variables! You'll notice we've already created a `core_list` variable that will store all of our cores. We return this variable at the end of the function.
 
-> **Your turn:** Fill in `TODO (1)` in `hybrid_generator.py` to initialize variables for `num_linear_cores` and `num_random_cores`.
+> **Your turn:** Fill in `TODO (1)` in `hybrid_generator.py` to initialize the variables `num_linear_cores` and `num_random_cores` with the appropriate number of cores.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
@@ -370,25 +370,25 @@ Great, now we can assign these partitions to each one of our linear cores! What 
 
 We can do this with the following loop (you can try this yourself or look at the code in the dropdown for the answer):
 
-<details>
-<summary><b> The following loop: </b></summary>
-
-```python
-for i in range(num_linear_cores):
-    core_list.append(
-        LinearGeneratorCore(
-            duration=duration,
-            rate=rate,
-            block_size=block_size,
-            min_addr=addr_ranges[i][0],
-            max_addr=addr_ranges[i][1],
-            rd_perc=rd_perc,
-            data_limit=data_limit,
-        )
-    )
-```
-
-</details>
+> <details>
+> <summary><b> The loop: </b></summary>
+>
+> ```python
+> for i in range(num_linear_cores):
+>     core_list.append(
+>         LinearGeneratorCore(
+>             duration=duration,
+>             rate=rate,
+>             block_size=block_size,
+>             min_addr=addr_ranges[i][0],
+>             max_addr=addr_ranges[i][1],
+>             rd_perc=rd_perc,
+>             data_limit=data_limit,
+>         )
+>     )
+> ```
+>
+> </details>
 <br>
 
 Now that we have all of our linear core set up, we only need to append random cores to our core list. Remember that these are not partitioned in the same way as the linear cores!
@@ -447,31 +447,51 @@ Now we can assign our `generator` a `HybridGenerator`.
 You can now run this with the following command:
 
 ```bash
-gem5 --debug-flags=TrafficGen --debug-end=1000000 \
-traffic_gen.py
+gem5 -re --outdir=hybrid_traffic --debug-flags=TrafficGen --debug-end=1000000 traffic_gen.py
 ```
 
-When you do, you should see the following output:
+When you do, you should see the following output in `simout.txt` in the `hybrid_traffic` output directory:
 
-```bash
-7451: system.processor.cores5.generator: RandomGen::getNextPacket: r to addr 80a8, size 8
-7451: system.processor.cores5.generator: Next event scheduled at 14902
-7451: system.processor.cores4.generator: RandomGen::getNextPacket: r to addr 10a90, size 8
-7451: system.processor.cores4.generator: Next event scheduled at 14902
-7451: system.processor.cores3.generator: LinearGen::getNextPacket: r to addr 18000, size 8
-7451: system.processor.cores3.generator: Next event scheduled at 14902
-7451: system.processor.cores2.generator: LinearGen::getNextPacket: r to addr 10000, size 8
-7451: system.processor.cores2.generator: Next event scheduled at 14902
-7451: system.processor.cores1.generator: LinearGen::getNextPacket: r to addr 8000, size 8
-7451: system.processor.cores1.generator: Next event scheduled at 14902
-7451: system.processor.cores0.generator: LinearGen::getNextPacket: r to addr 0, size 8
-7451: system.processor.cores0.generator: Next event scheduled at 14902
+```txt
+[...]
+402354: board.processor.cores0.generator: LinearGen::getNextPacket: r to addr 0x1a8, size 8
+402354: board.processor.cores0.generator: Next event scheduled at 409805
+402354: board.processor.cores1.generator: LinearGen::getNextPacket: r to addr 0x81a8, size 8
+402354: board.processor.cores1.generator: Next event scheduled at 409805
+402354: board.processor.cores2.generator: LinearGen::getNextPacket: r to addr 0x101a8, size 8
+402354: board.processor.cores2.generator: Next event scheduled at 409805
+402354: board.processor.cores3.generator: LinearGen::getNextPacket: r to addr 0x181a8, size 8
+402354: board.processor.cores3.generator: Next event scheduled at 409805
+402354: board.processor.cores4.generator: RandomGen::getNextPacket: r to addr 0x1ee88, size 8
+402354: board.processor.cores4.generator: Next event scheduled at 409805
+402354: board.processor.cores5.generator: RandomGen::getNextPacket: r to addr 0x1ee88, size 8
+402354: board.processor.cores5.generator: Next event scheduled at 409805
+[...]
 ```
 
-As you can see, we have 6 memory requests happening on the same tick! `system.processor.cores0.generator` through `system.processor.cores3.generator` are our linear cores (you can tell by the nice addresses), and `system.processor.cores4.generator` and `system.processor.cores5.generator` are our random cores.
+As you can see, we have 6 memory requests happening on the same tick! `system.processor.cores0.generator` through `system.processor.cores3.generator` are our linear cores (you can tell by the nice addresses and the reference to `LinearGen::getNextPacket`), and `system.processor.cores4.generator` and `system.processor.cores5.generator` are our random cores.
 
 ### Comparing statistics
 
-<!--TODO (Naama): Generate and discuss statistics differences between the linear and random cores-->
+Let's use our hybrid generator's simulation statistics to compare the cache behavior of linear and random cores. We can do this by searching for all overall cache miss rate statistics in `stats.txt` in the `hybrid_traffic` output directory:
+
+```bash
+grep 'overallMissRate::processor.cores' hybrid_traffic/stats.txt
+```
+
+You should get the following lines:
+
+```txt
+board.cache_hierarchy.l1dcaches0.overallMissRate::processor.cores0.generator     0.011802
+board.cache_hierarchy.l1dcaches1.overallMissRate::processor.cores1.generator     0.010133
+board.cache_hierarchy.l1dcaches2.overallMissRate::processor.cores2.generator     0.011624
+board.cache_hierarchy.l1dcaches3.overallMissRate::processor.cores3.generator     0.011810
+board.cache_hierarchy.l1dcaches4.overallMissRate::processor.cores4.generator     0.873862
+board.cache_hierarchy.l1dcaches5.overallMissRate::processor.cores5.generator     0.873840
+```
+
+As a reminder, cores 0-3 are our linear cores, while cores 4 and 5 are the random cores. You'll notice that the private L1 caches of the linear cores have a much lower miss rate (around 1.2%) compared to the random cores (around 87%). This makes sense considering that linear accesses with a stride of 8 bytes exhibit much better **spatial locality** than random accesses. While a linear core is guaranteed to repeatedly make use of the same cache block, a random core might touch a block once then never again!
+
+Overall, generators, especially custom generators, can help evaluate a memory system under controlled conditions. Just remember that since a generator replaces a processor on a simulation board, you cannot use workloads in conjunction with a generator!
 
 <link href="../style.css" rel="stylesheet"></link>
