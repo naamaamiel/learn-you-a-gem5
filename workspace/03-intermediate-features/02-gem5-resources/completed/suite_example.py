@@ -50,25 +50,28 @@ board = SimpleBoard(
     clk_freq="3GHz",
 )
 
-# Print all the available workloads in the suite
+# Get a suite
 getting_started_suite = obtain_resource("x86-getting-started-benchmark-suite")
 
+# Print all workloads in the suite
 for workload in getting_started_suite:
   print(f"Workload ID: {workload.get_id()}")
   print(f"Workload version: {workload.get_resource_version()}")
   print("===================================")
 
+# Print the input groups in the suite and the workloads within
 print("\nInput groups in the suite:")
 input_groups = getting_started_suite.get_input_groups()
 for group in input_groups:
   print(f"Group: {group}")
   workloads = getting_started_suite.with_input_group(group)
-  for workload in workload:
+  for workload in workloads:
     print(f"Workload ID: {workload.get_id()}, version {workload.get_resource_version()}")
   print("===================================")
 
+# Run a workload from the suite
 npb_is_workload = list(getting_started_suite.with_input_group("is"))[0]
 board.set_workload(npb_is_workload)
 
 simulator = Simulator(board=board)
-simulator.run(10_000_000)
+simulator.run()

@@ -52,7 +52,7 @@ obtain_resource(
 
 ## Setting workloads
 
-It's important to differentiate between the more general use of the word "workload" as "the code the simulated hardware is tasked with running" and the more specific definition of the workload *resource* as "a bundle of resources and parameters that sets up a simulated system to run code". We can have *workloads* that do **not** originate from a *workload resource*!
+It's important to differentiate between the more general use of the word "workload" as "the code the simulated hardware is tasked with running" and the more specific definition of the workload ***resource*** as "a bundle of resources and parameters that sets up a simulated system to run code". We can have *workloads* that do **not** originate from a *workload resource*!
 
 Let's go over all the ways in which we can set *workloads* (not workload resources) on boards in gem5:
 
@@ -99,17 +99,36 @@ We can now run the simulation with:
 gem5 binary_example.py
 ```
 
-<!--TODO (Naama): Output discussion-->
+When you do, you'll see this output in `stdout` (alongside the normal simulation output):
+
+```txt
+Generate Time:       0.00426
+Build Time:          0.00071
+Graph has 1024 nodes and 10496 undirected edges for degree: 10
+Trial Time:          0.00008
+Trial Time:          0.00006
+Trial Time:          0.00005
+Trial Time:          0.00006
+Trial Time:          0.00006
+Trial Time:          0.00006
+Trial Time:          0.00005
+Trial Time:          0.00005
+Trial Time:          0.00005
+Trial Time:          0.00006
+Average Time:        0.00006
+```
+
+You'll notice that the generated graph has 1024 ($2^{10}$) nodes and that 10 "Trial Time" lines are printed out (signifying 10 iterations of the algorithm), just like we specified with our `-g` and `-n` flags in the `arguments` parameter to `set_se_binary_workload()`.
 
 ## What about `set_workload()`?
 
 The `set_workload()` function, which we've used many times already throughout the bootcamp, can (clearly) also be used to set a board's workload. `set_workload()` requires a **workload resource**.
 
-Each workload resource specifies a **function** to call on the board, which will be one of the workload-setting functions we discussed above. Workload resources also specify the arguments to call this function with in the form of other gem5 resources; they can also specify optional non-resource parameters. The `set_workload()` function then calls the specified function with the specified arguments.
+Each workload resource specifies a **function** to call on the board, which will be one of the workload-setting functions we discussed above (`set_se_binary_workload()`, `set_kernel_disk_workload()`, `set_se_simpoint_workload()`, `set_se_looppoint_workload()`, or `set_se_elfie_workload()`). Workload resources also specify the values of the function's arguments in the form of text or other gem5 resources. The `set_workload()` function then calls the specified function with the specified arguments.
 
 ### Using a workload resource
 
-Let's see this in action with the `riscv-gapbs-bfs-run` workload, which just so happens to run the `riscv-gapbs-bfs` we just used in the previous example. Open `workload_example.py`, which is currently just a copy of the same system from `binary_example.py`. Our goals for this example are the same as the goals from before:
+Let's see this in action with the `riscv-gapbs-bfs-run` workload, which just so happens to run the `riscv-gapbs-bfs` binary we just used in the previous example. Open `workload_example.py`, which is currently just a copy of the same system from `binary_example.py`. Our goals for this example are the same as the goals from before:
 
 1) Use the `riscv-gapbs-bfs` binary resource as the workload for this board,
 2) Pass in the arguments `-g 10` and `-n 10` to the binary.
@@ -140,9 +159,28 @@ board.set_workload(workload_resource)
 gem5 workload_example.py
 ```
 
-<!--TODO (Naama): Output discussion-->
+You'll notice that the exact same simulation output shows up in `stdout`:
 
-In essence, workload resources are wrappers around other kinds of resources to make them easier to run. This means that we can set resources (for example, binaries) directly using their corresponding function (for example, `set_se_binary_workload()`), or we can use workloads that bundle these resources for us and use `set_workload()`. Either way is completely fine!
+```txt
+Generate Time:       0.00426
+Build Time:          0.00071
+Graph has 1024 nodes and 10496 undirected edges for degree: 10
+Trial Time:          0.00008
+Trial Time:          0.00006
+Trial Time:          0.00005
+Trial Time:          0.00006
+Trial Time:          0.00006
+Trial Time:          0.00006
+Trial Time:          0.00005
+Trial Time:          0.00005
+Trial Time:          0.00005
+Trial Time:          0.00006
+Average Time:        0.00006
+```
+
+We achieved the exact same final result using `set_workload()` and a workload resource instead of `set_se_binary_workload()`, a binary resource, and arguments!
+
+In essence, workload resources are *wrappers* around other kinds of resources to make them easier to run. This means that we can set resources (for example, binaries) directly using their corresponding function (for example, `set_se_binary_workload()`), or we can use workloads that bundle these resources for us and use `set_workload()`. Either way is completely fine!
 
 ## Anatomy of a workload
 
@@ -204,13 +242,13 @@ Let's go through some important fields:
 - `architecture` specifies which ISA the workload is built for, in this case RISC-V.
 - We discussed `resource_version` and `gem5_versions` above, and here they are in JSON form!
 
-> A workload will _only_ work with a version of gem5 specified in the `gem5_versions` field, be conscious when updating!
+> A workload is only guaranteed to work with a version of gem5 specified in the `gem5_versions` field, so be conscious when updating!
 
 ## Using suites
 
 While workloads are collections of resources and parameters required to run a single gem5 simulation, suites are *collections of workloads* that can be used to run *multiple simulations*.
 
-> Suites are perfect for running simulations **in parallel** using multiprocessing! We'll discuss this in depth in our multisim section.
+> Suites are perfect for running simulations **concurrently** using multiprocessing! We'll discuss this in depth in our multisim section in the advanced topics unit.
 
 Let's look into how we can use suites in our gem5 configuration scripts. Open `suite_example.py`, which currently only sets up a board with no workload.
 
@@ -241,13 +279,41 @@ gem5 suite_workload_example.py
 
 we should see:
 
-> ***UNDER CONSTRUCTION*** <!--TODO (Naama): Output-->
+```txt
+Workload ID: x86-llvm-minisat-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-gapbs-bfs-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-gapbs-tc-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-npb-is-size-s-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-npb-lu-size-s-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-npb-cg-size-s-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-npb-bt-size-s-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-npb-ft-size-s-run
+Workload version: 1.0.0
+===================================
+Workload ID: x86-matrix-multiply-run
+Workload version: 1.0.0
+===================================
+```
+
+This particular suite contains 9 workloads.
 
 ### Suite `input_groups`
 
 Each workload in a suite is a member of one or more `input_groups` that we can filter by. Let's print all of the `input_groups` for this suite using `SuiteResource`'s `get_input_groups()` function. We can also print which workloads are in each input group using `SuiteResource`'s `with_input_group()` function. `with_input_group()` returns a new `SuiteResource` object with only the workloads in that input group.
-
-<!--TODO (Naama): Test this -->
 
 ```python
 print("\nInput groups in the suite:")
@@ -255,42 +321,138 @@ input_groups = getting_started_suite.get_input_groups()
 for group in input_groups:
   print(f"Group: {group}")
   workloads = getting_started_suite.with_input_group(group)
-  for workload in workload:
+  for workload in workloads:
     print(f"Workload ID: {workload.get_id()}, version {workload.get_resource_version()}")
   print("===================================")
 ```
 
 Let's run it again and take a look:
 
-> ***UNDER CONSTRUCTION*** <!--TODO (Naama): Output-->
+```bash
+gem5 suite_workload_example.py
+```
+
+Below the output from the previous part, you should see:
+
+```txt
+Input groups in the suite:
+Group: matrix-multiply
+Workload ID: x86-matrix-multiply-run, version 1.0.0
+===================================
+Group: is
+Workload ID: x86-npb-is-size-s-run, version 1.0.0
+===================================
+Group: llvm
+Workload ID: x86-llvm-minisat-run, version 1.0.0
+===================================
+Group: npb
+Workload ID: x86-npb-is-size-s-run, version 1.0.0
+Workload ID: x86-npb-lu-size-s-run, version 1.0.0
+Workload ID: x86-npb-cg-size-s-run, version 1.0.0
+Workload ID: x86-npb-bt-size-s-run, version 1.0.0
+Workload ID: x86-npb-ft-size-s-run, version 1.0.0
+===================================
+Group: bt
+Workload ID: x86-npb-bt-size-s-run, version 1.0.0
+===================================
+Group: ft
+Workload ID: x86-npb-ft-size-s-run, version 1.0.0
+===================================
+Group: se
+Workload ID: x86-gapbs-bfs-run, version 1.0.0
+Workload ID: x86-gapbs-tc-run, version 1.0.0
+Workload ID: x86-npb-is-size-s-run, version 1.0.0
+Workload ID: x86-npb-lu-size-s-run, version 1.0.0
+Workload ID: x86-npb-cg-size-s-run, version 1.0.0
+Workload ID: x86-npb-bt-size-s-run, version 1.0.0
+Workload ID: x86-npb-ft-size-s-run, version 1.0.0
+Workload ID: x86-matrix-multiply-run, version 1.0.0
+===================================
+Group: tc
+Workload ID: x86-gapbs-tc-run, version 1.0.0
+===================================
+Group: minisat
+Workload ID: x86-llvm-minisat-run, version 1.0.0
+===================================
+Group: gapbs
+Workload ID: x86-gapbs-bfs-run, version 1.0.0
+Workload ID: x86-gapbs-tc-run, version 1.0.0
+===================================
+Group: lu
+Workload ID: x86-npb-lu-size-s-run, version 1.0.0
+===================================
+Group: bfs
+Workload ID: x86-gapbs-bfs-run, version 1.0.0
+===================================
+Group: cg
+Workload ID: x86-npb-cg-size-s-run, version 1.0.0
+===================================
+```
+
+You'll notice that the groups are not disjoint: some workloads are in more than one group. For example, we can see our old friend `x86-gapbs-bfs-run` in the `se`, `gapbs`, and `bfs` groups.
 
 ### Running a workload from the suite
 
-As we can see, the `is` input group only contains one workload, `x86-npb-is-size-s-run`. Let's run this workload out of the suite!
+Looking at the input groups output, we can see that the `is` input group only contains one workload, `x86-npb-is-size-s-run`. Let's run this workload out of the suite!
 
 ```python
 npb_is_workload = list(getting_started_suite.with_input_group("is"))[0]
 board.set_workload(npb_is_workload)
 
 simulator = Simulator(board=board)
-simulator.run(10_000_000)
+simulator.run()
 ```
 
 We turn the `SuiteResource` returned from `with_input_group()` into a list of workload resources, then take its first (and only) element, the `x86-npb-is-size-s-run` workload.
 
 One last time, let's run this:
 
-> ***UNDER CONSTRUCTION*** <!--TODO (Naama): Output-->
+```bash
+gem5 suite_workload_example.py
+```
+
+Now, under our mountain of print statements, you'll see the simulation output:
+
+```txt
+NAS Parallel Benchmarks (NPB3.3-SER) - IS Benchmark
+
+Size:  65536  (class S)
+Iterations:   10
+
+
+IS Benchmark Completed
+Class           =                        S
+Size            =                    65536
+Iterations      =                       10
+Time in seconds =                     0.01
+Mop/s total     =                    57.47
+Operation type  =              keys ranked
+Verification    =               SUCCESSFUL
+Version         =                    3.3.1
+Compile date    =              13 Feb 2024
+
+Compile options:
+  CC           = gcc
+  CLINK        = $(CC)
+  C_LIB        = (none)
+  C_INC        = (none)
+  CFLAGS       = -O3 -mcmodel=medium 
+  CLINKFLAGS   = -O3 -mcmodel=medium -static
+
+
+Please send all errors/feedbacks to:
+
+NPB Development Team
+npb@nas.nasa.gov
+```
 
 ## Local resources
 
 If none of the available gem5 resources suit your needs, you can also make your own local resources! These can either be truly local or, with a bit more setup, more shareable. Let's create a local binary resource and use both methods to add it to our simulation.
 
-Take a look at `pattern.c`, which prints out a simple triangle pattern. Let's compile this into a binary so that we can use it as our custom resource:
+Take a look at `pattern.c`, which prints out a simple triangle pattern. We've already compiled `pattern.c` into an ARM executable, `pattern`, which we'll use in this section.
 
-```bash
-gcc -o pattern pattern.c
-```
+> If you choose to compile your own executable, ***be aware of your glibc version!*** Some later versions are not supported in gem5.
 
 ### Using local paths
 
@@ -308,47 +470,64 @@ We can now run our simulation with this binary!
 gem5 local_path.py
 ```
 
-<!--TODO (Naama): Output-->
+When we do, we can see the printed output of `pattern.c` in stdout:
+
+```txt
+Hello, gem5!
+*
+**
+***
+****
+*****
+******
+*******
+********
+*********
+**********
+```
 
 This method works well, but it's not very reproducible or consistent. If this resource is an important part of our code that will stick around for a while, we want to give it a permanent home and use `obtain_resource` to acquire it.
 
 ### Using JSON resources
 
-We can circumvent this problem by creating a JSON file for our binary resource. We've already looked at the JSON format for binaries, so here is what the one for our `pattern` binary looks like:
+We can set up our resource by creating a JSON file for it. Open `local_resources.json` to take a look at the JSON format for `pattern`:
 
 ```json
 {
-  "category": "binary",
-  "id": "x86-pattern-print",
-  "description": "A simple X86 binary that prints a pattern",
-  "architecture": "X86",
-  "size": 1,
-  "tags": [],
-  "is_zipped": false,
-  "md5sum": "2a0689d8a0168b3d5613b01dac22b9ec",
-  "source": "",
-  "url": "file://./pattern",
-  "code_examples": [],
-  "license": "",
-  "author": [
-      "Harshil Patel"
-  ],
-  "source_url": "",
-  "resource_version": "1.0.0",
-  "gem5_versions": [
-      "23.0",
-      "23.1",
-      "24.0"
-  ],
-  "example_usage": "obtain_resource(resource_id=\"x86-pattern-print\")"
+    "category": "binary",
+    "id": "arm-pattern-print",
+    "description": "A simple ARM binary that prints a pattern",
+    "architecture": "ARM",
+    "size": 1,
+    "tags": [],
+    "is_zipped": false,
+    "md5sum": "93c09562c9eee7cdf781b5fb77f3c138",
+    "source": "",
+    "url": "file://<PATH-TO-PATTERN-EXECUTABLE>",
+    "code_examples": [],
+    "license": "",
+    "author": [
+        "Harshil Patel"
+    ],
+    "source_url": "",
+    "resource_version": "1.0.0",
+    "gem5_versions": [
+        "23.0",
+        "23.1",
+        "24.0",
+        "25.0"
+    ],
+    "example_usage": "obtain_resource(resource_id=\"arm-pattern-print\")"
 }
 ```
 
-Note the category (binary), the name we've given our resource (`x86-pattern-print`), and the URL of our resource (the local path).
+Note the category (binary) and the name we've given our resource (`arm-pattern-print`). If we ever make any more custom resources, we can add them to this JSON file below this one.
+
+> If you compiled your own `pattern` executable, be sure to update the `md5sum` field with the output of the `md5sum pattern` bash command.
+
+Replace `<PATH-TO-PATTERN-EXECUTABLE>` (including the angle brackets) in the `url` line to match the absolute path of the `pattern` executable, which you can get by navigating to the `02-gem5-resources` directory and running `pwd`. Don't forget to add the file name (`pattern`) to the end of the path!
 
 > We can change this URL to reflect a more permanent hosting place for this resource if we choose to share it.
-
-Create a JSON file with these contents named `local_resources.json`. Any other local resources we define can be added to this JSON file.
 
 Now, open `json_resource.py`. Let's use `obtain_resource()` to grab this resource:
 
@@ -362,9 +541,25 @@ Now, in order for gem5 to be able to find our local resource, we need to add the
 GEM5_RESOURCE_JSON_APPEND=local_resources.json gem5 json_resource.py
 ```
 
-> If we are only using local resources, we can set the `GEM5_RESOURCE_JSON` environment variable instead, but this will prevent gem5 from finding resources anywhere else!
->
-> If we do want gem5 to search both our local resources and the gem5-resources database, we need to create a json file that points to both our local resources (our json file) and the remote resources (the gem5-resources database) and set the `GEM5_CONFIG` environment variable to that file path.
+When you do, you'll see the exact same output as before:
+
+```txt
+Hello, gem5!
+*
+**
+***
+****
+*****
+******
+*******
+********
+*********
+**********
+```
+
+> If you are only using local resources in a simulation, you can set the `GEM5_RESOURCE_JSON` environment variable instead of the `GEM5_RESOURCE_JSON_APPEND` variable, but this will prevent gem5 from finding resources anywhere else!
+
+> To more permanently set up the use of local and global resources at the same time, you'll need to create a JSON file that points to both the local resources (`local_resources.json`) and the remote resources (the gem5-resources database), then set the `GEM5_CONFIG` environment variable to that file's path. That JSON file might look something like this:
 >
 > ```json
 > {
@@ -384,6 +579,6 @@ GEM5_RESOURCE_JSON_APPEND=local_resources.json gem5 json_resource.py
 > }
 > ```
 
-<!--TODO (Naama): Output-->
+Though we won't be making extensive use of custom resources in this bootcamp, creating local gem5 resources is an immensely useful skill to have in your toolbox.
 
 <link href="../style.css" rel="stylesheet"></link>

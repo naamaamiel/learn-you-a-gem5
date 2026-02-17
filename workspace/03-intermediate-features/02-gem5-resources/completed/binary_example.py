@@ -45,7 +45,7 @@ board = SimpleBoard(
     clk_freq="3GHz",
 )
 
-# Add binary to the board
+# Set a binary workload on the board
 binary_resource = obtain_resource("riscv-gapbs-bfs")
 board.set_se_binary_workload(
     binary=binary_resource, 
@@ -53,4 +53,4 @@ board.set_se_binary_workload(
 )
 
 simulator = Simulator(board=board)
-simulator.run(10_000_000)
+simulator.run()

@@ -50,4 +50,13 @@ board = SimpleBoard(
     clk_freq="3GHz",
 )
 
-# Print all the available workloads in the suite
+# Get a suite
+
+
+# Print all workloads in the suite
+
+
+# Print the input groups in the suite and the workloads within
+
+
+# Run a workload from the suite
