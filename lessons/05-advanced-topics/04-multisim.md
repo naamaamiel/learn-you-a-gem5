@@ -85,8 +85,8 @@ As a reminder, the parameters we want to explore in this experiment are:
 We need a total of 4 simulations to explore all combinations of these parameters. Let's take *all* of the code we currently have and wrap it in this nested for loop:
 
 ```python
-for data_cache_size in ["8kB","16kB"]:
-    for instruction_cache_size in ["8kB","16kB"]:
+for data_cache_size in ["8KiB","16KiB"]:
+    for instruction_cache_size in ["8KiB","16KiB"]:
         cache_hierarchy = PrivateL1CacheHierarchy(
             l1d_size=data_cache_size,
             l1i_size=instruction_cache_size,
@@ -104,7 +104,7 @@ simulator = Simulator(
 )
 ```
 
-We give each simulator a **unique ID** using the `id` parameter so that we can tell apart our simulations once we run them all together.
+We give each simulator a **unique ID** using `Simulator`'s `id` parameter so that we can tell apart our simulations once we run them all together.
 
 ### Adding simulations to MultiSim
 
@@ -118,19 +118,58 @@ multisim.add_simulator(simulator)
 
 And that's it! Alarm bells might be going off in your head, though: didn't we forget to actually invoke the `run()` function (or the MultiSim equivalent)? As it turns out, the `multisim` module's execution will run the simulations for us, no extra function calls required.
 
-### Running in parallel
+### Running concurrently
 
 If we want to run all 4 simulations, we can do that using the following command:
 
 ```bash
-gem5 -m gem5.utils.multisim multisim-experiment.py
+gem5 -m gem5.utils.multisim multisim_experiment.py
 ```
 
 You'll notice our use of the `-m` flag to pass in the `multisim` module. Other than that, we just pass in the name of the configuration script like any other simulation.
 
-Once this is done running, you can check `m5out` to see a separate output folder for each of our 4 simulations!
+As the simulations run, you'll notice a lot of terminal output--this is because all four simulations' `stdout`s are directed to the console (you can always use `-re` to direct them to files instead). Once this is done running, you can check `m5out` to see a separate output folder for each of our 4 simulations!
 
-<!--TODO (Naama): Output verification/analysis-->
+```txt
+m5out
+    |____ process_8KiB_8KiB
+    |____ process_8KiB_16KiB
+    |____ process_16KiB_8KiB
+    |____ process_16KiB_16KiB
+    |____ stats.txt
+```
+
+Each folder is named with the `id` we gave each simulator in the configuration script. 
+
+You'll notice that some of our regular files like `config.ini` and `config.json` are missing, and that `stats.txt` is empty! Have no fear: each simulation folder has its own copy of these files specifying its simulated system and statistics. Let's take a look at the L1 cache miss rates for each simulation. From the `m5out` directory, run:
+
+```bash
+grep -r 'overallMissRate::total'
+```
+
+to get:
+
+```txt
+process_16KiB_8KiB/stats.txt:board.cache_hierarchy.l1dcaches.overallMissRate::total     0.004125
+process_16KiB_8KiB/stats.txt:board.cache_hierarchy.l1icaches.overallMissRate::total     0.000017
+process_8KiB_16KiB/stats.txt:board.cache_hierarchy.l1dcaches.overallMissRate::total     0.008193
+process_8KiB_16KiB/stats.txt:board.cache_hierarchy.l1icaches.overallMissRate::total     0.000015
+process_16KiB_16KiB/stats.txt:board.cache_hierarchy.l1dcaches.overallMissRate::total     0.004125
+process_16KiB_16KiB/stats.txt:board.cache_hierarchy.l1icaches.overallMissRate::total     0.000015
+process_8KiB_8KiB/stats.txt:board.cache_hierarchy.l1dcaches.overallMissRate::total     0.008193
+process_8KiB_8KiB/stats.txt:board.cache_hierarchy.l1icaches.overallMissRate::total     0.000017
+```
+
+Putting this in a slightly nicer format, here are out results:
+
+| Simulation  | L1d Miss Rate | L1i Miss Rate |
+|-------------|---------------|---------------|
+| 8KiB_8KiB   | 0.008193      | 0.000017      |
+| 8KiB_16KiB  | 0.008193      | 0.000015      |
+| 16KiB_8KiB  | 0.004125      | 0.000017      |
+| 16KiB_16KiB | 0.004125      | 0.000015      |
+
+Looks like the 16KiB d-cache was a lot more impactful on the overall miss rate than the 16KiB i-cache!
 
 ### Running individual simulations
 
@@ -150,7 +189,12 @@ gem5 multisim_experiment.py --list
 
 When we do, we should see the following output:
 
-<!--TODO (Naama): Run this, paste output-->
+```txt
+process_8KiB_8KiB
+process_8KiB_16KiB
+process_16KiB_8KiB
+process_16KiB_16KiB
+```
 
 Then, to execute a single simulation, we just pass gem5 the simulation ID:
 
@@ -158,7 +202,7 @@ Then, to execute a single simulation, we just pass gem5 the simulation ID:
 gem5 {config} {id}
 ```
 
-For example, if we wanted to only run the 8kB i-cache/8kB d-cache simulation, we can do so like this:
+For example, if we wanted to only run the 8kB d-cache/8kB i-cache simulation, we can do so like this:
 
 ```bash
 gem5 multisim_experiment.py process_8kB_8kB
