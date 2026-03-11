@@ -186,7 +186,7 @@ First, you'll notice that `HelloSimObject` inherits from `SimObject`, just like 
 - `type`: the name of this SimObject. By convention, this matches the name of the declaration `.py` file (this file).
 - `cxx_header`: the path to the header file (which we haven't written yet). **This path is relative to the `gem5/src` directory**.
 
-  - > If your `workspace` directory is in a different location, be sure to update `cxx_header` to match!
+  - > If your `hello-sim-object` directory is in a different location, be sure to update `cxx_header` to match!
 
 - `cxx_class`: the name of the C++ class for this SimObject.
 
@@ -342,7 +342,7 @@ For now, all this file does is import `m5`. Let's add another import to the mix:
 from m5.objects.Root import Root
 ```
 
-Every gem5 simulation starts with a `Root` object. This object represents the root of the device tree of he simulated computer system. We'll also want to import our brand-new SimObject:
+Every gem5 simulation starts with a `Root` object. This object represents the root of the device tree of the simulated computer system. We'll also want to import our brand-new SimObject:
 
 ```python
 from m5.objects.HelloSimObject import HelloSimObject
@@ -413,7 +413,7 @@ First, we need to add another import. gem5 defines its own parameter classes und
 from m5.params import *
 ```
 
-We can now define the parameter for `HelloSimObject` under the `cxx_class` field. Since `num_hellos` represents a number, we'll use `Param.Int`.
+We can now define the parameter for `HelloSimObject` below the `cxx_class` field. Since `num_hellos` represents a number, we'll use `Param.Int`.
 
 ```python
 num_hellos = Param.Int("Number of times to say Hello.")
