@@ -76,7 +76,7 @@ So far, we know that:
 
 ...but where is the first event scheduled? How does simulation get off the ground? To figure this out, we can look at `m5.simulate` (found in `gem5/src/python/m5.simulate.py`). 
 
-As you may remember from the previous section, this function is called to start simulation after calling `m5.instantiate`; we can think of this as setting up tick 0 of simulation. Within `m5.simulate()`, we can see the following lines:
+As you may remember from the previous section, this function is called to start simulation after calling `m5.instantiate`; we can think of this as setting up tick 0 of simulation after `m5.instantiate` instantiates the device tree. Within `m5.simulate()`, we can see the following lines:
 
 ```c++
 def simulate(*args, **kwargs):

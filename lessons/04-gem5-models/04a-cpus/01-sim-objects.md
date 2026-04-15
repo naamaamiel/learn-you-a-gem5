@@ -276,7 +276,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 
 Just like its header file, we use the `gem5` namespace. We also define the constructor that was declared in the header file. We call the constructor of our parent class (`SimObject`) in the initialization list, then simply print out a little "hello" message in the body. When `HelloSimObject` is instantiated for simulation, this message will print to the console.
 
-We've now written all of the code needed to define `HelloSimObject`! Let's build gem5 so that we ca use it.
+We've now written all of the code needed to define `HelloSimObject`! Let's build gem5 so that we can use it.
 
 ### Rebuilding gem5
 
@@ -394,6 +394,46 @@ The constructor of our brand new SimObject was successfully called!
 > This call to the constructor happened during `m5.instantiate()` when `HelloSimObject` was created. This means that `HelloSimObject` has no interesting simulation behavior (or any simulation behavior at all!).
 
 We can also see that the simulation exited due to "simulate() limit reached"; basically, the simulation ran out of things to simulate!
+
+### `m5.instantiate`
+
+Seeing this output, you might be wondering *when* `HelloSimObject`'s constructor was actually called. This is the job of `m5.instantiate()`, which we called in our configuration script after creating the device tree. The full implementation can be found in `gem5/src/python/m5/simulate.py`, but for now, we'll focus on the following lines:
+
+```python
+root = objects.Root.getInstance()
+
+if not root:
+    fatal("Need to instantiate Root() before calling instantiate()")
+
+...
+
+# Initialize the global statistics
+stats.initSimStats()
+
+# Create the C++ sim objects and connect ports
+for obj in root.descendants():
+    obj.createCCObject()
+for obj in root.descendants():
+    obj.connectPorts()
+```
+
+Here, we can see that each descendant of `root` is instantiated (has its constructor called), and all SimObjects have their ports connected. 
+
+> Ports are a way for SimObjects to send each other data. For more on ports, take a look at the memory track!
+
+This means that the constructor for `HelloSimObject` was called here, and thus this is where the prints we see in the simulation output originate from!
+
+> As a fun connection to our tour of `AtomicSimpleCPU`, later on, we see this:
+> > 
+> ```python
+> # Do a second pass to finish initializing the sim > objects
+>     for obj in root.descendants():
+>         obj.init()
+> ```
+> 
+> We saw the `init()` function implemented in `atomic.cc` for the atomic CPU. `init()` is initially defined in the `SimObject` class, and every SimObject can override `init()` to perform any initialization tasks that require all other SimObjects to already be instantiated (have had their constructors called).
+
+The rest of `m5.instantiate()` might look a bit opaque right now, and that's okay! You may choose to revisit this function after spending more time with SimObjects.
 
 ## SimObject parameters
 

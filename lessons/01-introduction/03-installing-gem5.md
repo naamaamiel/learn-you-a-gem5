@@ -102,6 +102,8 @@ scons build/ALL/gem5.opt -j $(nproc)
 
 This command builds gem5 with all ISAs (`ALL`) with the `.opt` debug option (a balance of speed optimizations and debugging flags) using all of the available processors.
 
+> If you find yourself running into out-of-memory errors on your device when building gem5, using fewer cores (ex: `-j 2`) may help.
+
 **This command will take a while!!!** gem5 can take over 45 minutes to build. While that's going on, feel free to take a break or read through the [bootcamp introduction](../01-sim-background/00-welcome.md) if you haven't already. When the building process is finally done, you'll find the binary your computer has been building for so long at `<path-to-your-gem5-folder>/build/ALL/gem5.opt`.
 
 ## Navigating the `gem5` directory
