@@ -1,0 +1,15 @@
+warn: No dot file generated. Please install pydot to generate the dot file and pdf.
+src/mem/dram_interface.cc:690: warn: DRAM device capacity (16384 Mbytes) does not match the address range assigned (4096 Mbytes)
+src/arch/riscv/isa.cc:319: info: RVV enabled, VLEN = 256 bits, ELEN = 64 bits
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+src/cpu/minor/execute.cc:166: warn: No functional unit for OpClass SimdUnitStrideSegmentedLoad
+src/cpu/minor/execute.cc:166: warn: No functional unit for OpClass SimdUnitStrideSegmentedStore
+src/cpu/minor/execute.cc:166: warn: No functional unit for OpClass SimdUnitStrideSegmentedFaultOnlyFirstLoad
+src/cpu/minor/execute.cc:166: warn: No functional unit for OpClass SimdStrideSegmentedLoad
+src/cpu/minor/execute.cc:166: warn: No functional unit for OpClass SimdStrideSegmentedStore
+board.remote_gdb: Listening for connections on port 7000
+src/sim/syscall_emul.hh:1121: warn: readlink() called on '/proc/self/exe' may yield unexpected results in various settings.
+      Returning '/homes/iws/namiel/.cache/gem5/riscv-print-this'
+src/sim/mem_state.cc:443: info: Increasing stack size by one page.
+src/sim/syscall_emul.cc:86: warn: ignoring syscall mprotect(...)
