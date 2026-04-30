@@ -26,8 +26,8 @@ requires(
 
 
 cache_hierarchy = PrivateL1CacheHierarchy(
-    l1d_size="32kiB",
-    l1i_size="32kiB"
+    l1d_size="32KiB",
+    l1i_size="32KiB"
 )
 
 memory = DualChannelDDR4_2400(size="3GiB")
