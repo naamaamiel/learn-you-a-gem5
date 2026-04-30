@@ -26,34 +26,42 @@ The idea behind KVM fast-forwarding is to take advantage of this really fast exe
 
 ## Sounds great, how do I do it?
 
+### Setting up KVM
+
+Before you can use a KVM CPU in gem5, you need to verify that KVM is set up correctly for you to use on your machine. Instructions for how to do that can be found [gem5's KVM setup page](https://www.gem5.org/documentation/general_docs/using_kvm/), which will walk you through how to verify that your host machine is compatible with hardware virtualization and how to install the required dependencies to use KVM in gem5.
+
+### Using KVM
+
 Using KVM fast-forwarding requires us to:
 
 1) Indicate where in the workload our region of interest lies,
 2) Have a way of switching between CPUs,
 3) Switch between CPUs when we hit the indicated region of interest.
 
-Let's go through an example to show how KVM fast-forwarding is done. Copy the `kvm_time.py` file from the bootcamp resources.
+Let's go through an example to show how KVM fast-forwarding is done. Open `kvm_time.py` to get started.
 
-### Exit events for KVM fast-forwarding
+### Hypercalls for KVM fast-forwarding
 
-The workload you use for KVM fast-forwarding must be annotated using m5ops to indicate the beginning and end of the ROI. The most common way to do this is to include a `workbegin` at the beginning of the ROI and a `workend`  at the end.
+The workload you use for KVM fast-forwarding must be annotated using `gem5-bridge` calls to indicate the beginning and end of the ROI. The most common way to do this is to include an `ROI begin` (hypercall ID 4) at the beginning of the ROI and an `ROI end` (hypercall ID 5) at the end.
 
-Since KVM CPUs use the host CPU to execute code, and the host CPU has no idea what m5ops are, it will not recognize any instruction-mode m5ops. Instead, you must use the address mode versions; more on this in the m5ops section of the bootcamp.
+Since KVM CPUs use the host CPU to execute code, and the host CPU has no idea what `gem5-bridge` calls are, it will not recognize any instruction-mode `gem5-bridge` calls. Instead, you must use the address mode versions; more on this in the communication section of the bootcamp (Unit III, section 4).
 
 One workload that is already annotated in this way is the Class A EP benchmark in the NPB benchmark suite. Let's use that for this example.
 
-> **Your turn:** Fill in `TODO (1)` in `kvm_time.py` to obtain the `"npb-ep-a"` workload and pass it to the simulation board.
+> **Your turn:** Fill in `TODO (1)` in `kvm_time.py` to obtain the `"x86-ubuntu-24.04-npb-ep-a"` workload and pass it to the simulation board.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> board.set_workload(obtain_resource("npb-ep-a"))
+> board.set_workload(obtain_resource("x86-ubuntu-24.04-npb-ep-a"))
 > ```
 >
 > </details>
 
 <br>
+
+> **An important note on ISAs**: Since KVM uses the host CPU to execute instructions, *the ISA of the workload being used must match the ISA of your host CPU*. For this section, we assume an **x86 CPU**. If your host CPU is not an x86 machine, be sure to use the corresponding version of the workload (for example, `arm-ubuntu-24.04-npb-ep-a`). Also remember to switch the required ISA at the top of the configuration file.
 
 ### SwitchableProcessor
 
@@ -83,7 +91,7 @@ For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core fo
 
 ### Exit event handlers
 
-We can customize the behavior of the `workbegin` and `workend` exit event handlers to switch between the cores in our `SimpleSwitchableProcessor`. We want the `workbegin` handler, which indicates the beginning of the ROI, to do the following:
+We can customize the behavior of the `ROI begin` and `ROI end` exit event handlers to switch between the cores in our `SimpleSwitchableProcessor`. We want the `ROI begin` handler, which indicates the beginning of the ROI, to do the following:
 
 1) Dump the current statistics from the KVM fast-forwarding segment,
 2) Switch from the KVM CPU to the timing CPU,
@@ -92,14 +100,14 @@ We can customize the behavior of the `workbegin` and `workend` exit event handle
 
 This way, we have some information about what happened during fast-forwarding, and we prepared ourselves for the ROI.
 
-We want the `workend` handler, which indicates the end of the ROI, to do the following:
+We want the `ROI end` handler, which indicates the end of the ROI, to do the following:
 
 1) Dump the current statistics from the detailed simulation segment,
 2) End the simulation.
 
 This way, we print out the statistics we gathered from the timing phase and stop simulating.
 
-> **Your turn:** Fill in `TODO (3)` in `kvm_time.py` to write a `workbegin` handler that does the following:
+> **Your turn:** Fill in `TODO (3)` in `kvm_time.py` to write a `ROI begin` handler that does the following:
 >
 > 1) Dump the current statistics from the KVM fast-forwarding segment,
 > 2) Switch from the KVM CPU to the timing CPU,
@@ -107,14 +115,16 @@ This way, we print out the statistics we gathered from the timing phase and stop
 > 4) **Schedule an exit event after running from 1,000,000,000 ticks,**
 > 5) Fall back to simulation.
 >
-> Note that we added a new thing for the workbegin handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement a `workend` handler, and we don't have to simulate the entire ROI (which might take a while).
+> You should write this handler as a function; we'll use `register_exit_event()` on it momentarily.
+>
+> Note that we added a new thing for the `ROI begin` handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement an `ROI end` handler, and we don't have to simulate the entire ROI (which might take a while).
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> def workbegin_handler():
->     print("Done booting Linux")
+> def ROI_begin_handler():
+>     print("Reached the ROI!")
 > 
 >     print("Dump the current stats")
 >     m5.stats.dump()
@@ -127,39 +137,130 @@ This way, we print out the statistics we gathered from the timing phase and stop
 >     print("Resetting stats at the start of ROI!")
 >     m5.stats.reset()
 > 
->     yield False
+>     return False
 > ```
 >
 > </details>
 
 <br>
 
-We also need to register these exit events with the simulator object.
+We also need to register this handler to the `ROI begin` hypercall number (4).
 
-> **Your turn:** Fill in `TODO (4)` in `kvm_time.py` to register our new `workbegin_handler` function to trigger on the `workbegin` exit event.
+> **Your turn:** Fill in `TODO (4)` in `kvm_time.py` to register our new `ROI_begin_handler` function to trigger on the `ROI_begin` exit event.
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
-> ExitEvent.WORKBEGIN: workbegin_handler(),
+> register_exit_handler(4, ROI_begin_handler, "ROI begin handler")
 > ```
 >
 > </details>
 
 <br>
 
-Congratulations! You just set up a simulation with KVM fast-forwarding. Let's run this thing and see what it says!
+### Let's run this thing!
 
-> ⚠️ ***UNDER CONSTRUCTION!*** ⚠️
+Running a simulation that uses KVM looks exactly like running a simulation without it. For the sake of readability, let's redirect output streams to files:
 
-<!-- TODO (Naama): Run this thing and discuss results -->
+```bash
+gem5 -re kvm_time.py
+```
+
+> If your simulation fails with a message warning about the value of `kernel.perf_event_paranoid`, and you don't have the ability to adjust that value on your setup, don't worry! You can disable `usePerf` in the simulated CPU by adding the following:
+>
+> ```python
+> for proc in processor.start:
+>     proc.core.usePerf = False
+> ```
+> 
+> This tells the KVM CPU not to collect statistics, which disables some simulation features, but it allows the simulation to work!
+>
+
+There is now quite a bit of output to parse through. Let's start with `board.pc.com_1.device`, which collects the output of the simulated `stdout`. Below quite a bit of boot-related printing, you should see the following as the last few lines of the file:
+
+```txt
+Ubuntu 24.04 LTS gem5 ttyS0
+
+gem5 login: gem5 (automatic login)
+
+
+In after_boot.sh...
+Interactive mode: false
+Starting gem5 init... trying to read run script file via readfile.
+Running script from gem5-bridge stored in /tmp/script
+ --------------------- M5 INIT --------------------- 
+
+
+ NAS Parallel Benchmarks (NPB3.4-OMP) - EP Benchmark
+
+ Number of random numbers generated:       536870912
+ Number of available threads:                      2
+
+ -------------------- ROI BEGIN -------------------- 
+```
+
+You can see that we started executing the benchmask and hit the beginning of the ROI. The printing stops here because we didn't actually execute the full ROI; we just *started* to do it, then only executed for a set amount of ticks before exiting.
+
+We can now turn our attention to `simout.txt`, where we can see the following:
+
+```txt
+info: Using default config
+Global frequency set at 1000000000000 ticks per second
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+Reached the ROI!
+Dump the current stats
+Switching from KVM to TIMING CPU
+switching cpus
+Resetting stats at the start of ROI!
+```
+
+These are the prints we expect to see from hitting the `ROI begin` handler we defined, so we know it got called.
+
+Lastly, let's look at `stats.txt`. You'll notice that there are two statistics segments bookended by
+
+```txt
+---------- Begin Simulation Statistics ----------
+...
+---------- End Simulation Statistics   ----------
+```
+
+The first one was created at the beginning of simulation and collected statistics up until the call to `m5.stats.dump()` in the `ROI begin` handler. Note that since we called `m5.stats.reset()` in that same handler, the next segment represents the stats from the next time we enter back into simulation until the simulation ended. 
+
+Let's look at the first chunk. If we look for `board.processor.start0.core.commitStats0.numOps` and `board.processor.start1.core.commitStats0.numOps`, which track the number of ops committed, you'll see that number is **0**:
+
+```txt
+board.processor.start0.core.commitStats0.numOps 0
+board.processor.start1.core.commitStats0.numOps 0
+```
+
+This is because KVM does not simulate any operations; this is slightly annoying for stats, but more importantly, this means that it **does not warm up micro-architectural components** (like caches). If having warmed-up components is important to your analysis, you might want to consider utilizing a short warm-up period before collecting statistics.
+
+In the second chunk, we can see actual stats:
+
+```txt
+board.processor.switch0.core.commitStats0.numInsts 1032538 
+board.processor.switch1.core.commitStats0.numInsts 1657548
+```
+
+...including memory stats, if you like:
+
+```txt
+board.cache_hierarchy.l1dcaches0.overallMissRate::total 0.001050
+```
+
+Since we ran the ROI for exactly 1,000,000,000 ticks, we can see this information, too:
+
+```txt
+simSeconds   0.001000
+simTicks     1000000000
+```
 
 ## Caveats
 
 KVM fast-forwarding is great, but it's not applicable everywhere. It has a few major downsides which are important to consider:
 
-### The simulation system must have the same ISA as the host
+### The simulated CPU must have the same ISA as the host
 
 Once again, the fact that KVM CPUs rely on the host CPU comes back to bite us. You can't make an x86 CPU execute ARM instructions! This means that if you want to use KVM fast-forwarding, you can't simulate an ISA different from your host machine.
 
