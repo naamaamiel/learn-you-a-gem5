@@ -42,9 +42,9 @@ Let's go through an example to show how KVM fast-forwarding is done. Open `kvm_t
 
 ### Hypercalls for KVM fast-forwarding
 
-The workload you use for KVM fast-forwarding must be annotated using `gem5-bridge` calls to indicate the beginning and end of the ROI. The most common way to do this is to include an `ROI begin` (hypercall ID 4) at the beginning of the ROI and an `ROI end` (hypercall ID 5) at the end.
+The workload you use for KVM fast-forwarding must be annotated using `m5ops` to indicate the beginning and end of the ROI. The most common way to do this is to include a work/ROI begin (hypercall number 4) at the beginning of the ROI and a work/ROI end (hypercall number 5) at the end.
 
-Since KVM CPUs use the host CPU to execute code, and the host CPU has no idea what `gem5-bridge` calls are, it will not recognize any instruction-mode `gem5-bridge` calls. Instead, you must use the address mode versions; more on this in the communication section of the bootcamp (Unit III, section 4).
+Since KVM CPUs use the host CPU to execute code, and the host CPU has no idea what `m5ops` are, it will not recognize any instruction-mode `m5ops` calls. Instead, you must use the address mode versions.
 
 One workload that is already annotated in this way is the Class A EP benchmark in the NPB benchmark suite. Let's use that for this example.
 
@@ -67,9 +67,9 @@ One workload that is already annotated in this way is the Class A EP benchmark i
 
 A `SwitchableProcessor` is a component that allows for a processor to switch between cores during execution, as long as your system uses `SimpleCores`. You can give a `SwitchableProcessor` any number of cores to switch between, then tell is to switch to a specific core using the `switch_to_processor()` function.
 
-![A diagram of a SwitchableProcessor and a SimpleSwitchableProcessor. The SwitchableProcessor has a dictionary of SimpleCores labeled "A", "B", ... "Z". The SimpleCore labeled "B" is highlighted and labeled with a code segment that says "switch_to_processor("B")". The SimpleSwitchableProcessor has two CPUTypes.TYPEs labeled "starting_core_type" and "switch_core_type". The switch_core_type is highlighted and labeled with a code segment that says "switch()".](img/gem5-switchable-proc.png)
-
 For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core for fast-forwarding and a `TIMING` core for the ROI. Thankfully, there already exists a component that does this for us! The `SimpleSwitchableProcessor` class only takes two cores types: a starting and switch core type, then allows you to switch between them using the `switch()` function.
+
+![A diagram of a SwitchableProcessor and a SimpleSwitchableProcessor. The SwitchableProcessor has a dictionary of SimpleCores labeled "A", "B", ... "Z". The SimpleCore labeled "B" is highlighted and labeled with a code segment that says "switch_to_processor("B")". The SimpleSwitchableProcessor has two CPUTypes.TYPEs labeled "starting_core_type" and "switch_core_type". The switch_core_type is highlighted and labeled with a code segment that says "switch()".](img/gem5-switchable-proc.png)
 
 > **Your turn:** Fill in `TODO (2)` in `kvm_time.py` to initialize `processor` as a `SimpleSwitchableProcessor` with a starting core type of `CPUTypes.KVM`, a switch core type of `CPUTypes.TIMING`, the ISA that matches your host machine's ISA, and 2 cores.
 >
@@ -87,11 +87,9 @@ For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core fo
 >
 > </details>
 
-<br>
-
 ### Exit event handlers
 
-We can customize the behavior of the `ROI begin` and `ROI end` exit event handlers to switch between the cores in our `SimpleSwitchableProcessor`. We want the `ROI begin` handler, which indicates the beginning of the ROI, to do the following:
+We can customize the behavior of the work/ROI begin and work/ROI end exit event handlers to switch between the cores in our `SimpleSwitchableProcessor`. We want the work/ROI begin handler, which indicates the beginning of the ROI, to do the following:
 
 1) Dump the current statistics from the KVM fast-forwarding segment,
 2) Switch from the KVM CPU to the timing CPU,
@@ -100,14 +98,14 @@ We can customize the behavior of the `ROI begin` and `ROI end` exit event handle
 
 This way, we have some information about what happened during fast-forwarding, and we prepared ourselves for the ROI.
 
-We want the `ROI end` handler, which indicates the end of the ROI, to do the following:
+We want the work/ROI end handler, which indicates the end of the ROI, to do the following:
 
 1) Dump the current statistics from the detailed simulation segment,
 2) End the simulation.
 
 This way, we print out the statistics we gathered from the timing phase and stop simulating.
 
-> **Your turn:** Fill in `TODO (3)` in `kvm_time.py` to write a `ROI begin` handler that does the following:
+> **Your turn:** Fill in `TODO (3)` in `kvm_time.py` to write a work/ROI begin handler that does the following:
 >
 > 1) Dump the current statistics from the KVM fast-forwarding segment,
 > 2) Switch from the KVM CPU to the timing CPU,
@@ -117,7 +115,7 @@ This way, we print out the statistics we gathered from the timing phase and stop
 >
 > You should write this handler as a function; we'll use `register_exit_event()` on it momentarily.
 >
-> Note that we added a new thing for the `ROI begin` handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement an `ROI end` handler, and we don't have to simulate the entire ROI (which might take a while).
+> Note that we added a new thing for the work/ROI begin handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement a work/ROI end handler, and we don't have to simulate the entire ROI (which might take a while).
 >
 > <details>
 > <summary> <b>Answer</b> </summary>
@@ -144,7 +142,7 @@ This way, we print out the statistics we gathered from the timing phase and stop
 
 <br>
 
-We also need to register this handler to the `ROI begin` hypercall number (4).
+We also need to register this handler to the work/ROI begin hypercall number (4).
 
 > **Your turn:** Fill in `TODO (4)` in `kvm_time.py` to register our new `ROI_begin_handler` function to trigger on the `ROI_begin` exit event.
 >
@@ -156,8 +154,6 @@ We also need to register this handler to the `ROI begin` hypercall number (4).
 > ```
 >
 > </details>
-
-<br>
 
 ### Let's run this thing!
 
