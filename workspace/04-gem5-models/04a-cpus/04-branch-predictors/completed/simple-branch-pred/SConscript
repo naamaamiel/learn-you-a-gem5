@@ -1,0 +1,7 @@
+Import("*")
+
+SimObject("HelloPredictor.py", sim_objects=["HelloBP"])
+
+Source("hello_predictor.cc")
+
+DebugFlag('HelloBranchPred', 'Traces execution of the a custom branch predictor')
