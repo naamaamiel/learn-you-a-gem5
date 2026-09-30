@@ -540,6 +540,6 @@ This time, the L3 cache helped some, but still missed 98% of the time.
 
 > You'll also notice this simulation took a lot longer than previous iterations. The more advanced features we include, the more needs to be simulated per tick!
 
-Caches can get a lot more complex than this, but this section covers the basics of classic caches and how to use them. If you want to model cache coherence and network topology with Ruby, take the caches track un Unit IV!
+Caches can get a lot more complex than this, but this section covers the basics of classic caches and how to use them. If you want to model cache coherence and network topology with Ruby, take the caches track in Unit IV!
 
 <link href="../style.css" rel="stylesheet"></link>

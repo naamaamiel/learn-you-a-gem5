@@ -454,3 +454,5 @@ if (branchPred && curStaticInst &&
 Factoring out branch predictors into their own SimObjects with a common `BranchPredictor` interface allows gem5 CPUs to be modular: we can easily replace the branch predictor (or have no predictor at all) to compare behavior. 
 
 > You'll be writing your own branch predictor in this unit! 
+
+<link href="../../style.css" rel="stylesheet"></link>
