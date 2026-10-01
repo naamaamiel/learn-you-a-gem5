@@ -1,0 +1,29 @@
+[
+    {
+        "category": "disk-image",
+        "id": "x86-ubuntu-with-gapbs-img",
+        "description": "",
+        "architecture": "X86",
+        "size": 5242880000,
+        "tags": [
+            "x86",
+            "fullsystem"
+        ],
+        "is_zipped": false,
+        "md5sum": "",
+        "url": "file:/<PATH_TO_IMAGE>/x86-ubuntu/x86-ubuntu",
+        "root_partition": "1",
+        "code_examples": [],
+        "license": "",
+        "author": [
+            "Harshil Patel"
+        ],
+        "source_url": "",
+        "resource_version": "1.0.0",
+        "gem5_versions": [
+            "25.0.0.1"
+        ],
+        "example_usage": "obtain_resource(resource_id=\"x86-ubuntu-with-gapbs-img\")",
+        "is_tar_archive": false
+    }
+]
