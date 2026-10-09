@@ -107,7 +107,7 @@ Our job will be to analyze this board with SimPoint. The only thing we need to d
 
 > **Your turn:** Fill in `TODO (1)` in `simpoint_analysis.py` to attach a `SimPoint` probe to the processor's only core using the core's `addSimPointProbe` function. Pass in the agument `1_000_000` to this function to set our region size to 1,000,000 instructions.
 > 
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 > 
 > ```python
@@ -239,7 +239,7 @@ Open the `simpoint_checkpoint.py` file to get started. The first step we need to
 > - `weight_file_path` should point to `results.weights`,
 > - `warmup_interval` should be 1,000,000.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 > 
 > ```python
@@ -639,5 +639,3 @@ Targeted and statistical analysis techniques are both useful tools for simulatin
 | :---- | :---- | :---- | :---- |
 | **Targeted sampling** | Storage | Impacted by the clustering algorithm used to determine representative regions; also impacted by the cluster signature. | Almost no cost to changing hardware configuration (can reuse checkpoints), but a large cost to change software (must redo analysis). |
 | **Statistical sampling** | KVM, parallel resources | Impacted by the input statistical parameters. | Equal cost to changing hardware and software configurations (rerun simulation). |
-
-<link href="../style.css" rel="stylesheet"></link>

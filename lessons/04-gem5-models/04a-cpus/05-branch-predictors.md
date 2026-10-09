@@ -8,7 +8,7 @@ Finally, it's time to write our own branch predictor!
 
 ## Branch predictor project
 
-Throughout the last two sections, you've gotten more familiar with gem5 branch predictors and how they work. In this section, you will implement your own simple addition to the branch predictor interface then complicate it slightly. 
+Throughout the last few sections, you've gotten more familiar with gem5 branch predictors and how they work. In this section, you will implement your own simple addition to the branch predictor interface then complicate it slightly.
 
 > This section is a **project section**: this means it is largely structured around independent programming. Give your best effort on your own, then check in with the solutions.
 
@@ -63,7 +63,7 @@ We'll be testing our branch predictor on the [`riscv-cce`](https://resources.gem
 >
 > **Your turn**: Modify `simulate_branch_pred.py` to use the `riscv-cce` binary workload instead of `riscv-print-this`. Adjust the simulation to run for 10,000,000 instructions.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 > 
 > ```python
@@ -96,7 +96,7 @@ board.processor.cores.core.branchPred.mispredictDueToPredictor_0::total       52
 If you'd like to attempt this on your own, no need to read the hints below! If you get stuck, the following tips might help:
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Recommended workflow</b> </summary>
 > 
 > 1. Create the three required files for a SimObject: a Python declaration file, a C++ header file, and a C++ source file.
@@ -119,7 +119,7 @@ If you'd like to attempt this on your own, no need to read the hints below! If y
 <br>
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Hints and reminders</b> </summary>
 > 
 > - The appropriate Python class name for this predictor is `HelloBP`, and it should inherit from the `BPredUnit` class.
@@ -139,7 +139,7 @@ If you'd like to attempt this on your own, no need to read the hints below! If y
 > For **file implementations**, refer to the `completed` directory in this lesson's workspace. This simple branch predictor is implemented under he `simple-branch-pred` directory.
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>gem5 compilation command</b> </summary>
 > 
 > Run the following from the `gem5/` directory:
@@ -153,7 +153,7 @@ If you'd like to attempt this on your own, no need to read the hints below! If y
 <br>
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Command for running the configuration script</b> </summary>
 > 
 > Run the following:
@@ -190,7 +190,7 @@ board.processor.cores.core.branchPred.mispredictDueToPredictor_0::total       52
 Once again, if you'd like some more implementation advice, please read on!
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Recommended workflow</b> </summary>
 > 
 > 1. Adding a parameter involves changing the declaration and source files: modify these first to define the parameter (declaration) then use it (source).
@@ -211,7 +211,7 @@ Once again, if you'd like some more implementation advice, please read on!
 <br>
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Hints and reminders</b> </summary>
 > 
 > - The C++ [`list` class](https://cplusplus.com/reference/list/list/) is useful for maintaining the list of the last seen not taken branches. Try treating this list like a queue of sorts to track least-recently seen status.
@@ -229,7 +229,7 @@ Once again, if you'd like some more implementation advice, please read on!
 > For **file implementations**, refer to the `completed` directory in this lesson's workspace. This simple branch predictor is implemented under he `not-taken-branch-pred` directory.
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>gem5 compilation command</b> </summary>
 > 
 > Run the following from the `gem5/` directory:
@@ -243,7 +243,7 @@ Once again, if you'd like some more implementation advice, please read on!
 <br>
 
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Command for running the configuration script</b> </summary>
 > 
 > Run the following:
@@ -258,6 +258,6 @@ Once again, if you'd like some more implementation advice, please read on!
 
 <br>
 
-Congratulations! You've now implemented your very own branch predictor that adapts over time. Branch predictors in gem5 get more complicated than this; feel free to read through the existing implementations and compare them to the one you just created. 
+Congratulations! You've now implemented your very own branch predictor that adapts over time. Branch predictors in gem5 get more complicated than this; feel free to read through the existing implementations and compare them to the one you just created.
 
 Implementing other SimObjects follows a similar structure to what you did here: examining the existing interface, extending a relevant parent class, and filling in overridden interface functions. gem5 is highly *extensible*: as you've seen, under this programming model, new SimObjects under a common base class can be used just like existing ones!

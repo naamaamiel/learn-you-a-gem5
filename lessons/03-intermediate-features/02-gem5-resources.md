@@ -24,9 +24,9 @@ As a reminder, gem5 resources are prebuilt artifacts that can be used to run gem
   - An example of a binary resource is [`x86-bubblesort`](https://resources.gem5.org/resources/x86-bubblesort?version=1.0.0), which is an implementation of BubbleSort compiled into x86.
 - **Bootloader**: A small program responsible for loading the operating system into memory when a computer starts up.
   - An example of a bootloader is [`arm64-bootloader`](https://resources.gem5.org/resources/arm64-bootloader?version=1.0.0), which can be used for any arm64 Linux kernel resources.
-- **Checkpoint**: A saved snapshot of a simulation (we'll talk more about using checkpoints in the advanced topics section).
+- **Checkpoint**: A saved snapshot of a simulation (we'll talk more about using checkpoints in the advanced topics unit).
   - An example of a checkpoint is [`x86-hello-test-checkpoint`](https://resources.gem5.org/resources/x86-hello-test-checkpoint?version=1.0.0), which is used for testing checkpoints on x86.
-- **SimPoint**: Stores all information used to create and restore a SimPoint, which is a tool for simulation sampling (we'll also discuss SimPoints in the advanced topics section).
+- **SimPoint**: Stores all information used to create and restore a SimPoint, which is a tool for simulation sampling (we'll also discuss SimPoints in the advanced topics unit).
   - An example of a SimPoint is [`x86-print-this-1500-simpoints`](https://resources.gem5.org/resources/x86-print-this-1500-simpoints?version=1.0.0), which contains the set of all SimPoints for another resource (a binary) named `x86-print-this`.
 - **File**: A single file.
   - An example of a file is [`llvm-minisat-cnf-input`](https://resources.gem5.org/resources/llvm-minisat-cnf-input/changelog?database=gem5-resources&version=1.0.0), which is used as input for another resource (a binary), named `x86-llvm-minisat`.
@@ -580,5 +580,3 @@ Hello, gem5!
 > ```
 
 Though we won't be making extensive use of custom resources in this bootcamp, creating local gem5 resources is an immensely useful skill to have in your toolbox.
-
-<link href="../style.css" rel="stylesheet"></link>

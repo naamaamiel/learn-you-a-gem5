@@ -222,7 +222,7 @@ HelloSimObject::HelloSimObject(const HelloSimObjectParams& params):
 
 We need to implement the `startup()` method to schedule the first `HelloEvent`. For safety, we can include a few panic statements. 
 
-> We'll talk more about panics in the next section! For now, all you need to know is that they break out of simulation if a condition is met.
+> We'll talk more about panics in the debugging section! For now, all you need to know is that they break out of simulation if a condition is met.
 
 Since `m5.simulate()` is only called once at simulation tick 0, we can double-check that the current tick is 0 and that no `HelloEvent`s are somehow scheduled. We can then `schedule()` `nextHelloEvent` for simulation tick 500.
 
@@ -454,5 +454,3 @@ if (branchPred && curStaticInst &&
 Factoring out branch predictors into their own SimObjects with a common `BranchPredictor` interface allows gem5 CPUs to be modular: we can easily replace the branch predictor (or have no predictor at all) to compare behavior. 
 
 > You'll be writing your own branch predictor in this unit! 
-
-<link href="../../style.css" rel="stylesheet"></link>

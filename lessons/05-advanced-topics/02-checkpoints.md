@@ -45,7 +45,7 @@ We don't need a highly performant or detailed system for checkpoint generation: 
 >
 > **NOTE:** You might need to add some new imports!
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -98,7 +98,7 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 > - Saves a checkpoint to a directory called `cpt`.
 > - Exits the simulation.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Checkpoint Saving Answer</b> </summary>
 >
 > You'll want to use
@@ -108,7 +108,7 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 >
 > to save a checkpoint!
 > </details>
-> <details>
+> <details markdown="span">
 > <summary> <b>Full Answer</b> </summary>
 >
 > ```python
@@ -151,7 +151,7 @@ We restore our checkpoint by passing in a `checkpoint_path` as a parameter to th
 
 > **Your turn:** Fill in `TODO (3)` in `restore_checkpoint.py` to pass in the path to our generated checkpoint.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -210,5 +210,3 @@ Since checkpoints restore from a known state, the ROI will always execute from a
 > For example, you might want to use KVM fast-forwarding if you want to test out a different number of cores, a different workload, or a different memory size. We utilized KVM fast-forwarding to help our checkpointing process in this example!
 >
 > ***Remember: use the right tool for the job!***
-
-<link href="../style.css" rel="stylesheet"></link>

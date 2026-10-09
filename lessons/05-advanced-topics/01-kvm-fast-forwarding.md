@@ -50,7 +50,7 @@ One workload that is already annotated in this way is the Class A EP benchmark i
 
 > **Your turn:** Fill in `TODO (1)` in `kvm_time.py` to obtain the `"x86-ubuntu-24.04-npb-ep-a"` workload and pass it to the simulation board.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -73,7 +73,7 @@ For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core fo
 
 > **Your turn:** Fill in `TODO (2)` in `kvm_time.py` to initialize `processor` as a `SimpleSwitchableProcessor` with a starting core type of `CPUTypes.KVM`, a switch core type of `CPUTypes.TIMING`, the ISA that matches your host machine's ISA, and 2 cores.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 > 
 > ```python
@@ -117,7 +117,7 @@ This way, we print out the statistics we gathered from the timing phase and stop
 >
 > Note that we added a new thing for the work/ROI begin handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement a work/ROI end handler, and we don't have to simulate the entire ROI (which might take a while).
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -146,7 +146,7 @@ We also need to register this handler to the work/ROI begin hypercall number (4)
 
 > **Your turn:** Fill in `TODO (4)` in `kvm_time.py` to register our new `ROI_begin_handler` function to trigger on the `ROI_begin` exit event.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -273,5 +273,3 @@ KVM fast-forwarding helps us spend less time on the regions of the simulation th
 Since KVM fast-forwarding still executes everything leading up to the ROI, any non-determinism (for example, thread interleaving) in the fast-forwarded region will affect how the ROI executes between fast-forwarded runs.
 
 We'll address these concerns in the next section about checkpointing.
-
-<link href="../style.css" rel="stylesheet"></link>

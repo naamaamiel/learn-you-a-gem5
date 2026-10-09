@@ -20,7 +20,7 @@ In the previous section on the standard library, we mentioned that two types of 
 - A `SwitchableProcessor` is similar to a `SimpleProcessor`, but it allows switching between multiple types of processors during a simulation instead of using just one `SimpleProcessor`.
   - We'll use a switchable processor during our advanced section on KVM fast-forwarding!
 - Traffic generators are not really processors; they take the spot of a processor on a board, but they don't execute instructions. Instead, they use traffic patterns (linear, random, etc.) to synthetically generate memory accesses. They're ideal for testing cache hierarchies/memory systems.
-  - We'll use traffic generators in our intermediate section on traffic generation!
+  - We'll use traffic generators in the intermediate features unit's section on traffic generation!
 
 ### Cores
 
@@ -34,7 +34,7 @@ Within every processor, there are one or more *cores*. The gem5 standard library
 
 > If you're curious, the class diagram for every processor and core in the standard library is below.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>src/python/gem5/components/processors</b> </summary>
 >
 > ![A tree-like class diagram of cores and processors in the gem5 standard library. The subsystem class is at the very top. AbstractCore and AbstractGenerator inherit from SubSystem. AbstractGeneratorCore and BaseCPUCore inherit from AbstractCore. ComplexGeneratorCore, LinearGeneratorCore, GUPSGeneratorCore, RandomGeneratorCore, StridedGeneratorCore, and TrafficGeneratorCore inherit from AbstractGeneratorCore. SimpleCore inherits from BaseCPUCore. AbstractGenerator, BaseCPUProcessor, and SwitchableProcessor inherit from AbstractProcessor. ComplexGenerator, LinearGenerator, GUPSGenerator, GUPSGeneratorEP, GUPSGeneratorPAR, RandomGenerator, StridedGenerator, and TrafficGenerator inherit from AbstractGenerator. SimpleProcessor inherits from BaseCPUProcessor. SimpleSwitchableProcessor inherits from SwitchableProcessor.](img/stdlib_processors_cores.png)
@@ -222,7 +222,7 @@ Now, let's shrink the cache and try again:
 
 > **Your turn:** Change the size of the i-cache and d-cache to 1 KiB and rerun the simulation. Save the results in a directory called `atomic-small-cache`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -244,7 +244,7 @@ Let's keep the cache how it is but change the CPU type from `ATOMIC` to `TIMING`
 
 > **Your turn:** Change the CPU type to `TIMING` and rerun the simulation. Save the results in a directory named `timing-small-cache`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -263,7 +263,7 @@ Lastly, let's put the cache back at 32 KiB.
 
 > **Your turn:** Change the size of the i-cache and d-cache back to 32 KiB and rerun the simulation. Save the results in a directory called `timing-normal-cache`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -321,7 +321,7 @@ Now for our experiment: how many CPU cycles were required to multiply these matr
 
 > **Your turn:** Write a `grep` command to search for the `numCycles` statistic in the output directories for our cache simulations.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```bash
@@ -429,7 +429,7 @@ We also want another core type with little parameters to compare `BigO3` to. We 
 
 > **Your turn:** Write the `LittleO3` class to set the parameters above to our desired values.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -478,7 +478,7 @@ class BigCore(BaseCPUCore):
 
 > **Your turn:** Write the `LittleCore` class to wrap `LittleO3` in a standard library core.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -519,7 +519,7 @@ class BigProcessor(BaseCPUProcessor):
 
 > **Your turn:** Write the `LittleProcessor` class to pass a single `LittleCore` into a standard library processor.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -589,7 +589,7 @@ gem5 --outdir=little-o3 hello_processors.py
 
 > **Your turn:** Switch out `LittleProcessor` for `BigProcessor` and run the simulation again, redirecting the output to a directory named `big-o3`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -608,7 +608,7 @@ You should see some changes in the simulation statistics. Let's look at how long
 
 > **Your turn:** Search for the `simSeconds` and `numCycles` statistics in the `little-o3` and `big-o3` output directories.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```bash
@@ -642,5 +642,3 @@ board.processor.cores.core.numCycles         28440669
 As we might expect, `BigProcessor` is able to execute the workload in fewer simulated cycles and thus in fewer simulation seconds.
 
 There are a lot more things to explore when it comes to processors in gem5! If you're looking to learn about more advanced features in the context of processors, take the processor track in Unit IV!
-
-<link href="../style.css" rel="stylesheet"></link>

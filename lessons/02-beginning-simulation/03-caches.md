@@ -12,7 +12,7 @@ Processors down! Let's make our way closer to memory and talk about how caches w
 
 Before we get started, let's take a moment to discuss **cache coherence**, an important concept in memory system design. If you're comfortable with cache coherence and don't need the refresher, feel free to skip to the next heading ("Classic and Ruby caches")! Otherwise, this is what you need to know in order to understand this lesson.
 
-<details open>
+<details markdown="span" open>
 <summary><b> Collapse this header to hide the cache coherence explanation! </b></summary>
 
 ### What's cache coherence?
@@ -129,7 +129,7 @@ The rest of this section will focus on using classic caches. We'll return to the
 
 > If you're curious, the class diagram for cache hierarchies in the standard library is below.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>src/python/gem5/components/cachehierarchies</b> </summary>
 >
 > <br>
@@ -390,7 +390,7 @@ Next, we need to create our L2 cache (`L2Cache`) and L2 crossbar (`L2XBar`).
 > Remember to use the correct side ports!
 >
 > 
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -541,5 +541,3 @@ This time, the L3 cache helped some, but still missed 98% of the time.
 > You'll also notice this simulation took a lot longer than previous iterations. The more advanced features we include, the more needs to be simulated per tick!
 
 Caches can get a lot more complex than this, but this section covers the basics of classic caches and how to use them. If you want to model cache coherence and network topology with Ruby, take the caches track in Unit IV!
-
-<link href="../style.css" rel="stylesheet"></link>

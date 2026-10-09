@@ -11,7 +11,7 @@ Hope you had a good stretch break waiting for gem5 to build. Now that it's final
 
 ## What's a configuration script?
 
-Like we mentioned in the [Enter gem5 section](../01-sim-background/02-enter-gem5.md), gem5 is a Python interpreter. A configuration script is a Python (`.py`) file containing the parameters for a gem5 simulation. It specifies the components to be simulated and provides other options like the simulation mode (more on this later), how long the simulation will run for, what code the simulated components will execute, and much more.
+Like we mentioned in the Enter gem5 section (Unit I, Section 2), gem5 is a Python interpreter. A configuration script is a Python (`.py`) file containing the parameters for a gem5 simulation. It specifies the components to be simulated and provides other options like the simulation mode (more on this later), how long the simulation will run for, what code the simulated components will execute, and much more.
 
 ## `Hello, world!`
 
@@ -21,7 +21,7 @@ Ok, enough waiting. Let's simulate! Visit the `workspace` directory and locate t
 ./gem5/build/ALL/gem5.opt workspace/01-introduction/04-first-config-script/hello_world.py
 ```
 
-> If you set an alias for the `gem5.opt` executable in the [installing gem5 section](lessons/01-introduction/03-installing-gem5.md), you can use that alias (i.e., `gem5`) instead of `./gem5/build/ALL/gem5.opt`.
+> If you set an alias for the `gem5.opt` executable in the Installing gem5 section (Unit I, Section 3), you can use that alias (i.e., `gem5`) instead of `./gem5/build/ALL/gem5.opt`.
 
 If all goes well, you'll see this output in your terminal:
 
@@ -170,6 +170,3 @@ There are *a lot* of other statistics in `stats.txt`: most gem5 components are c
 - `config.json` contains the same simulation details as `config.ini` in a JSON format.
 - `board.pc.com_1.device` contains the console output from the simulation.
 - `citations.bib` contains the citations for all models and resources used in case you need to cite the simulation in your research.
-
-
-<link href = "../style.css" rel="stylesheet"></link>

@@ -41,7 +41,7 @@ gem5 can simulate multiprocessing/multithreading, and a discussion of multithrea
 gem5 can simulate a variety of cache hierarchies, and different hierarchies are used in code examples throughout the bootcamp. Students are expected to be able to:
 
 - [ ] Define L1, L2, and L3 caches,
-- [ ] Explain what an I-cache, D-cache, and a unified cache are,
+- [ ] Explain what an i-cache, d-cache, and a unified cache are,
 - [ ] Explain the difference between a private cache and a shared cache.
 
 ### Processors/CPUs
@@ -78,11 +78,7 @@ Memory is a key simulation component in gem5. Memory is described and configured
 
 gem5 includes support for configuring cache coherence protocols. Students are expected to be able to:
 
-- [ ] Explain the Single-Writer Multiple-Reader (SWMR) invariant,
-- [ ] Explain how cache coherence protocols such as MSI, MESI, and MOESI address the issue of cache coherence,
-- [ ] Explain what directories are in the context of cache coherence,
-- [ ] Define false sharing,
-- [ ] Explain how the CHI (Coherent Hub Interface) protocol works.
+- [ ] Explain what directories are in the context of cache coherence.
 
 ### Advanced Cache Terminology
 
@@ -115,7 +111,7 @@ The interface to gem5 is Python scripts. Students will be writing Python configu
 - [ ] Instantiate objects and call object member functions,
 - [ ] Call functions.
 
-If students choose not to attend the Python background session during the first day of the bootcamp, students are additionally expected to be familiar with:
+Students are additionally expected to be familiar with:
 
 - [ ] Print statements,
 - [ ] Primitives (integers, floats, strings, booleans),
@@ -188,60 +184,3 @@ gem5 is distributed as source code and acquired by cloning a git repository, and
 - [ ] Define the concept of a branch within git,
 - [ ] Define the concept of a tag within git,
 - [ ] Create a GitHub account.
-
-### SCons
-
-SCons is a tool used to build gem5. Students are expected to be able to:
-
-- [ ] Use SCons using the command line.
-
-### Packer
-
-Packer is used to automate disk image creation during one demonstration. Students are expected to be able to:
-
-- [ ] State what Packer is used for.
-
-### QEMU
-
-QEMU is referenced across multiple sessions and used to automate disk image creation during one demonstration. Students are expected to be able to:
-
-- [ ] Explain what QEMU is used for.
-- [ ] Use QEMU commands.
-
-### Ubuntu
-
-Ubuntu is a Linux distribution used as the operating system across several demonstrations. Students are expected to be able to:
-
-- [ ] Explain what Ubuntu is.
-- [ ] Recognize what Ubuntu autoinstall is.
-
-### Visual Studio Code (VSCode)
-
-Resources refer to Visual Studio Code as the default IDE (Integrated Development Environment) for use in the bootcamp, and all demonstrations are done in Visual Studio Code. Students are encouraged to use Visual Studio Code, though this is not required.
-
-## Miscellaneous/Other
-
-### Operating Systems Basics
-
-gem5 can simulate operating systems (OS). Students are expected to be able to:
-
-- [ ] Describe the role of the operating system,
-- [ ] Explain what an interrupt is,
-- [ ] Explain what a system call (syscall) is,
-- [ ] List common Linux system calls,
-- [ ] Explain the concept of deadlock.
-
-### Virtual Machines
-
-Required to understand how the gem5 simulator emulates hardware. Students are expected to be able to:
-
-- [ ] Explain what a virtual machine is,
-- [ ] Define the concept of a virtualizer/hypervisor/VMM,
-- [ ] Define what a guest OS and a host OS are.
-
-### Power Modeling
-
-The bootcamp covers gem5’s power modeling capabilities with a short demonstration. Students are expected to be able to:
-
-- [ ] Explain what “activation count” power modeling is.
-- [ ] Identify what McPAT, Wattch, and CACTI are.

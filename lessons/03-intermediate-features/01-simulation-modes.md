@@ -136,5 +136,3 @@ It's important not to treat SE mode as just "FS mode but faster". As we just loo
 > ***When in doubt, use FS mode***.
 
 That being said, if you're certain that SE mode meets your needs, it is a quicker option! You'll notice that we've used SE mode quite a bit in this bootcamp to look at simpler simulations and examine processors, caches, and memory components. SE mode is another useful tool in your toolbox!
-
-<link href="../style.css" rel="stylesheet"></link>

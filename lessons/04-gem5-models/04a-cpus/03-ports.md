@@ -370,5 +370,3 @@ We just looked at an example of the **request path** of port communication. In t
 ![A timeline diagram that outlines the process of SimpleTimingCPU sending a fetch through its icachePort. The steps on SimpleTimingCPU's end follow the steps described above.](img/cpu-ports.png)
 
 You're now ready to interface with the memory system using ports!
-
-<link href="../style.css" rel="stylesheet"></link>

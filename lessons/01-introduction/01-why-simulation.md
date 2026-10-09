@@ -118,5 +118,3 @@ Full-system simulation simulates every component of a system in high enough fide
 Being full-system is a separate property, different from being any of the other simulation types discussed above. Any of the kinds of simulators discussed above can also be full-system simulators, but it's most common for functional simulators and execution-driven simulators to also be full-system.
 
 > For example, QEMU, a functional simulator we mentioned above, is also full-system.
-
-<link href="../style.css" rel="stylesheet"></link>

@@ -64,7 +64,7 @@ Open `traffic_gen.py` to get started. Our first step is to pick a system to eval
 > 1) A `SingleChannelSimpleMemory` with a latency of 20 ns, a bandwidth of 32 GiB/second, latency variance of 0 s, and a size of 1 GiB,
 > 2) A `PrivateL1CacheHierarchy` with an L1 i-cache size of 16 KiB and an L1 d-cache size of 16 KiB.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -121,7 +121,7 @@ Let's make our `LinearGenerator` access data a bit slower than the default: how 
 
 > **Your turn:** Fill in `TODO (2)` in `traffic_gen.py` to add a `LinearGenerator` with all default parameters other than `rate`, which should be `"1GiB/s"`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -189,7 +189,7 @@ Let's keep everything the same as our `LinearGenerator` to have a nice, clean co
 
 > **Your turn:** Fill in `TODO (3)` in `traffic_gen.py` to replace the `LinearGenerator` with a `RandomGenerator` with all default parameters other than `rate`, which should be `"1GiB/s"`.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -336,7 +336,7 @@ Let's initialize some variables! You'll notice we've already created a `core_lis
 
 > **Your turn:** Fill in `TODO (1)` in `hybrid_generator.py` to initialize the variables `num_linear_cores` and `num_random_cores` with the appropriate number of cores.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -352,7 +352,7 @@ Next, we should figure out the address ranges for all of our linear generator co
 
 > **Your turn:** Fill in `TODO (2)` in `hybrid_generator.py` to create an `address_ranges` variable that stores the ranges for our linear cores. Remember `partition_range`!
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -370,7 +370,7 @@ Great, now we can assign these partitions to each one of our linear cores! What 
 
 We can do this with the following loop (you can try this yourself or look at the code in the dropdown for the answer):
 
-> <details>
+> <details markdown="span">
 > <summary><b> The loop: </b></summary>
 >
 > ```python
@@ -395,7 +395,7 @@ Now that we have all of our linear core set up, we only need to append random co
 
 > **Your turn:** Fill in `TODO (4)` in `hybrid_generator.py` to add all of our random cores.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -433,7 +433,7 @@ Now we can assign our `generator` a `HybridGenerator`.
 
 > **Your turn:** Fill in `TODO (4)` in `traffic_gen.py` to assign the `generator` variable a `HybridGenerator` with all default parameters except for the number of cores: let's give it 6 cores instead.
 >
-> <details>
+> <details markdown="span">
 > <summary> <b>Answer</b> </summary>
 >
 > ```python
@@ -493,5 +493,3 @@ board.cache_hierarchy.l1dcaches5.overallMissRate::processor.cores5.generator    
 As a reminder, cores 0-3 are our linear cores, while cores 4 and 5 are the random cores. You'll notice that the private L1 caches of the linear cores have a much lower miss rate (around 1.2%) compared to the random cores (around 87%). This makes sense considering that linear accesses with a stride of 8 bytes exhibit much better **spatial locality** than random accesses. While a linear core is guaranteed to repeatedly make use of the same cache block, a random core might touch a block once then never again!
 
 Overall, generators, especially custom generators, can help evaluate a memory system under controlled conditions. Just remember that since a generator replaces a processor on a simulation board, you cannot use workloads in conjunction with a generator!
-
-<link href="../style.css" rel="stylesheet"></link>

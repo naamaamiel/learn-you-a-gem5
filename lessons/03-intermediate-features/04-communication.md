@@ -469,7 +469,7 @@ Simulation Done
 
 ### Address mode and semihosting
 
-Instruction-mode `m5ops` work very well for simulated CPU models, but if you need to use a KVM CPU (for example, for simulation acceleration, which we'll cover in the advanced topics section), address-mode (or semihosting) `m5ops` are required.
+Instruction-mode `m5ops` work very well for simulated CPU models, but if you need to use a KVM CPU (for example, for simulation acceleration, which we'll cover in the advanced topics unit), address-mode (or semihosting) `m5ops` are required.
 
 The process for setting these up is a tiny bit more involved, but it's not too different from how we set up instruction-mode `m5ops`. You can find more details on address-mode and semihosting m5ops [here](https://www.gem5.org/documentation/general_docs/m5ops/). 
 
@@ -579,5 +579,3 @@ gem5 run_address_annotated_workload.py
 ```
 
 The output here is the exact same as our instruction-mode `m5ops` workload. There is no difference in *behavior*, only in *trigger mechanism*! -->
-
-<link href="../style.css" rel="stylesheet"></link>

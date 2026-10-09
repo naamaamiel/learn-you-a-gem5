@@ -563,5 +563,3 @@ As you can see, we printed out our "hello" message 4 times!
 ## In conclusion
 
 SimObjects are the backbone of simulation in gem5. In this section, we built our very own SimObject and rebuilt gem5 in order to use it in a configuration script. We also saw that the `Simulator` class used in previous configuration scripts is a wrapper around `m5` functionality. Next, we'll start taking a look at existing SimObjects to extend them with new functionality!
-
-<link href="../../style.css" rel="stylesheet"></link>

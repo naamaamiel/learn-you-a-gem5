@@ -144,7 +144,7 @@ The 5th function (`gem5::TimingSimpleCPU::completeIfetch`) is the function respo
 
 > We can see this function in `src/cpu/simple/base.cc`, snipped below if you're curious:
 >
-> <details>
+> <details markdown="span">
 > <summary> <code> preExecute()</code> </summary>
 > 
 > ```c++
@@ -247,7 +247,7 @@ The next function up (`gem5::RiscvISA::Decoder::decode`) is the RISC-V ISA's dec
 
 > We can find it in `gem5/src/arc/riscv/decoder.cc`:
 > 
-> <details>
+> <details markdown="span">
 > <summary> <code> decode()</code> </summary>
 >
 > ```c++
@@ -427,5 +427,3 @@ These types follow four different formats:
 ![A breakdown of the instruction bits for the four RISC-V instruction formats. R: func (31-25), rs2 (24-20), rs1 (19-15), func (14-12), rd (11-7), opcode (6-0). I: immediate (31-20), rs1 (19-15), func (14-12), rd (11-7), opcode (6-0). SB: immediate (31-25), rs2 (24-20), rs1 (19-15), func (14-12), immediate (11-7), opcode (6-0). UJ: immediate (31-12), rd (11-7), opcode (6-0).](img/riscv-insts.png)
 
 > This means that `LW`, as an I-type instruction, follows the second format: immediate (31-20), rs1 (19-15), func (14-12), rd (11-7), opcode (6-0).
-
-<link href="../../style.css" rel="stylesheet"></link>

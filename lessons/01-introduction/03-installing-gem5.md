@@ -115,7 +115,7 @@ While you wait for everything to build, gem5 contains a *lot* of source code. He
 > If you used the command above, the gem5 executable you created can be found at `gem5/build/ALL/gem5.opt`. We'll be running this executable throughout the bootcamp.
 
 - `src`: contains all source files for gem5. These files are separated into groups based on their purpose.
-  - `src/python/gem5`: contains all pre-made Python components from the gem5 standard library. You may remember from the [Enter gem5 section](lessons/01-introduction/03-installing-gem5.md) that Python files specify parameter values for C++ backend models. We'll talk more about the standard library in the next section.
+  - `src/python/gem5`: contains all pre-made Python components from the gem5 standard library. You may remember from the Enter gem5 section (Unit I, Section 2) that Python files specify parameter values for C++ backend models. We'll talk more about the standard library in the next section.
   - `src/mem`: contains all C++ models relating to memory, like caches, DRAM, crossbars, and memory probes.
   - `src/arch`: contains all ISA-specific C++ models, including the ISAs themselves.
   - `src/sim`: contains files relating to simulation, including the C++ parent class for all models, `SimObject`.

@@ -19,7 +19,3 @@ Unlike the previous units, you may now choose between three tracks for Unit IV d
 All tracks teach similar information through the lens of a different project; you can expect some unique domain-specific details in each track.
 
 > You can always go back to the other tracks when you're done!
-
-To select a track, simply follow the lessons in the appropriate folder! (04a for CPUs, 04b for caches, 04c for memory).
-
-<center> <b>Have fun!</b></center>

@@ -215,5 +215,3 @@ And that's it! You're now ready to use MultiSim for your own simulations.
 As you (hopefully) saw from this brief example, setting up MultiSim is not too difficult! All of the multiprocessing details are handled by gem5, meaning that you don't need to worry about knowing how to write and run scripts, and the chance that an error pops up somewhere is much lower. Additionally, these scripts are standardized and easy to share! If you want someone else to reproduce your results, you can simply send the script to them and they can run it. There are plans for continued support for MultiSim in gem5, too.
 
 Overall, it's recommended that you use MultiSim over scripts to run gem5 simulations in parallel. Hopefully this section convinced you of why!
-
-<link href="../style.css" rel="stylesheet"></link>

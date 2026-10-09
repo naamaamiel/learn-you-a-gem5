@@ -157,7 +157,7 @@ This provisioner allows us to run a bash script (`post-installation.sh`) after U
 
 As previously mentioned, this Packer script uses Ubuntu autoinstall. To use Ubuntu autoinstall, we need a `user-data` file. This file specifies the configuration for installing Ubuntu. For the sake of this example, this file is already provided; if you're curious about how to get this file yourself, expand the tooltip below. 
 
-<details>
+<details markdown="span">
 <summary> <b>How to use QEMU to get a user-data file </b> </summary>
 
 Any time a system is installed using the Ubuntu installer, the `user-data` file is automatically created. 
@@ -329,5 +329,3 @@ GEM5_RESOURCE_JSON_APPEND=./local-gapbs-resource.json gem5 x86-fs-gapbs-run.py
 > Full-system simulations take a while, even when using an `ATOMIC` CPU like we are here. If [KVM fast-forwarding](./01-kvm-fast-forwarding.md) is available to you, you may want to use it here!
 
 Congratulations! You created and used a custom disk image in a gem5 simulation. This same process can be used to add whichever benchmarks you may need for your simulations.
-
-<link href="../style.css" rel="stylesheet"></link>

@@ -30,7 +30,7 @@ We also assume knowledge in the following areas:
 
 This bootcamp is divided into units and sections.
 
-> <details open>
+> <details markdown="span" open>
 >  <summary> <b>Bootcamp outline</b> </summary>
 >
 > ### Unit I: Introduction
@@ -39,11 +39,13 @@ This bootcamp is divided into units and sections.
 >
 > #### Section 2: Enter gem5
 >
-> #### Section 3: Your first configuration script
+> #### Section 3: Installing gem5
+>
+> #### Section 4: Your first configuration script
 >
 > ### Unit II: Beginning gem5 simulation
 >
-> #### Section 1: Standard library and resources preview
+> #### Section 1: Standard library and resources introduction
 >
 > #### Section 2: Modeling processors in gem5
 > 
@@ -51,31 +53,23 @@ This bootcamp is divided into units and sections.
 >
 > #### Section 4: Modeling memory in gem5
 >
-> #### Section 5: **\[Project\]** Putting it all together
->
 > ### Unit III: Intermediate gem5 features
 >
-> #### Section 1: Traffic generation
+> #### Section 1: Simulation modes
 >
-> #### Section 2: Simulation modes
+> #### Section 2: Revisiting gem5 resources
 >
-> #### Section 3: Communicating from guest to simulator
+> #### Section 3: Traffic generation
 >
-> #### Section 4: Revisiting gem5 resources
+> #### Section 4: Communicating from simulation to simulator
 >
 > ### Unit IV: Developing gem5 models
 >
 > #### **Track A: Processors**
 >
-> ##### Section 1: X
->
 > #### **Track B: Caches**
 >
-> ##### Section 1: Y
->
 > #### **Track C: Memory**
->
-> ##### Section 1: Z
 >
 > ### Unit V: Advanced gem5 concepts
 >
@@ -93,8 +87,6 @@ This bootcamp is divided into units and sections.
 >
 > </details>
 
-<!-- TODO (Naama): Finish the outline when everything is decided-->
-\
 You are encouraged to complete the units in order, but you can always jump around or skip sections if you're familiar with their subject matter. Use the learning objectives to guide you!
 
 Unit IV is unique as it's split into 3 tracks: Processors, Caches, and Memory. **You may choose to complete any number of these tracks and still complete the bootcamp**. These tracks are independent and convey similar information about simulating in gem5, but their emphasis and encompassing project differ in focus. You can choose to complete all 3 tracks in a row, complete the entire bootcamp with one track then come back to the other tracks, or do one track and call it good. It depends on your goals and how you'll use gem5!

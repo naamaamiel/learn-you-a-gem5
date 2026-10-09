@@ -289,5 +289,3 @@ gem5/src/python/gem5/components
 ```
 
 The standard library includes pre-configured single and multi-channel DDR3/4/5 DIMMs (dual in-line memory modules). It also has integration with DRAMSim and DramSys (both DRAM simulators); you don't have to use these integrations, but they might be useful and more accurate depending on your needs. There are also high-bandwidth memory (HBM) options.
-
-<link href="../style.css" rel="stylesheet"></link>
