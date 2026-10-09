@@ -30,8 +30,8 @@ We also assume knowledge in the following areas:
 
 This bootcamp is divided into units and sections.
 
-> <details markdown="span" open>
->  <summary> <b>Bootcamp outline</b> </summary>
+> <details open>
+>  <summary markdown="span"> <b>Bootcamp outline</b> </summary>
 >
 > ### Unit I: Introduction
 >

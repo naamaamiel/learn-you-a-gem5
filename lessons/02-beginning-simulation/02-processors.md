@@ -34,8 +34,8 @@ Within every processor, there are one or more *cores*. The gem5 standard library
 
 > If you're curious, the class diagram for every processor and core in the standard library is below.
 >
-> <details markdown="span">
-> <summary> <b>src/python/gem5/components/processors</b> </summary>
+> <details>
+> <summary markdown="span"> <b>src/python/gem5/components/processors</b> </summary>
 >
 > ![A tree-like class diagram of cores and processors in the gem5 standard library. The subsystem class is at the very top. AbstractCore and AbstractGenerator inherit from SubSystem. AbstractGeneratorCore and BaseCPUCore inherit from AbstractCore. ComplexGeneratorCore, LinearGeneratorCore, GUPSGeneratorCore, RandomGeneratorCore, StridedGeneratorCore, and TrafficGeneratorCore inherit from AbstractGeneratorCore. SimpleCore inherits from BaseCPUCore. AbstractGenerator, BaseCPUProcessor, and SwitchableProcessor inherit from AbstractProcessor. ComplexGenerator, LinearGenerator, GUPSGenerator, GUPSGeneratorEP, GUPSGeneratorPAR, RandomGenerator, StridedGenerator, and TrafficGenerator inherit from AbstractGenerator. SimpleProcessor inherits from BaseCPUProcessor. SimpleSwitchableProcessor inherits from SwitchableProcessor.](img/stdlib_processors_cores.png)
 > </details>
@@ -222,8 +222,8 @@ Now, let's shrink the cache and try again:
 
 > **Your turn:** Change the size of the i-cache and d-cache to 1 KiB and rerun the simulation. Save the results in a directory called `atomic-small-cache`.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > cache_hierarchy = PrivateL1CacheHierarchy(
@@ -244,8 +244,8 @@ Let's keep the cache how it is but change the CPU type from `ATOMIC` to `TIMING`
 
 > **Your turn:** Change the CPU type to `TIMING` and rerun the simulation. Save the results in a directory named `timing-small-cache`.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > cpu_type = CPUTypes.TIMING
@@ -263,8 +263,8 @@ Lastly, let's put the cache back at 32 KiB.
 
 > **Your turn:** Change the size of the i-cache and d-cache back to 32 KiB and rerun the simulation. Save the results in a directory called `timing-normal-cache`.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > cache_hierarchy = PrivateL1CacheHierarchy(
@@ -321,8 +321,8 @@ Now for our experiment: how many CPU cycles were required to multiply these matr
 
 > **Your turn:** Write a `grep` command to search for the `numCycles` statistic in the output directories for our cache simulations.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```bash
 > grep -r 'numCycles' <path-to-output-directories>
@@ -429,8 +429,8 @@ We also want another core type with little parameters to compare `BigO3` to. We 
 
 > **Your turn:** Write the `LittleO3` class to set the parameters above to our desired values.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > class LittleO3(X86O3CPU):
@@ -478,8 +478,8 @@ class BigCore(BaseCPUCore):
 
 > **Your turn:** Write the `LittleCore` class to wrap `LittleO3` in a standard library core.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > class LittleCore(BaseCPUCore):
@@ -519,8 +519,8 @@ class BigProcessor(BaseCPUProcessor):
 
 > **Your turn:** Write the `LittleProcessor` class to pass a single `LittleCore` into a standard library processor.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > class LittleProcessor(BaseCPUProcessor):
@@ -589,8 +589,8 @@ gem5 --outdir=little-o3 hello_processors.py
 
 > **Your turn:** Switch out `LittleProcessor` for `BigProcessor` and run the simulation again, redirecting the output to a directory named `big-o3`.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > processor = BigProcessor()
@@ -608,8 +608,8 @@ You should see some changes in the simulation statistics. Let's look at how long
 
 > **Your turn:** Search for the `simSeconds` and `numCycles` statistics in the `little-o3` and `big-o3` output directories.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```bash
 > grep -r 'simSeconds' <path-to-output-directories>

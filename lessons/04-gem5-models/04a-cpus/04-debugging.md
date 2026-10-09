@@ -75,8 +75,8 @@ You can use the UP and DOWN arrows to hover over different build configuration o
 
 > **Your turn:** Take some time to explore the interactive build tool. Can you figure out how to disable the CHI cache coherence protocol in this configuration?
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > Navigate to the `Ruby Protocols` menu:
 >
@@ -175,8 +175,8 @@ You will also notice the `branch_pred_processor.py` file; much like in Unit II, 
 > 
 > All imports are already provided for you.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```python
 > processor = BranchPredProcessor(
@@ -307,8 +307,8 @@ You'll also notice other `DPRINTF` statements in here! These are related to the 
 
 > **Your turn:** Add a `DPRINTF` statement for the `LocalBranchPred` `DebugFlag` right before the `lookup()` function returns. This debug print should output the branch address, the counter value, and taken/not taken prediction.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```c++
 > DPRINTF(LocalBranchPred, "Branch address %lu has counter %i; predicted %i\n", branch_addr, counter_val, taken);
@@ -331,8 +331,8 @@ Then, we can run using our new debug flag!
 
 > **Your turn:** Run gem5 using the `minor_config.py` configuration script with the new `LocalBranchPred` debug flag enabled. Redirect the output to files.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```bash
 > gem5 -re --debug-flags=LocalBranchPred minor_config.py

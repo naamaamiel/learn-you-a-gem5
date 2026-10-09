@@ -50,8 +50,8 @@ One workload that is already annotated in this way is the Class A EP benchmark i
 
 > **Your turn:** Fill in `TODO (1)` in `kvm_time.py` to obtain the `"x86-ubuntu-24.04-npb-ep-a"` workload and pass it to the simulation board.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > board.set_workload(obtain_resource("x86-ubuntu-24.04-npb-ep-a"))
@@ -73,8 +73,8 @@ For the purposes of KVM fast-forwarding, we only need two cores: a `KVM` core fo
 
 > **Your turn:** Fill in `TODO (2)` in `kvm_time.py` to initialize `processor` as a `SimpleSwitchableProcessor` with a starting core type of `CPUTypes.KVM`, a switch core type of `CPUTypes.TIMING`, the ISA that matches your host machine's ISA, and 2 cores.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```python
 > processor = SimpleSwitchableProcessor(
@@ -117,8 +117,8 @@ This way, we print out the statistics we gathered from the timing phase and stop
 >
 > Note that we added a new thing for the work/ROI begin handler to do: automatically exit the simulation for us after 1,000,000,000 ticks. This way, we don't have to implement a work/ROI end handler, and we don't have to simulate the entire ROI (which might take a while).
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > def ROI_begin_handler():
@@ -146,8 +146,8 @@ We also need to register this handler to the work/ROI begin hypercall number (4)
 
 > **Your turn:** Fill in `TODO (4)` in `kvm_time.py` to register our new `ROI_begin_handler` function to trigger on the `ROI_begin` exit event.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > register_exit_handler(4, ROI_begin_handler, "ROI begin handler")

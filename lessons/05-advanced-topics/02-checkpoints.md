@@ -45,8 +45,8 @@ We don't need a highly performant or detailed system for checkpoint generation: 
 >
 > **NOTE:** You might need to add some new imports!
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > from gem5.components.cachehierarchies.classic.no_cache import NoCache
@@ -98,8 +98,8 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 > - Saves a checkpoint to a directory called `cpt`.
 > - Exits the simulation.
 >
-> <details markdown="span">
-> <summary> <b>Checkpoint Saving Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Checkpoint Saving Answer</b> </summary>
 >
 > You'll want to use
 > ```python
@@ -108,8 +108,8 @@ The `Simulator` class has a function for saving checkpoints aptly named `save_ch
 >
 > to save a checkpoint!
 > </details>
-> <details markdown="span">
-> <summary> <b>Full Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Full Answer</b> </summary>
 >
 > ```python
 > def workbegin_handler():
@@ -151,8 +151,8 @@ We restore our checkpoint by passing in a `checkpoint_path` as a parameter to th
 
 > **Your turn:** Fill in `TODO (3)` in `restore_checkpoint.py` to pass in the path to our generated checkpoint.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 >
 > ```python
 > checkpoint_path = "bootamp/resources/03-checkpoint-and-restore/cpt"

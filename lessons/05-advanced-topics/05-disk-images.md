@@ -157,8 +157,8 @@ This provisioner allows us to run a bash script (`post-installation.sh`) after U
 
 As previously mentioned, this Packer script uses Ubuntu autoinstall. To use Ubuntu autoinstall, we need a `user-data` file. This file specifies the configuration for installing Ubuntu. For the sake of this example, this file is already provided; if you're curious about how to get this file yourself, expand the tooltip below. 
 
-<details markdown="span">
-<summary> <b>How to use QEMU to get a user-data file </b> </summary>
+<details>
+<summary markdown="span"> <b>How to use QEMU to get a user-data file </b> </summary>
 
 Any time a system is installed using the Ubuntu installer, the `user-data` file is automatically created. 
 

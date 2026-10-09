@@ -107,8 +107,8 @@ Our job will be to analyze this board with SimPoint. The only thing we need to d
 
 > **Your turn:** Fill in `TODO (1)` in `simpoint_analysis.py` to attach a `SimPoint` probe to the processor's only core using the core's `addSimPointProbe` function. Pass in the agument `1_000_000` to this function to set our region size to 1,000,000 instructions.
 > 
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```python
 > processor.get_cores()[0].core.addSimPointProbe(1_000_000)
@@ -239,8 +239,8 @@ Open the `simpoint_checkpoint.py` file to get started. The first step we need to
 > - `weight_file_path` should point to `results.weights`,
 > - `warmup_interval` should be 1,000,000.
 >
-> <details markdown="span">
-> <summary> <b>Answer</b> </summary>
+> <details>
+> <summary markdown="span"> <b>Answer</b> </summary>
 > 
 > ```python
 > from gem5.utils.simpoint import SimPoint

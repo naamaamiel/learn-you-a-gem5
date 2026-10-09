@@ -13,8 +13,8 @@ Rounding out our tour of the big three gem5 subsystems, we have memory.
 
 Much like the caches unit, this unit assumes knowledge of some memory details that you may not have encountered before. If you feel good about your knowledge of DRAM/HBM/NVM, please continue to the next header ("Memory controllers and interfaces")! Otherwise, keep reading.
 
-<details markdown="span" open>
-<summary><b> Collapse this header to hide the memory explanation! </b></summary>
+<details open>
+<summary markdown="span"><b> Collapse this header to hide the memory explanation! </b></summary>
 
 ### So what's DRAM?
 
@@ -79,8 +79,8 @@ The gem5 standard library contains two kinds of components to model memory: `Sin
 
 > If you're curious, the class diagram for memory in the standard library is below.
 >
-> <details markdown="span">
-> <summary> <b>src/python/gem5/components/memory</b> </summary>
+> <details>
+> <summary markdown="span"> <b>src/python/gem5/components/memory</b> </summary>
 >
 > <br>
 >

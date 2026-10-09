@@ -144,8 +144,8 @@ The 5th function (`gem5::TimingSimpleCPU::completeIfetch`) is the function respo
 
 > We can see this function in `src/cpu/simple/base.cc`, snipped below if you're curious:
 >
-> <details markdown="span">
-> <summary> <code> preExecute()</code> </summary>
+> <details>
+> <summary markdown="span"> <code> preExecute()</code> </summary>
 > 
 > ```c++
 > void
@@ -247,8 +247,8 @@ The next function up (`gem5::RiscvISA::Decoder::decode`) is the RISC-V ISA's dec
 
 > We can find it in `gem5/src/arc/riscv/decoder.cc`:
 > 
-> <details markdown="span">
-> <summary> <code> decode()</code> </summary>
+> <details>
+> <summary markdown="span"> <code> decode()</code> </summary>
 >
 > ```c++
 > StaticInstPtr
