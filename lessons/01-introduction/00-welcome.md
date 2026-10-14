@@ -1,10 +1,10 @@
 # Welcome!
 
-Welcome to the learning gem5 online bootcamp! We're excited to have you, and we hope you're excited to get started with gem5. This section will introduce you to how the bootcamp is organized.
+Welcome to the learning gem5 online bootcamp! We're excited to have you, and we hope you're excited to get started with gem5. This section will introduce you to how the course is organized.
 
 > By the end of this section, you will be able to:  
 >  
-> - **Describe** how the learning gem5 bootcamp is organized.
+> - **Describe** how the learning gem5 course is organized.
 > - **Explain** what learning objectives are.
 
 ## Learning objectives
@@ -13,7 +13,7 @@ You might've noticed the box in at the top labeled "By the end of this section, 
 
 ## Assumed knowledge
 
-This bootcamp makes some assumptions about what you already know in order to engage with the material. gem5 is a computer architecture simulator, meaning that computer architecture knowledge is expected and will not be covered in detail. We assume that you have taken the following university-level courses or acquired the equivalent knowledge elsewhere:
+This course makes some assumptions about what you already know in order to engage with the material. gem5 is a computer architecture simulator, meaning that computer architecture knowledge is expected and will not be covered in detail. We assume that you have taken the following university-level courses or acquired the equivalent knowledge elsewhere:
 
 - Computer Organization
 - Computer Architecture I and II
@@ -28,10 +28,10 @@ We also assume knowledge in the following areas:
 
 ## Organization and tracks
 
-This bootcamp is divided into units and sections.
+This course is divided into units and sections.
 
 > <details open>
->  <summary markdown="span"> <b>Bootcamp outline</b> </summary>
+>  <summary markdown="span"> <b>Course outline</b> </summary>
 >
 > ### Unit I: Introduction
 >
@@ -89,7 +89,7 @@ This bootcamp is divided into units and sections.
 
 You are encouraged to complete the units in order, but you can always jump around or skip sections if you're familiar with their subject matter. Use the learning objectives to guide you!
 
-Unit IV is unique as it's split into 3 tracks: Processors, Caches, and Memory. **You may choose to complete any number of these tracks and still complete the bootcamp**. These tracks are independent and convey similar information about simulating in gem5, but their emphasis and encompassing project differ in focus. You can choose to complete all 3 tracks in a row, complete the entire bootcamp with one track then come back to the other tracks, or do one track and call it good. It depends on your goals and how you'll use gem5!
+Unit IV is unique as it's split into 3 tracks: Processors, Caches, and Memory. **You may choose to complete any number of these tracks and still complete the course**. These tracks are independent and convey similar information about simulating in gem5, but their emphasis and encompassing project differ in focus. You can choose to complete all 3 tracks in a row, complete the entire course with one track then come back to the other tracks, or do one track and call it good. It depends on your goals and how you'll use gem5!
 
 <!-- ## Knowledge checkpoints
 
@@ -112,7 +112,9 @@ Congrats on completing the first section! Let's get on with the contents of the 
 
 ## Acknowledgements  
 
-This bootcamp is built upon previous in-person gem5 bootcamps:
+gem5in5 is developed by [Naama Amiel](https://naamaamiel.github.io), who is advised by Dr. Elba Garza at the University of Washington.
+
+This course is built upon previous in-person gem5 bootcamps:
 
 - [gem5 Bootcamp UC Davis 2024](https://gem5bootcamp.github.io/2024/)
 - [gem5 Bootcamp Latin America 2024](https://gem5bootcamp.github.io/latin-america-2024/)
