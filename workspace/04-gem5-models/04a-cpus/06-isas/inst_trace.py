@@ -12,7 +12,6 @@ through the gem5 CPU models,.
 
 It can be executed with:
 
-```shell
 gdb gem5
 
 # Add breakpoints to for functions in StaticInst object representing the `Add`
@@ -23,14 +22,13 @@ gdb gem5
 # object that represents the `Add` instruction.
 (gdb) b Add::Add
 
-# Add breakpoints to the `Add::execute` funciton.
+# Add breakpoints to the `Add::execute` function.
 # This is function called to execute the `Add` instruction.
 (gdb) b Add::execute
 
 # Start execution of gem5
 (gdb) run \
     materials/03-Developing-gem5-models/05-modeling-cores/01-inst-trace.py
-```
 """
 
 cache_hierarchy = PrivateL1CacheHierarchy(l1d_size="32KiB", l1i_size="32KiB")
