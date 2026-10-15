@@ -104,7 +104,7 @@ Let's see what happens when all ports are available and ready to go.
 
 3. Simulator time advances, meaning that `Requester` and `Responder` continue execution. When `Responder` has a response ready, it attempts to send a response by calling `Responder::ResponsePort::sendTimingResp()`. This in turn calls `Requester::RequestPort::recvTimingResp()`.
 
-4. `Requester` is not busy , so it accepts the response. Thus, `Requester::RequestPort::recvTimingResp()` returns `true`. `Responder` can now see that its response was received, and the transaction is complete!
+4. `Requester` is not busy, so it accepts the response. Thus, `Requester::RequestPort::recvTimingResp()` returns `true`. `Responder` can now see that its response was received, and the transaction is complete!
 
 Visually, we can think of it like this:
 
@@ -133,7 +133,7 @@ Let's go through it step-by-step:
 
 6. Simulator time advances, meaning that `Requester` and `Responder` continue execution. When `Responder` has a response ready, it attempts to send a response by calling `Responder::ResponsePort::sendTimingResp()`. This in turn calls `Requester::RequestPort::recvTimingResp()`.
 
-7. `Requester` is not busy , so it accepts the response. Thus, `Requester::RequestPort::recvTimingResp()` returns `true`. `Responder` can now see that its response was received, and the transaction is complete!
+7. `Requester` is not busy, so it accepts the response. Thus, `Requester::RequestPort::recvTimingResp()` returns `true`. `Responder` can now see that its response was received, and the transaction is complete!
 
 Visually, this looks like this:
 
@@ -206,7 +206,7 @@ class TimingCPUPort : public RequestPort
 Let's break down this class declaration.
 
 - The port keeps track of its name (`_name`) and the CPU that owns it (`_cpu`),
-- It overrides the original behavior of `retryRespEvent` with its own version (`sendRetryResp()`),
+- It creates a new event, `retryRespEvent`, using `EventFunctionWrapper` and initializes it with a callback function (`sendRetryResp()`),
 - It creates a new event, `TickEvent`, to model a tick of the timing CPU (which is different from a single simulation tick!); this event cares about  the CPU and the involved packet (which can be null).
 
 This is the port we use as a basis for the icache and dcache ports. For this example, let's focus on `IcachePort`.
