@@ -1,0 +1,2 @@
+Regenerate: python3 gen_tests.py   (rewrites chain_add chain_mul chain_div indep_add kernel and their .lst files, runs rvsim.py --check, and checks rvsim against the Python models; --no-check skips that)
+Check: python3 rvsim.py --check   (decodes every word independently and compares it with <name>.lst, runs each program, checks for one 29-byte "checksum: 0x...\n" line and exit 0, and rewrites manifest.json; "python3 rvsim.py ./kernel" just runs one, "--disasm ./kernel" lists it)

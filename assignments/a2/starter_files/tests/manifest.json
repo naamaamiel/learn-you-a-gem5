@@ -1,0 +1,197 @@
+{
+  "description": "Results of rvsim.py --check: what each program prints (one 29-byte line), its exit code, and its static and dynamic instruction counts, by mnemonic and by gem5 O3 op class. checkable_insts counts the committed instructions that the shadow-unit CPU checks: not memory accesses, not serializing, and writing one integer register other than x0 or one FP register. The model entries come from gen_tests.py.",
+  "programs": {
+    "chain_add": {
+      "expected_stdout": "checksum: 0x0000000000138800\n",
+      "exit_code": 0,
+      "static_insts": 239,
+      "dynamic_insts": 1320332,
+      "dynamic_by_mnemonic": {
+        "add": 1280032,
+        "addi": 20108,
+        "bne": 20004,
+        "andi": 64,
+        "sb": 58,
+        "slti": 32,
+        "srli": 30,
+        "ecall": 2,
+        "addiw": 1,
+        "lui": 1
+      },
+      "dynamic_by_opclass": {
+        "IntAlu": 1320272,
+        "MemWrite": 58,
+        "No_OpClass": 2
+      },
+      "checkable_insts": 1300268,
+      "fflags_at_exit": "",
+      "text_bytes": 956,
+      "entry": "0x11000",
+      "listing_mismatches": 0,
+      "model": {
+        "checksum": "0x0000000000138800",
+        "iterations": 20000,
+        "loop_insts": 66,
+        "dynamic_insts": 1320332
+      }
+    },
+    "chain_mul": {
+      "expected_stdout": "checksum: 0x04614d0adc06a003\n",
+      "exit_code": 0,
+      "static_insts": 246,
+      "dynamic_insts": 264339,
+      "dynamic_by_mnemonic": {
+        "mul": 256000,
+        "addi": 4110,
+        "bne": 4004,
+        "andi": 64,
+        "sb": 58,
+        "add": 32,
+        "slti": 32,
+        "srli": 30,
+        "slli": 3,
+        "addiw": 2,
+        "ecall": 2,
+        "lui": 2
+      },
+      "dynamic_by_opclass": {
+        "IntMult": 256000,
+        "IntAlu": 8279,
+        "MemWrite": 58,
+        "No_OpClass": 2
+      },
+      "checkable_insts": 260275,
+      "fflags_at_exit": "",
+      "text_bytes": 984,
+      "entry": "0x11000",
+      "listing_mismatches": 0,
+      "model": {
+        "checksum": "0x04614d0adc06a003",
+        "iterations": 4000,
+        "loop_insts": 66,
+        "dynamic_insts": 264339
+      }
+    },
+    "chain_div": {
+      "expected_stdout": "checksum: 0x0123456789abcdef\n",
+      "exit_code": 0,
+      "static_insts": 245,
+      "dynamic_insts": 53138,
+      "dynamic_by_mnemonic": {
+        "div": 51200,
+        "addi": 911,
+        "bne": 804,
+        "andi": 64,
+        "sb": 58,
+        "add": 32,
+        "slti": 32,
+        "srli": 30,
+        "slli": 3,
+        "ecall": 2,
+        "addiw": 1,
+        "lui": 1
+      },
+      "dynamic_by_opclass": {
+        "IntDiv": 51200,
+        "IntAlu": 1878,
+        "MemWrite": 58,
+        "No_OpClass": 2
+      },
+      "checkable_insts": 52274,
+      "fflags_at_exit": "",
+      "text_bytes": 980,
+      "entry": "0x11000",
+      "listing_mismatches": 0,
+      "model": {
+        "checksum": "0x0123456789abcdef",
+        "iterations": 800,
+        "loop_insts": 66,
+        "dynamic_insts": 53138
+      }
+    },
+    "indep_add": {
+      "expected_stdout": "checksum: 0x0000000000138800\n",
+      "exit_code": 0,
+      "static_insts": 253,
+      "dynamic_insts": 1320346,
+      "dynamic_by_mnemonic": {
+        "add": 1280039,
+        "addi": 20115,
+        "bne": 20004,
+        "andi": 64,
+        "sb": 58,
+        "slti": 32,
+        "srli": 30,
+        "ecall": 2,
+        "addiw": 1,
+        "lui": 1
+      },
+      "dynamic_by_opclass": {
+        "IntAlu": 1320286,
+        "MemWrite": 58,
+        "No_OpClass": 2
+      },
+      "checkable_insts": 1300282,
+      "fflags_at_exit": "",
+      "text_bytes": 1012,
+      "entry": "0x11000",
+      "listing_mismatches": 0,
+      "model": {
+        "checksum": "0x0000000000138800",
+        "iterations": 20000,
+        "loop_insts": 66,
+        "dynamic_insts": 1320346
+      }
+    },
+    "kernel": {
+      "expected_stdout": "checksum: 0xf28b70ce0a5a83ce\n",
+      "exit_code": 0,
+      "static_insts": 242,
+      "dynamic_insts": 580372,
+      "dynamic_by_mnemonic": {
+        "xor": 120000,
+        "add": 80032,
+        "fadd.d": 60000,
+        "fmul.d": 60000,
+        "srli": 40030,
+        "slli": 40013,
+        "fmv.x.d": 40000,
+        "mul": 40000,
+        "addi": 20121,
+        "blt": 20000,
+        "div": 20000,
+        "fcvt.d.l": 20000,
+        "fcvt.l.d": 20000,
+        "andi": 64,
+        "sb": 58,
+        "slti": 32,
+        "fmv.d.x": 6,
+        "addiw": 5,
+        "lui": 5,
+        "bne": 4,
+        "ecall": 2
+      },
+      "dynamic_by_opclass": {
+        "IntAlu": 320306,
+        "FloatCvt": 80006,
+        "FloatAdd": 60000,
+        "FloatMult": 60000,
+        "IntMult": 40000,
+        "IntDiv": 20000,
+        "MemWrite": 58,
+        "No_OpClass": 2
+      },
+      "checkable_insts": 560308,
+      "fflags_at_exit": "NX",
+      "text_bytes": 968,
+      "entry": "0x11000",
+      "listing_mismatches": 0,
+      "model": {
+        "checksum": "0xf28b70ce0a5a83ce",
+        "iterations": 20000,
+        "loop_insts": 29,
+        "dynamic_insts": 580372
+      }
+    }
+  }
+}

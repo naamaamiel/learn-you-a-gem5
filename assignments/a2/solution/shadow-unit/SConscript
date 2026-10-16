@@ -1,0 +1,7 @@
+Import("*")
+
+SimObject("ShadowUnit.py", sim_objects=["ShadowUnit"])
+
+Source("shadow_unit.cc")
+
+DebugFlag("ShadowUnit", "Shadow unit checks and verdicts")

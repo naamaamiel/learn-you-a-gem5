@@ -1,0 +1,4 @@
+Import("*")
+
+# TODO (Part 1): register the ShadowUnit SimObject, compile
+# shadow_unit.cc, and declare a debug flag named ShadowUnit.
