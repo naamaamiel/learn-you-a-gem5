@@ -11,7 +11,7 @@ The finished files are next to this one:
 | `cpu-side/src/cpu/o3/` | Part 5: `iew.hh`, `iew.cc`, and `commit.cc` with speculation implemented |
 | `run_a2.sh`, `check_a2.py` | run every checkpoint configuration, then check the results against the checkpoint tables |
 
-`shadow_unit.cc` in `shadow-unit/` is the version at the end of Part 3. The Part 1 and Part 2 versions of its functions are shown in full below, in the steps that write them.
+`shadow_unit.cc` in `shadow-unit/` is the version at the end of Part 3. The Part 1 and Part 2 versions of its functions are shown in full below, in the steps that write them. The unit is modeled on the O3 CPU's functional units: its lanes work like `FUPool`, and its `ShadowCompletion` event like `FUCompletion`.
 
 ## Setup
 
@@ -107,7 +107,7 @@ checksum: 0x0000000000138800
 | `indep_add` | 1,320,344 | 222,615 | 0.169 | 5.931 | `0x0000000000138800` |
 | `kernel` | 580,370 | 242,519 | 0.418 | 2.393 | `0xf28b70ce0a5a83ce` |
 
-The chains run at L cycles per chained instruction, and the 2 instructions of loop control in every 66 bring the CPI to about 64/66 of L. `indep_add` comes close to 6 instructions per cycle, not 8: the default functional unit pool has 6 integer ALUs (Q0.1). If your numbers differ from these, check `git status` in gem5 (see [Setup](#setup)) and that `tests/` holds the provided programs.
+The chains run at L cycles per chained instruction, and the 2 instructions of loop control in every 66 bring the CPI to about 64/66 of L. `indep_add` comes close to 6 instructions per cycle, not 8: the default functional unit pool has 6 integer ALUs. If your numbers differ from these, check `git status` in gem5 (see [Setup](#setup)) and that `tests/` holds the provided programs.
 
 Every program prints one checksum line, and every later run must print the same one. `kernel`'s is the one Part 3 checks.
 
@@ -159,9 +159,39 @@ There's one member for each parameter, with the C++ type of its `Param` type. `S
 
 ### Step 1.2: The header
 
-`shadow_unit.hh` is complete. The members the solution uses are the ones the assignment describes: the three `const` parameters, `rng`, the `lanes` multimap with `shadowDoneEvent`, the `comparator` deque with `compareDoneEvent`, `scheduleNext()`, the two callbacks, and `stats`.
+`shadow_unit.hh` is complete. Its lanes copy the O3 CPU's functional units:
+
+| `ShadowUnit` | O3 CPU | |
+|---|---|---|
+| `laneBusy` | `FUPool::unitBusy` | `src/cpu/o3/fu_pool.hh` |
+| `getLane()`, `NoFreeLane` | `FUPool::getUnit()`, `FUPool::NoFreeFU` | `src/cpu/o3/fu_pool.cc` |
+| `ShadowCompletion`, with `check`, `lane`, and `unit` | `FUCompletion`, with `inst`, `fuIdx`, and `iqPtr` | `src/cpu/o3/inst_queue.hh` |
+| `processShadowDone(check, lane)` | `InstructionQueue::processFUCompletion(inst, fu_idx)` | `src/cpu/o3/inst_queue.cc` |
+
+`ShadowCompletion` is nested in `ShadowUnit`, like `FUCompletion` in `InstructionQueue`, so its `process()` can call the unit's private `processShadowDone()`.
 
 ### Step 1.3: The source
+
+**`ShadowCompletion`.** The constructor and `description()` come with the skeleton:
+
+```c++
+ShadowUnit::ShadowCompletion::ShadowCompletion(ShadowCheck *_check,
+    int _lane, ShadowUnit *_unit)
+    : Event(Default_Pri, AutoDelete),
+      check(_check), lane(_lane), unit(_unit)
+{
+}
+
+void
+ShadowUnit::ShadowCompletion::process()
+{
+    unit->processShadowDone(check, lane);
+}
+```
+
+- `process()` is the one line to write. It hands the event's check and lane back to the unit, as `FUCompletion::process()` calls `iqPtr->processFUCompletion(inst, fuIdx)`.
+- `AutoDelete` makes gem5 delete the event after `process()` returns (`Event::release()` in `src/sim/eventq.cc`), so the unit never deletes it.
+- The priority is `Default_Pri` (0), where `FUCompletion` uses `Stat_Event_Pri` (90). `FUCompletion` is scheduled one cycle early and runs after the CPU's tick; `ShadowCompletion` runs at the edge of cycle T+L, before it. Both take effect in the same cycle. Giving `ShadowCompletion` priority 90 *and* scheduling it at T+L would hold every lane a cycle too long.
 
 **The constructor:**
 
@@ -172,10 +202,7 @@ ShadowUnit::ShadowUnit(const ShadowUnitParams &params)
       compareLatency(params.compare_latency),
       faultPeriod(params.fault_period),
       rng(Random::genRandom(params.fault_seed)),
-      shadowDoneEvent([this] { processShadowDone(); },
-                      name() + ".shadowDoneEvent"),
-      compareDoneEvent([this] { processCompareDone(); },
-                       name() + ".compareDoneEvent"),
+      laneBusy(params.num_lanes, false),
       stats(this)
 {
     fatal_if(numLanes == 0, "%s: num_lanes must be at least 1.", name());
@@ -183,77 +210,76 @@ ShadowUnit::ShadowUnit(const ShadowUnitParams &params)
 ```
 
 - C++ initializes members in the order the header declares them, whatever order the list is written in, so the list follows that order. Written in another order, it compiles with a `-Wreorder` warning, and a member that reads another one could read it before it's initialized.
-- Each `EventFunctionWrapper` takes the callback and a name. Prefixing the unit's `name()` gives each event a unique name in debug output, such as `board.processor.cores.core.shadowUnit.shadowDoneEvent`.
+- `laneBusy(params.num_lanes, false)` makes one flag per lane, all free.
 - `num_lanes = 0` is a mistake in the configuration, not a bug in gem5, so it's a `fatal_if`. A unit with no lanes would reject every check, and the CPU would offer the first one forever.
 
-**`scheduleNext()`:**
+**`getLane()`:**
 
 ```c++
-void
-ShadowUnit::scheduleNext(Event &event, Tick when)
+int
+ShadowUnit::getLane()
 {
-    if (!event.scheduled()) {
-        schedule(event, when);
-    } else if (when < event.when()) {
-        reschedule(event, when);
+    for (unsigned lane = 0; lane < numLanes; ++lane) {
+        if (!laneBusy[lane]) {
+            laneBusy[lane] = true;
+            return lane;
+        }
     }
+    return NoFreeLane;
 }
 ```
 
-There are three cases. If the event isn't in the queue, schedule it. If it's waiting for a later tick, move it earlier: that's the `div` and `add` case from the assignment. If it's already waiting for `when` or an earlier tick, leave it alone; when it fires, its callback re-arms it for the next entry.
+`FUPool::getUnit()` does the same with two extras the lanes don't need. It first checks that some FU can run the op class at all, since every lane can run every instruction. And it starts its search at a different FU each time, round robin, which makes no difference to timing here because all lanes are identical.
 
-**`requestCheck()`, Part 1 version:** accept everything.
+**`requestCheck()`, Part 1 version:**
 
 ```c++
 bool
 ShadowUnit::requestCheck(ShadowCheck *check)
 {
-    Tick done = clockEdge(check->latency);
-    lanes.emplace(done, check);
-    scheduleNext(shadowDoneEvent, done);
+    int lane = getLane();
+    panic_if(lane == NoFreeLane, "%s: no free lane; run Part 1 with more "
+             "lanes.", name());
+
+    // S holds its lane for L cycles, like an unpipelined FU.
+    schedule(new ShadowCompletion(check, lane, this),
+             clockEdge(check->latency));
     ++stats.checks;
     stats.laneCycles += check->latency;
 
-    DPRINTF(ShadowUnit, "[sn:%llu] S starts, done in %llu cycles "
-            "(%u of %u lanes busy)\n", check->seqNum,
-            uint64_t(check->latency), lanes.size(), numLanes);
+    DPRINTF(ShadowUnit, "[sn:%llu] S starts on lane %d, done in %llu "
+            "cycles\n", check->seqNum, lane, uint64_t(check->latency));
     return true;
 }
 ```
 
+- This is the `new FUCompletion` code in `InstructionQueue::scheduleReadyInsts()`, for one check: a new event that carries the check and its lane, scheduled for the cycle S finishes.
 - The CPU calls `requestCheck()` from its tick, at the clock edge of cycle T, so `clockEdge(check->latency)` is the edge of cycle T+L.
-- The multimap keeps `lanes` sorted by finish tick, and allows two checks with the same one.
-- `Cycles` converts to an integer, so `laneCycles += check->latency` adds L.
-- No verdict goes out from here, even though S always passes in Part 1. The CPU side panics if one does (Q1.4).
+- Every check gets its own event, so checks with different latencies need nothing special: a `div` and an `add` in flight at once each finish at their own tick.
+- The `panic_if` stands in for Part 2's rejection. With `--lanes 64`, it never fires.
+- No verdict goes out from here. The CPU side panics if one does (rule 4 and the `inRequestCheck` check in `IEW::recvVerdict()`).
 
-**`processShadowDone()`, Part 1 version:** every S that's due passes.
+**`processShadowDone()`, Part 1 version:**
 
 ```c++
 void
-ShadowUnit::processShadowDone()
+ShadowUnit::processShadowDone(ShadowCheck *check, int lane)
 {
+    // S is done, so its lane is free.
+    laneBusy[lane] = false;
+
     // Part 1: S always agrees with P, so its verdict goes out right away.
-    while (!lanes.empty() && lanes.begin()->first <= curTick()) {
-        ShadowCheck *check = lanes.begin()->second;
-        lanes.erase(lanes.begin());
+    check->match = true;
+    ++stats.passes;
 
-        check->match = true;
-        ++stats.passes;
-
-        DPRINTF(ShadowUnit, "[sn:%llu] S done, verdict: match\n",
-                check->seqNum);
-        sendVerdict(check);
-    }
-
-    if (!lanes.empty()) {
-        scheduleNext(shadowDoneEvent, lanes.begin()->first);
-    }
+    DPRINTF(ShadowUnit, "[sn:%llu] S done on lane %d, verdict: match\n",
+            check->seqNum, lane);
+    sendVerdict(check);
 }
 ```
 
-- The loop takes out *every* S that's due, not just one: several checks can finish at the same tick, and the event fires once for all of them.
-- The check leaves `lanes` before `sendVerdict()`. After the verdict, the check belongs to the CPU again, and the unit must not touch it.
-- Inside its own callback, `shadowDoneEvent` isn't scheduled anymore, so `scheduleNext()` schedules it for the next S, if there is one.
+- Freeing the lane here matches an unpipelined FU, which `processFUCompletion()` frees when its `FUCompletion` runs. O3 frees it through `freeUnitNextCycle()`, and the FU is actually free when IEW's next tick calls `processFreeUnits()`, at the start of cycle T+L. Freeing the lane in an event that runs before the CPU's tick in cycle T+L has the same effect.
+- Each event handles exactly one check, so there's no loop and no re-arming. Two checks that finish at the same tick have two events.
 
 Leave `processCompareDone()` empty until Part 2.
 
@@ -336,7 +362,7 @@ compare_latency=0
 eventq_index=0
 fault_period=0
 fault_seed=1
-num_lanes=1
+num_lanes=64
 power_model=
 m5out/chain_mul-p1/config.ini:shadowUnit=board.processor.cores.core.shadowUnit
 m5out/chain_mul-base/config.ini:shadowUnit=Null
@@ -348,7 +374,7 @@ The unit's path, `board.processor.cores.core.shadowUnit`, shows that it's a chil
 
 ```bash
 for p in chain_add chain_mul chain_div indep_add kernel; do
-    gem5 -re -d m5out/$p-p1 a2_script.py --binary tests/$p --lanes 1
+    gem5 -re -d m5out/$p-p1 a2_script.py --binary tests/$p --lanes 64
 done
 show chain_add-p1 chain_mul-p1 chain_div-p1 indep_add-p1 kernel-p1
 ```
@@ -372,110 +398,83 @@ Then trace a short window of `chain_mul`, with the command from the assignment:
 ```bash
 gem5 -d m5out/chain_mul-trace --debug-flags=ShadowUnit --debug-file=trace.out \
     --debug-start=10000000 --debug-end=10020000 \
-    a2_script.py --binary tests/chain_mul --lanes 1
+    a2_script.py --binary tests/chain_mul --lanes 64
 head -6 m5out/chain_mul-trace/trace.out
 ```
 
 ```txt
-10000323: board.processor.cores.core.shadowUnit: [sn:5722] S done, verdict: match
-10001322: board.processor.cores.core.shadowUnit: [sn:5723] S starts, done in 3 cycles (1 of 1 lanes busy)
-10002321: board.processor.cores.core.shadowUnit: [sn:5723] S done, verdict: match
-10003320: board.processor.cores.core.shadowUnit: [sn:5724] S starts, done in 3 cycles (1 of 1 lanes busy)
-10004319: board.processor.cores.core.shadowUnit: [sn:5724] S done, verdict: match
-10005318: board.processor.cores.core.shadowUnit: [sn:5725] S starts, done in 3 cycles (1 of 1 lanes busy)
+10000323: board.processor.cores.core.shadowUnit: [sn:5722] S done on lane 0, verdict: match
+10001322: board.processor.cores.core.shadowUnit: [sn:5723] S starts on lane 0, done in 3 cycles
+10002321: board.processor.cores.core.shadowUnit: [sn:5723] S done on lane 0, verdict: match
+10003320: board.processor.cores.core.shadowUnit: [sn:5724] S starts on lane 0, done in 3 cycles
+10004319: board.processor.cores.core.shadowUnit: [sn:5724] S done on lane 0, verdict: match
+10005318: board.processor.cores.core.shadowUnit: [sn:5725] S starts on lane 0, done in 3 cycles
 ```
 
-A cycle is 333 ticks, so divide by 333 to get cycles (Q1.1). The `mul` `[sn:5723]` asks for its check in cycle 30034, T, and its verdict goes back in cycle 30037, T+L: there's no comparator yet, so C = 0. The next `mul` in the chain, `[sn:5724]`, executes and asks for its check in cycle 30040: 2L = 6 cycles after `[sn:5723]`.
+A cycle is 333 ticks, so divide by 333 to get cycles. The `mul` `[sn:5723]` asks for its check in cycle 30034, T, and its verdict goes back in cycle 30037, T+L: there's no comparator yet, so C = 0. The next `mul` in the chain, `[sn:5724]`, executes and asks for its check in cycle 30040: 2L = 6 cycles after `[sn:5723]`.
 
-Further on, the trace has lines such as `[sn:5795] S starts, done in 1 cycles (2 of 1 lanes busy)`. That's the loop's `addi`, while a `mul` is in the only lane. The Part 1 unit ignores `num_lanes`, so it can have more checks in flight than lanes. Part 2 fixes that.
+Each `mul` takes lane 0 again: its lane is free by the time the next `mul` in the chain executes. Further on, the loop's `addi`, `[sn:5795]`, runs while a `mul` is still in lane 0, and takes lane 1.
 
 ## Part 2: Lanes and the comparator
 
-Part 2 changes all three functions that handle checks.
+Part 2 changes `requestCheck()` and `processShadowDone()`, and writes `processCompareDone()`.
 
-**`requestCheck()`:** turn the check away when every lane is busy. This goes first, before anything is added or counted:
+**`requestCheck()`:** the `panic_if` becomes a rejection:
 
 ```c++
-bool
-ShadowUnit::requestCheck(ShadowCheck *check)
-{
-    if (lanes.size() >= numLanes) {
+    int lane = getLane();
+    if (lane == NoFreeLane) {
         DPRINTF(ShadowUnit, "[sn:%llu] rejected: all %u lanes busy\n",
                 check->seqNum, numLanes);
         ++stats.rejections;
         return false;
     }
-
-    Tick done = clockEdge(check->latency);
-    lanes.emplace(done, check);
-    scheduleNext(shadowDoneEvent, done);
-    ++stats.checks;
-    stats.laneCycles += check->latency;
-
-    DPRINTF(ShadowUnit, "[sn:%llu] S starts, done in %llu cycles "
-            "(%u of %u lanes busy)\n", check->seqNum,
-            uint64_t(check->latency), lanes.size(), numLanes);
-    return true;
-}
 ```
 
-A rejected check isn't stored anywhere: the CPU keeps it and offers it again next cycle. `rejections` counts offers, not checks. The CPU offers its oldest waiting check again every cycle and stops at the first rejection, so `rejections` is about the number of cycles in which a check had to wait.
+This is the `NoFreeFU` case in `scheduleReadyInsts()`: the instruction queue counts it in `fuBusy`, leaves the instruction ready, and tries again next cycle. Here the CPU keeps the check and offers it again next cycle, so the unit doesn't store it. `rejections` counts offers, not checks. The CPU offers its oldest waiting check again every cycle and stops at the first rejection, so `rejections` is about the number of cycles in which a check had to wait.
 
 **`processShadowDone()`:** S finishes and frees its lane, and the check enters the comparator:
 
 ```c++
 void
-ShadowUnit::processShadowDone()
+ShadowUnit::processShadowDone(ShadowCheck *check, int lane)
 {
-    // Every S that finishes now leaves its lane and enters the comparator.
-    while (!lanes.empty() && lanes.begin()->first <= curTick()) {
-        ShadowCheck *check = lanes.begin()->second;
-        lanes.erase(lanes.begin());
+    // S is done, so its lane is free.
+    laneBusy[lane] = false;
 
-        check->shadow = check->golden;
+    check->shadow = check->golden;
 
-        DPRINTF(ShadowUnit, "[sn:%llu] S done, comparing\n", check->seqNum);
-        comparator.emplace_back(clockEdge(compareLatency), check);
-    }
+    DPRINTF(ShadowUnit, "[sn:%llu] S done on lane %d, comparing\n",
+            check->seqNum, lane);
 
-    if (!comparator.empty()) {
-        scheduleNext(compareDoneEvent, comparator.front().first);
-    }
-    if (!lanes.empty()) {
-        scheduleNext(shadowDoneEvent, lanes.begin()->first);
-    }
+    // The comparator is pipelined: each check gets its own event.
+    schedule(new EventFunctionWrapper([this, check] {
+                 processCompareDone(check);
+             }, name() + ".compareDone", true),
+             clockEdge(compareLatency));
 }
 ```
 
-- `erase()` is what frees the lane: from now on, `lanes.size()` is one lower, and `requestCheck()` can accept another check. `shadowDoneEvent` runs before the CPU's tick in the same cycle, so the CPU's offer in this cycle already finds the lane free.
-- With C = 0, `clockEdge(compareLatency)` is the current tick. `compareDoneEvent` is scheduled for now, and still runs before the CPU's tick: it has the default priority, 0, and the CPU's tick has 50. So C = 0 needs no special case.
-- Every check spends exactly C cycles in the comparator, so they leave in the order they entered. `emplace_back()` keeps the deque sorted, and `front()` is always the next one due.
+- The comparator is pipelined, so it needs no busy flags: every check simply gets an event C cycles later. That's how O3 handles a pipelined FU, too: one `FUCompletion` per instruction, with the FU freed the cycle after issue instead of at completion.
+- The comparison event is an `EventFunctionWrapper`, as in the event-driven simulation lesson. Its lambda captures `check`, so it plays the role of `ShadowCompletion`'s `check` member, and the third argument, `true`, makes it `AutoDelete`. A second event class would work just as well.
+- With C = 0, `clockEdge(compareLatency)` is the current tick. The event runs right after `ShadowCompletion`, still before the CPU's tick: it has the default priority, 0, and the CPU's tick has 50. So C = 0 needs no special case.
 
 **`processCompareDone()`:** compare, count, and send the verdict:
 
 ```c++
 void
-ShadowUnit::processCompareDone()
+ShadowUnit::processCompareDone(ShadowCheck *check)
 {
-    while (!comparator.empty() && comparator.front().first <= curTick()) {
-        ShadowCheck *check = comparator.front().second;
-        comparator.pop_front();
-
-        check->match = (check->shadow == check->primary);
-        if (check->match) {
-            ++stats.passes;
-        } else {
-            ++stats.mismatches;
-        }
-
-        DPRINTF(ShadowUnit, "[sn:%llu] verdict: %s\n", check->seqNum,
-                check->match ? "match" : "MISMATCH");
-        sendVerdict(check);
+    check->match = (check->shadow == check->primary);
+    if (check->match) {
+        ++stats.passes;
+    } else {
+        ++stats.mismatches;
     }
 
-    if (!comparator.empty()) {
-        scheduleNext(compareDoneEvent, comparator.front().first);
-    }
+    DPRINTF(ShadowUnit, "[sn:%llu] verdict: %s\n", check->seqNum,
+            check->match ? "match" : "MISMATCH");
+    sendVerdict(check);
 }
 ```
 
@@ -508,7 +507,7 @@ gem5 -re -d m5out/chain_add-c2 a2_script.py --binary tests/chain_add --lanes 1 -
 
 `mismatches` is 0 in every run. With one lane, `indep_add` has 1,300,301 `rejections`: in almost every cycle, one check waits for the lane.
 
-A stronger check: with plenty of lanes and C = 0, the Part 2 unit must give *exactly* the cycle counts of the Part 1 unit, since a lane is always free and the comparator adds nothing. Run the five programs with `--lanes 64`, and compare their `numCycles` with the Part 1 runs: 2,562,188, 1,538,111, 2,050,045, 322,526, and 442,461.
+A stronger check: with plenty of lanes and C = 0, the Part 2 unit must give *exactly* the cycle counts of the Part 1 unit, since a lane is always free and the comparison event runs in the same tick as `ShadowCompletion`. Run the five programs with `--lanes 64`, and compare their `numCycles` with the Part 1 runs: 2,562,188, 1,538,111, 2,050,045, 322,526, and 442,461.
 
 In a trace of `indep_add` with one lane, every cycle looks the same:
 
@@ -520,17 +519,17 @@ head -8 m5out/indep_add-n1-trace/trace.out
 ```
 
 ```txt
-10000323: board.processor.cores.core.shadowUnit: [sn:29809] S done, comparing
+10000323: board.processor.cores.core.shadowUnit: [sn:29809] S done on lane 0, comparing
 10000323: board.processor.cores.core.shadowUnit: [sn:29809] verdict: match
-10000323: board.processor.cores.core.shadowUnit: [sn:29810] S starts, done in 1 cycles (1 of 1 lanes busy)
+10000323: board.processor.cores.core.shadowUnit: [sn:29810] S starts on lane 0, done in 1 cycles
 10000323: board.processor.cores.core.shadowUnit: [sn:29812] rejected: all 1 lanes busy
-10000656: board.processor.cores.core.shadowUnit: [sn:29810] S done, comparing
+10000656: board.processor.cores.core.shadowUnit: [sn:29810] S done on lane 0, comparing
 10000656: board.processor.cores.core.shadowUnit: [sn:29810] verdict: match
-10000656: board.processor.cores.core.shadowUnit: [sn:29812] S starts, done in 1 cycles (1 of 1 lanes busy)
+10000656: board.processor.cores.core.shadowUnit: [sn:29812] S starts on lane 0, done in 1 cycles
 10000656: board.processor.cores.core.shadowUnit: [sn:29813] rejected: all 1 lanes busy
 ```
 
-At each clock edge, the unit's events run first: S finishes and frees the lane, and with C = 0 the verdict goes out at once. Then, in the CPU's tick, the oldest waiting check takes the lane, and the next one is rejected. The CPU stops offering checks at the first rejection, so there's one rejection per cycle. (Sequence numbers skip the instructions that aren't checked, such as the loop's branch.)
+At each clock edge, the unit's events run first: the `ShadowCompletion` frees the lane, and with C = 0 the comparison event runs right after it and sends the verdict. Then, in the CPU's tick, the oldest waiting check takes the lane, and the next one is rejected. The CPU stops offering checks at the first rejection, so there's one rejection per cycle. (Sequence numbers skip the instructions that aren't checked, such as the loop's branch.)
 
 With C = 2, the comparator shows up between S finishing and the verdict:
 
@@ -542,17 +541,17 @@ sed -n '2,5p' m5out/chain_add-c2-trace/trace.out
 ```
 
 ```txt
-10000989: board.processor.cores.core.shadowUnit: [sn:8165] S starts, done in 1 cycles (1 of 1 lanes busy)
-10001322: board.processor.cores.core.shadowUnit: [sn:8165] S done, comparing
+10000989: board.processor.cores.core.shadowUnit: [sn:8165] S starts on lane 0, done in 1 cycles
+10001322: board.processor.cores.core.shadowUnit: [sn:8165] S done on lane 0, comparing
 10001988: board.processor.cores.core.shadowUnit: [sn:8165] verdict: match
-10002321: board.processor.cores.core.shadowUnit: [sn:8166] S starts, done in 1 cycles (1 of 1 lanes busy)
+10002321: board.processor.cores.core.shadowUnit: [sn:8166] S starts on lane 0, done in 1 cycles
 ```
 
 In cycles: the check starts in 30033 (T), S finishes in 30034 (T+L), the verdict goes out in 30036 (T+L+C), and the next `add` asks for its check in 30037, 2L + C = 4 cycles after the first.
 
 ## Part 3: Faults
 
-Part 3 adds three lines to `processShadowDone()`, right after S's result is set:
+Part 3 adds four lines to `processShadowDone()`, right after S's result is set:
 
 ```c++
         check->shadow = check->golden;
@@ -636,7 +635,7 @@ Each cell is the measured IPC, then the model's:
 | `chain_mul` | 2.922 | 0.172 / 0.172 | 0.172 / 0.172 | 0.172 / 0.172 | 0.172 / 0.172 | 0.172 / 0.172 | 0.172 / 0.172 |
 | `kernel` | 2.310 | 0.432 / 0.433 | 0.857 / 0.866 | 1.178 / 1.299 | 1.269 / 1.312 | 1.312 / 1.312 | 1.312 / 1.312 |
 
-Only one point is off by more than 5%: `kernel` with n = 3, 9.3% below the model. That's the row Q4.1 asks about. `chain_mul` never needs more than one lane.
+Only one point is off by more than 5%: `kernel` with n = 3, 9.3% below the model. `chain_mul` never needs more than one lane.
 
 ### Step 4.2: Comparator latency
 
@@ -959,7 +958,7 @@ With C = 0, from Steps 4.2, 4.3, 5.2, and 5.3:
 | `chain_add` | 1.941 | 0.971 | 0.99 | 17.82 | 0.058: 1 fault every 17 instructions |
 | `chain_mul` | 5.819 | 2.914 | 3.00 | 22.04 | 0.153: 1 fault every 6.6 instructions |
 
-In the models, the numerator is about L × 64/66 and the denominator is L + D, so f ≈ L / (L + D) × 64/66. Every fault rate in this assignment is far below both. Even Q3.1's 1 in 50 is about a third of `chain_add`'s break-even rate, and the checkpoints' 1 in 1,000 is 58 times below it.
+In the models, the numerator is about L × 64/66 and the denominator is L + D, so f ≈ L / (L + D) × 64/66. Every fault rate in this assignment is far below both. Even a fault period of 50 is about a third of `chain_add`'s break-even rate, and the checkpoints' 1 in 1,000 is 58 times below it.
 
 ## Run every checkpoint at once
 

@@ -13,55 +13,74 @@
 namespace gem5
 {
 
-ShadowUnit::ShadowUnit(const ShadowUnitParams &params)
-    : BaseShadowUnit(params),
-      // TODO (Part 1): initialize numLanes, compareLatency, faultPeriod,
-      // rng (Random::genRandom(seed)), shadowDoneEvent and
-      // compareDoneEvent, in the order the header declares them.
-      stats(this)
+ShadowUnit::ShadowCompletion::ShadowCompletion(ShadowCheck *_check,
+    int _lane, ShadowUnit *_unit)
+    : Event(Default_Pri, AutoDelete),
+      check(_check), lane(_lane), unit(_unit)
 {
 }
 
 void
-ShadowUnit::scheduleNext(Event &event, Tick when)
+ShadowUnit::ShadowCompletion::process()
 {
-    // TODO (Part 1): if event isn't scheduled, schedule it at when. If it
-    // is scheduled later than when, move it earlier.
+    // TODO (Part 1): tell the unit that S finished on its lane, the way
+    // FUCompletion::process() does in src/cpu/o3/inst_queue.cc.
+}
+
+const char *
+ShadowUnit::ShadowCompletion::description() const
+{
+    return "Shadow execution completion";
+}
+
+ShadowUnit::ShadowUnit(const ShadowUnitParams &params)
+    : BaseShadowUnit(params),
+      // TODO (Part 1): initialize numLanes, compareLatency, faultPeriod,
+      // rng (Random::genRandom(seed)), and laneBusy (one entry per lane,
+      // all free), in the order the header declares them.
+      stats(this)
+{
+}
+
+int
+ShadowUnit::getLane()
+{
+    // TODO (Part 1): like FUPool::getUnit() in src/cpu/o3/fu_pool.cc, find
+    // a lane that isn't busy, mark it busy, and return its index.
+    return NoFreeLane;
 }
 
 bool
 ShadowUnit::requestCheck(ShadowCheck *check)
 {
-    // TODO (Part 2): if every lane is busy, reject the check.
+    // TODO (Part 1): take a lane with getLane(). Then schedule a new
+    // ShadowCompletion for the cycle S finishes, check->latency cycles from
+    // now, the way the O3 instruction queue schedules an FUCompletion in
+    // InstructionQueue::scheduleReadyInsts(). Update stats.checks and
+    // stats.laneCycles.
+    //   Part 1: run with plenty of lanes, and panic if none is free.
+    //   Part 2: if no lane is free, reject the check instead.
 
-    // TODO (Part 1): S takes a lane and finishes check->latency cycles
-    // from now. Add it to lanes, make sure shadowDoneEvent fires in time,
-    // and update stats.checks and stats.laneCycles.
-
-    DPRINTF(ShadowUnit, "[sn:%llu] S starts (%u of %u lanes busy)\n",
-            check->seqNum, lanes.size(), numLanes);
+    DPRINTF(ShadowUnit, "[sn:%llu] S starts\n", check->seqNum);
     return true;
 }
 
 void
-ShadowUnit::processShadowDone()
+ShadowUnit::processShadowDone(ShadowCheck *check, int lane)
 {
-    // TODO (Part 1): take every S that finishes now out of lanes.
+    // TODO (Part 1): S finished, so free its lane, the way an unpipelined
+    // FU is freed when its FUCompletion runs.
     //   Part 1: S always agrees with P: set match and send the verdict.
-    //   Part 2: instead, set S's result and hand the check to the
-    //           comparator.
+    //   Part 2: instead, set S's result and start the comparison: schedule
+    //           a new event for C cycles from now.
     //   Part 3: inject faults into S's result.
-
-    // TODO (Part 1): if S executions are still in flight, make sure
-    // shadowDoneEvent fires when the next one finishes.
 }
 
 void
-ShadowUnit::processCompareDone()
+ShadowUnit::processCompareDone(ShadowCheck *check)
 {
-    // TODO (Part 2): send the verdict of every check whose comparison
-    // finishes now. Then make sure compareDoneEvent fires when the next
-    // one finishes, if there is one.
+    // TODO (Part 2): compare S's result with P's, update the stats, and
+    // send the verdict.
 }
 
 ShadowUnit::ShadowUnitStats::ShadowUnitStats(statistics::Group *parent)

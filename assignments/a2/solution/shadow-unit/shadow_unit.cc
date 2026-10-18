@@ -13,101 +13,106 @@
 namespace gem5
 {
 
+ShadowUnit::ShadowCompletion::ShadowCompletion(ShadowCheck *_check,
+    int _lane, ShadowUnit *_unit)
+    : Event(Default_Pri, AutoDelete),
+      check(_check), lane(_lane), unit(_unit)
+{
+}
+
+void
+ShadowUnit::ShadowCompletion::process()
+{
+    unit->processShadowDone(check, lane);
+}
+
+const char *
+ShadowUnit::ShadowCompletion::description() const
+{
+    return "Shadow execution completion";
+}
+
 ShadowUnit::ShadowUnit(const ShadowUnitParams &params)
     : BaseShadowUnit(params),
       numLanes(params.num_lanes),
       compareLatency(params.compare_latency),
       faultPeriod(params.fault_period),
       rng(Random::genRandom(params.fault_seed)),
-      shadowDoneEvent([this] { processShadowDone(); },
-                      name() + ".shadowDoneEvent"),
-      compareDoneEvent([this] { processCompareDone(); },
-                       name() + ".compareDoneEvent"),
+      laneBusy(params.num_lanes, false),
       stats(this)
 {
     fatal_if(numLanes == 0, "%s: num_lanes must be at least 1.", name());
 }
 
-void
-ShadowUnit::scheduleNext(Event &event, Tick when)
+int
+ShadowUnit::getLane()
 {
-    if (!event.scheduled()) {
-        schedule(event, when);
-    } else if (when < event.when()) {
-        reschedule(event, when);
+    for (unsigned lane = 0; lane < numLanes; ++lane) {
+        if (!laneBusy[lane]) {
+            laneBusy[lane] = true;
+            return lane;
+        }
     }
+    return NoFreeLane;
 }
 
 bool
 ShadowUnit::requestCheck(ShadowCheck *check)
 {
-    if (lanes.size() >= numLanes) {
+    int lane = getLane();
+    if (lane == NoFreeLane) {
         DPRINTF(ShadowUnit, "[sn:%llu] rejected: all %u lanes busy\n",
                 check->seqNum, numLanes);
         ++stats.rejections;
         return false;
     }
 
-    Tick done = clockEdge(check->latency);
-    lanes.emplace(done, check);
-    scheduleNext(shadowDoneEvent, done);
+    // S holds its lane for L cycles, like an unpipelined FU.
+    schedule(new ShadowCompletion(check, lane, this),
+             clockEdge(check->latency));
     ++stats.checks;
     stats.laneCycles += check->latency;
 
-    DPRINTF(ShadowUnit, "[sn:%llu] S starts, done in %llu cycles "
-            "(%u of %u lanes busy)\n", check->seqNum,
-            uint64_t(check->latency), lanes.size(), numLanes);
+    DPRINTF(ShadowUnit, "[sn:%llu] S starts on lane %d, done in %llu "
+            "cycles\n", check->seqNum, lane, uint64_t(check->latency));
     return true;
 }
 
 void
-ShadowUnit::processShadowDone()
+ShadowUnit::processShadowDone(ShadowCheck *check, int lane)
 {
-    // Every S that finishes now leaves its lane and enters the comparator.
-    while (!lanes.empty() && lanes.begin()->first <= curTick()) {
-        ShadowCheck *check = lanes.begin()->second;
-        lanes.erase(lanes.begin());
+    // S is done, so its lane is free.
+    laneBusy[lane] = false;
 
-        check->shadow = check->golden;
-        if (faultPeriod > 0 && rng->random<unsigned>(1, faultPeriod) == 1) {
-            check->shadow ^= RegVal(1) << 63;
-            ++stats.faultsInjected;
-        }
-
-        DPRINTF(ShadowUnit, "[sn:%llu] S done, comparing\n", check->seqNum);
-        comparator.emplace_back(clockEdge(compareLatency), check);
+    check->shadow = check->golden;
+    if (faultPeriod > 0 && rng->random<unsigned>(1, faultPeriod) == 1) {
+        check->shadow ^= RegVal(1) << 63;
+        ++stats.faultsInjected;
     }
 
-    if (!comparator.empty()) {
-        scheduleNext(compareDoneEvent, comparator.front().first);
-    }
-    if (!lanes.empty()) {
-        scheduleNext(shadowDoneEvent, lanes.begin()->first);
-    }
+    DPRINTF(ShadowUnit, "[sn:%llu] S done on lane %d, comparing\n",
+            check->seqNum, lane);
+
+    // The comparator is pipelined: each check gets its own event.
+    schedule(new EventFunctionWrapper([this, check] {
+                 processCompareDone(check);
+             }, name() + ".compareDone", true),
+             clockEdge(compareLatency));
 }
 
 void
-ShadowUnit::processCompareDone()
+ShadowUnit::processCompareDone(ShadowCheck *check)
 {
-    while (!comparator.empty() && comparator.front().first <= curTick()) {
-        ShadowCheck *check = comparator.front().second;
-        comparator.pop_front();
-
-        check->match = (check->shadow == check->primary);
-        if (check->match) {
-            ++stats.passes;
-        } else {
-            ++stats.mismatches;
-        }
-
-        DPRINTF(ShadowUnit, "[sn:%llu] verdict: %s\n", check->seqNum,
-                check->match ? "match" : "MISMATCH");
-        sendVerdict(check);
+    check->match = (check->shadow == check->primary);
+    if (check->match) {
+        ++stats.passes;
+    } else {
+        ++stats.mismatches;
     }
 
-    if (!comparator.empty()) {
-        scheduleNext(compareDoneEvent, comparator.front().first);
-    }
+    DPRINTF(ShadowUnit, "[sn:%llu] verdict: %s\n", check->seqNum,
+            check->match ? "match" : "MISMATCH");
+    sendVerdict(check);
 }
 
 ShadowUnit::ShadowUnitStats::ShadowUnitStats(statistics::Group *parent)

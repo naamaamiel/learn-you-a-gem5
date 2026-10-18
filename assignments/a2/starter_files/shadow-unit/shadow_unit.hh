@@ -1,9 +1,7 @@
 #ifndef __BOOTCAMP_SHADOW_UNIT_SHADOW_UNIT_HH__
 #define __BOOTCAMP_SHADOW_UNIT_SHADOW_UNIT_HH__
 
-#include <deque>
-#include <map>
-#include <utility>
+#include <vector>
 
 #include "base/random.hh"
 #include "base/statistics.hh"
@@ -14,9 +12,37 @@
 namespace gem5
 {
 
+/**
+ * A pool of generic lanes, like the O3 CPU's FUPool (src/cpu/o3/fu_pool.hh):
+ * any lane can run S for any instruction, and S holds its lane for the
+ * latency of the functional unit P ran on. Lanes aren't pipelined.
+ */
 class ShadowUnit : public BaseShadowUnit
 {
   private:
+    /**
+     * Like the O3 CPU's FUCompletion (src/cpu/o3/inst_queue.hh): one per
+     * check, scheduled for the cycle S finishes, and deleted after it runs.
+     */
+    class ShadowCompletion : public Event
+    {
+      private:
+        /** The check whose S is running. */
+        ShadowCheck *check;
+
+        /** Index of the lane S runs on. */
+        int lane;
+
+        /** Pointer back to the shadow unit. */
+        ShadowUnit *unit;
+
+      public:
+        ShadowCompletion(ShadowCheck *check, int lane, ShadowUnit *unit);
+
+        void process() override;
+        const char *description() const override;
+    };
+
     const unsigned numLanes;
     const Cycles compareLatency;
     const unsigned faultPeriod;
@@ -24,22 +50,23 @@ class ShadowUnit : public BaseShadowUnit
     /** Random numbers for the shadow fault injector (Part 3). */
     Random::RandomPtr rng;
 
-    /** Shadow executions in flight, keyed by the tick each one finishes. */
-    std::multimap<Tick, ShadowCheck *> lanes;
-    EventFunctionWrapper shadowDoneEvent;
+    /** Which lanes are running S, like FUPool::unitBusy. */
+    std::vector<bool> laneBusy;
 
-    /** Checks in the comparator, oldest first, with the tick each is done. */
-    std::deque<std::pair<Tick, ShadowCheck *>> comparator;
-    EventFunctionWrapper compareDoneEvent;
+    /** What getLane() returns when every lane is busy. */
+    static constexpr int NoFreeLane = -1;
 
-    /** Make sure that event happens no later than when. */
-    void scheduleNext(Event &event, Tick when);
+    /**
+     * Take a free lane and mark it busy, like FUPool::getUnit(). Returns
+     * its index, or NoFreeLane if every lane is busy.
+     */
+    int getLane();
 
-    /** Callback of shadowDoneEvent: S finished on one or more lanes. */
-    void processShadowDone();
+    /** S finished on lane: free the lane, and start the comparison. */
+    void processShadowDone(ShadowCheck *check, int lane);
 
-    /** Callback of compareDoneEvent: one or more comparisons finished. */
-    void processCompareDone();
+    /** check's comparison finished: compare, and send the verdict. */
+    void processCompareDone(ShadowCheck *check);
 
     struct ShadowUnitStats : public statistics::Group
     {
