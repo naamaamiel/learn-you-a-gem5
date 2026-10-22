@@ -1,9 +1,6 @@
-from gem5.components.boards.riscv_board import RiscvBoard
+from gem5.components.boards.x86_board import X86Board
 
 # TODO
-
-# for downloading the workload
-from gem5.resources.resource import obtain_resource
 
 # to run the simulation
 from gem5.simulate.simulator import Simulator
@@ -20,13 +17,12 @@ cache = # TODO
 
 memory = # TODO
 
-board = RiscvBoard(
+board = X86Board(
     # TODO
 )
 
-# Set the workload to GAPBS BFS benchmark 
 board.set_workload(
-    obtain_resource("riscv-gapbs-bfs-run")
+    # TODO
 )
 
 # Run the simulation until its end

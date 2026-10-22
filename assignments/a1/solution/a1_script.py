@@ -1,8 +1,8 @@
 from gem5.components.boards.riscv_board import RiscvBoard
 
-from a1_components import CustomProcessor
-from gem5.components.cachehierarchies.classic.private_l1_private_l2_cache_hierarchy import PrivateL1PrivateL2CacheHierarchy
-from gem5.components.memory.multi_channel import DualChannelDDR3_2133
+from a1_processor import CustomProcessor
+from a1_cache_hierarchy import CustomCacheHierarchy
+from a1_memory import CustomMemory
 
 
 # for downloading the workload
@@ -19,13 +19,14 @@ Name: Solution
 
 processor = CustomProcessor()
 
-cache = PrivateL1PrivateL2CacheHierarchy (
+cache = CustomCacheHierarchy (
     l1i_size = "32KiB",
     l1d_size = "16KiB",
     l2_size = "2MiB",
+    l3_size = "4MiB"
 )
 
-memory = DualChannelDDR3_2133 (
+memory = CustomMemory (
   size = "16GiB"
 )
 
