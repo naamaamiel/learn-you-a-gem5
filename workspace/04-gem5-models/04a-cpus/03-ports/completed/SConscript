@@ -1,0 +1,5 @@
+Import("*")
+
+SimObject("PacketInspector.py", sim_objects=["PacketInspector"])
+
+Source("packet_inspector.cc")
