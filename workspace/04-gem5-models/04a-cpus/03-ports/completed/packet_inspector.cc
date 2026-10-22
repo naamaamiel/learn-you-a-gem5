@@ -101,7 +101,6 @@ PacketInspector::recvFunctional(PacketPtr pkt)
     memSidePort.sendFunctional(pkt);
 }
 
-// Too-Much-Code
 void
 PacketInspector::CPUSidePort::sendPacket(PacketPtr pkt)
 {
@@ -112,7 +111,6 @@ PacketInspector::CPUSidePort::sendPacket(PacketPtr pkt)
     }
 }
 
-// Too-Much-Code
 void
 PacketInspector::CPUSidePort::recvRespRetry()
 {
@@ -127,7 +125,6 @@ PacketInspector::CPUSidePort::recvRespRetry()
     }
 }
 
-// Too-Much-Code
 void
 PacketInspector::recvRespRetry()
 {
@@ -144,7 +141,6 @@ PacketInspector::MemSidePort::sendPacket(PacketPtr pkt)
     }
 }
 
-// Too-Much-Code
 bool
 PacketInspector::MemSidePort::recvTimingResp(PacketPtr pkt)
 {
@@ -155,7 +151,6 @@ PacketInspector::MemSidePort::recvTimingResp(PacketPtr pkt)
     return false;
 }
 
-// Too-Much-Code
 bool
 PacketInspector::recvTimingResp(PacketPtr pkt)
 {
@@ -228,7 +223,6 @@ PacketInspector::scheduleNextReqRetryEvent(Tick when)
     }
 }
 
-// Too-Much-Code
 void
 PacketInspector::processNextRespSendEvent()
 {
@@ -243,7 +237,6 @@ PacketInspector::processNextRespSendEvent()
     scheduleNextRespSendEvent(nextCycle());
 }
 
-// Too-Much-Code
 void
 PacketInspector::scheduleNextRespSendEvent(Tick when)
 {
@@ -256,7 +249,6 @@ PacketInspector::scheduleNextRespSendEvent(Tick when)
     }
 }
 
-// Too-Much-Code
 void
 PacketInspector::processNextRespRetryEvent()
 {
@@ -264,7 +256,6 @@ PacketInspector::processNextRespRetryEvent()
     memSidePort.sendRetryResp();
 }
 
-// Too-Much-Code
 void
 PacketInspector::scheduleNextRespRetryEvent(Tick when)
 {
