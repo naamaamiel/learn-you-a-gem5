@@ -60,6 +60,7 @@ bool
 PacketInspector::CPUSidePort::recvTimingReq(PacketPtr pkt)
 {
     if (owner->recvTimingReq(pkt)) {
+        needToSendRetry = false;
         return true;
     }
     needToSendRetry = true;
@@ -145,6 +146,7 @@ bool
 PacketInspector::MemSidePort::recvTimingResp(PacketPtr pkt)
 {
     if (owner->recvTimingResp(pkt)) {
+        needToSendRetry = false;
         return true;
     }
     needToSendRetry = true;

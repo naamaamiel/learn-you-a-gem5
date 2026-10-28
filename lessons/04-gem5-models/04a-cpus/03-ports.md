@@ -911,6 +911,7 @@ bool
 PacketInspector::CPUSidePort::recvTimingReq(PacketPtr pkt)
 {
   if (owner->recvTimingReq(pkt)) {
+      needToSendRetry = false;
       return true;
   }
   needToSendRetry = true;
