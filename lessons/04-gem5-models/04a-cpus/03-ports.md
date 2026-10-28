@@ -24,8 +24,7 @@ Ports communicate using **packets**. A `Packet` can either be a request packet o
 Since packets describe memory accesses, every `Packet` has the following fields:
 
 - `addr`: the address of the memory location being accessed,
-- `data`: the data the `Packet` is carrying (this field can be `null`),
-  - Each packet can carry a `uint8_t`'s worth of data.
+- `data`: a pointer to the data the `Packet` is carrying (this field can be null),
 - `cmd`: the specific memory command the `Packet` represents,
   - For example, whether it represents a request/response,the specific nature of the request/response (read vs. write, error, etc.), and whether it contains a memory payload.
 - `req`: a pointer to the original memory request. This field allows us to access the ID of the `SimObject` that made the original request.
