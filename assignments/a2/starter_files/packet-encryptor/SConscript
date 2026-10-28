@@ -1,0 +1,5 @@
+Import("*")
+
+SimObject("PacketEncryptor.py", sim_objects=["PacketEncryptor"])
+
+Source("packet_encryptor.cc")
