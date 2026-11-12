@@ -10,7 +10,7 @@ from gem5.components.memory.single_channel import SingleChannelDDR3_1600
 from gem5.resources.resource import BinaryResource
 from gem5.simulate.simulator import Simulator
 
-from a2_components import ShadowProcessor
+from a3_components import ShadowProcessor
 
 parser = argparse.ArgumentParser(
     description="Run a program on an O3 core with a shadow unit."
