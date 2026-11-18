@@ -38,7 +38,7 @@ board = RiscvBoard(
 )
 
 board.set_workload(
-    obtain_resource("riscv-gapbs-bfs-run")
+    obtain_resource("riscv-matrix-multiply-run")
 )
 
 # Run the simulation until its end

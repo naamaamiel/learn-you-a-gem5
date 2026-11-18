@@ -1,6 +1,4 @@
-from gem5.components.boards.x86_board import X86Board
-
-# TODO
+from gem5.components.boards.riscv_board import RiscvBoard
 
 # to run the simulation
 from gem5.simulate.simulator import Simulator
@@ -17,7 +15,7 @@ cache = # TODO
 
 memory = # TODO
 
-board = X86Board(
+board = RiscvBoard(
     # TODO
 )
 
